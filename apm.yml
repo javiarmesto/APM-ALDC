@@ -1,0 +1,30 @@
+name: aldc
+version: 3.2.3
+description: >-
+  AL Development Collection - skills-based, spec-driven, TDD-orchestrated
+  development framework for Microsoft Dynamics 365 Business Central.
+  Works with GitHub Copilot and Claude Code.
+author: javiarmesto
+license: MIT
+
+target: [copilot, claude]
+
+dependencies:
+  apm: []
+  mcp:
+    - name: github-mcp-server
+      registry: false
+      transport: http
+      url: "https://api.githubcopilot.com/mcp/"
+    - name: markitdown-mcp
+      registry: false
+      transport: stdio
+      command: uvx
+      args: ["markitdown-mcp@0.0.1a4"]
+    - name: microsoftdocs-mcp
+      registry: false
+      transport: http
+      url: "https://learn.microsoft.com/api/mcp"
+
+includes: auto
+scripts: {}

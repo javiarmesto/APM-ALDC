@@ -1,0 +1,157 @@
+pack:
+  format: plugin
+  target: all
+  packed_at: '2026-05-15T19:25:38.919322+00:00'
+  bundle_files:
+    .mcp.json: 2f0d03fcc8fb41a6efc75748a93840f3627a3e59fe2ac9012cb28fe0929f2d8d
+    agents/al-agent-builder.agent.md: c8fd69c2cd6a39417f525bcf6e3f7c369d409d50c012e5172a5ad7ee89e7215c
+    agents/al-architect.agent.md: 8ca2ba7e0b9173340ea9e3e43700b74f6fd5724d0d24c27c6f068399a9c6f2bd
+    agents/al-conductor.agent.md: 947028d9565de939e9a062678f087fd487b9d43e295dc334e158cae3ff894956
+    agents/al-developer.agent.md: a59b9c3ec460903d0d7dbe6d952b1043bb3e3c2f5b9b9683d1457bbc6f5a8065
+    agents/al-implement-subagent.agent.md: 73af239736379f98581a2709e9fffcf622da43e41d026fe59fbb6d3ec453fca3
+    agents/al-planning-subagent.agent.md: 83d1724e913df31808d708088b6cff998a29b2b55ecab962f3fc6ad9bb32db2b
+    agents/al-presales.agent.md: 266e4ed7a8bebfd4ffa1d2ed527510df59e1ffc19b747b84f65a038568947d9c
+    agents/al-review-subagent.agent.md: bbfe66442a4d21ad30076ed43bbb8a7b2d7c65ee826107c776092c7c1815fb4f
+    commands/al-agent.build-instructions.md: 90b96e18aeb19108583b146daf19f323bcd1da62f88cb8cdf754bc84ece82aed
+    commands/al-agent.create.md: c5220663504e12fbfc07c2b24fa71f0b5922acdf7a7eef0ef0c794c1aa3f93c3
+    commands/al-agent.task.md: 2fd84ae74f374a979d6cc65fccd9aa51c8c60d7fba6ae9628d892446f3da6f1f
+    commands/al-agent.test.md: 2237600f476405fbad9187a641ba129dff0a7bcbaba8be4ac142de917524ef69
+    commands/al-build.md: ffaefb25f9ee9d2e00360778338d6c4bb662de0a2982ba1221459977f94146e0
+    commands/al-context.create.md: 8ceb8a79242abc1793edc3a6e2c9c2b0c254e1eeac4b0913e47261b8fadf0b0e
+    commands/al-initialize.md: 74048a2fb811ab61605eb84c19c1debc4a59d62d6de1218e66964124bf03a6f0
+    commands/al-memory.create.md: 31b5cb33e54565872611acb6cb0b1cab9f2011f82a82fb695dac8148a068e0ff
+    commands/al-pr-prepare.md: 137bcdf60b053d7c5cab9660629e7e4bf6ab0c2c7985ac7e56cc42d8ff99fbf3
+    commands/al-spec.create.md: 852349788527d14ee4dbecc1ca0fd2a5d361031cbb08fd295d2368bc030f4b73
+    instructions/al-agent-toolkit.instructions.md: 04032173b83bd2d8375c7993ea9cc9db3d2aa4ea1b327e63fede043c5e083cc3
+    instructions/al-code-style.instructions.md: 24b03807bb8a0fb03145f095d52f0d14e979d0fa951ad148a3f3378cde6a41b3
+    instructions/al-error-handling.instructions.md: 9cbc1a23173fe794aca9fbab69cdd8d7386b75fe8be3229115288135e42788c5
+    instructions/al-events.instructions.md: 1f5a557ef4d5767538c3ec7620f3546a20336d9cc1adb8a2d0c5c18c01375240
+    instructions/al-guidelines.instructions.md: 62f47cb9966eea4ade2ee8a3ba4dfbcd78df74c561120d340487922c68966e28
+    instructions/al-naming-conventions.instructions.md: 07bbb5ada3fdc86b536a41ef1cb964d3dd29b954a19341be1413bd8ef63b3736
+    instructions/al-performance.instructions.md: 83dba00f19af798cc843e938c2767859604ed55979ce4cafd11508fc491952be
+    instructions/al-testing.instructions.md: 4c7cc0eba3f55f41f54746cee1348d87bcbaafeb90175d244d38fb2002254a15
+    instructions/copilot-instructions.md: bb60801bc4a957e26f60cd6c1ca814634a2a266a89c9e1f15351657d1c4ee8af
+    plugin.json: 255939f7328cc301fbd16de596c32fb23e997fc0efa2a46bdb862c9191eb231d
+    skills/bc-agent-instructions-debugger/AUTHORS.md: b92fbf4e38944eb7b31b9e15d59bc56ea6b32e0f27bf39d76a17f1f6545f821d
+    skills/bc-agent-instructions-debugger/CHANGELOG.md: 2fedf0c55c69360225bb7084ae2e1d5f8d3a125f5fc1118769b397ab0127ddf0
+    skills/bc-agent-instructions-debugger/SKILL.md: 77b76f1fc13933ed41e2d84c7f91a5024cb0d83977b70c4594b1726f8ee24511
+    skills/bc-agent-instructions-debugger/references/anti-patterns.md: 761887adf939b4e90ee22da492e27384251670ff607369e613cb162359b11ebc
+    skills/bc-agent-instructions-debugger/references/runtime-model.md: b5f540a424cf7156b73e397b5b7bf7eddb5b6c2d389c19122f224e1d7a20c354
+    skills/bc-al-bug-fix/AUTHORS.md: b92fbf4e38944eb7b31b9e15d59bc56ea6b32e0f27bf39d76a17f1f6545f821d
+    skills/bc-al-bug-fix/CHANGELOG.md: fb2f9e0088dde927ce8c57caf15d459760a0998c1e5743415410ffa6c3236a52
+    skills/bc-al-bug-fix/SKILL.md: 22cc8f87f57d8bdb8abb8138e3b25ec9dade8c3839ff3b1a84d30441a494ecd1
+    skills/bc-al-bug-fix/references/fix-patterns.md: 567cb819f475a4c0a660aa4e9a774c3df159f59be7ceb4a96baf82ba67e42196
+    skills/bc-al-bug-fix/references/symptom-map.md: ce8091fd377547eaf26163c42ec8d0e85c5ef919ec9ef5f34fc50622c2c3d3d9
+    skills/bc-al-code-reviewer/AUTHORS.md: b92fbf4e38944eb7b31b9e15d59bc56ea6b32e0f27bf39d76a17f1f6545f821d
+    skills/bc-al-code-reviewer/CHANGELOG.md: b53a898ffaa7b7504e7abc6c01e4ab85afac5e18c8d4c9edbbaba149403b5b26
+    skills/bc-al-code-reviewer/SKILL.md: 41568f7a3fce03021fb2f4783057d592a5259350764f1a6b8fcb82c30dad5aed
+    skills/bc-al-code-reviewer/references/appsource-blockers.md: fa51bfd8093bbf77fbe3b2b80ec8b262defea26ea789683e6560f1db838b156c
+    skills/bc-al-code-reviewer/references/convention-stack.md: ca4ed7f48e8de94ad36e8d32d8148316df3ca712efa28d62871301831e3bdbd7
+    skills/bc-al-project-context/AUTHORS.md: b92fbf4e38944eb7b31b9e15d59bc56ea6b32e0f27bf39d76a17f1f6545f821d
+    skills/bc-al-project-context/CHANGELOG.md: 05faabe458ec5d9298adb602af8a0944cda33c3f1dc850bc843b6b333457bfb3
+    skills/bc-al-project-context/SKILL.md: 9ebf870a787cacc29313f9fdf0ee4a7c2ae5d0f83df48ef78a95e96bb14f3ebd
+    skills/bc-al-project-context/references/adr-format.md: 8c191928ed6324baa11d5f39fe93ff2180820f5a9c98947249075e463f247ebd
+    skills/bc-al-project-context/references/handoff-format.md: 9ce420da6f028e87b4a4238d3612b3f1edd3a671a82ada36c8df16c727e96fd1
+    skills/bc-attachments-generator/AUTHORS.md: 84c1fbcce23241280e0f9efb8208c8ff81957563aff9267daafc41d5e2a9e62d
+    skills/bc-attachments-generator/CHANGELOG.md: c2d905b8b8cf8dac9ec9ad7eeb60ba47661f3fec27d6195324c7744cf2feb99f
+    skills/bc-attachments-generator/SKILL.md: 29f80f6e1aaa4a5a42a268d249c40095b8fc4531deeb27d12c5ca8abaf3522a2
+    skills/bc-attachments-generator/references/code-templates.md: a0c9204eec10a63354e93c524dc4e654000ebb669c5065cd98c7eef304064d15
+    skills/bc-business-events-generator/AUTHORS.md: 84c1fbcce23241280e0f9efb8208c8ff81957563aff9267daafc41d5e2a9e62d
+    skills/bc-business-events-generator/CHANGELOG.md: 1ee42e3fb443bc835c0cce1dbe6d5ba1380b941c0518485b901bf172bf7c9328
+    skills/bc-business-events-generator/SKILL.md: 7342b207d21145284cc49f92628f451d10421b9b7a4496591d0ccbb194087d56
+    skills/bc-business-events-generator/references/code-templates.md: df9bbf9ed75149c84b74b008093d5cb02149480a58e784f5d0f44728a16642fd
+    skills/bc-dataverse-entity-generator/AUTHORS.md: 84c1fbcce23241280e0f9efb8208c8ff81957563aff9267daafc41d5e2a9e62d
+    skills/bc-dataverse-entity-generator/CHANGELOG.md: b9b6ee41dada29ea8e82e7e35af3ce7d643b789dac395da068c6969e59af05ec
+    skills/bc-dataverse-entity-generator/SKILL.md: 4d166136759f7014b7c5f688d87adafdaf01a48f1b996c6c9866ceac36a11fbb
+    skills/bc-dataverse-entity-generator/references/generate-entity-list-script.md: 0e628dd936f62bc59845dd89b2000aecaafea965f4a2d405ea8db4fb359e96a9
+    skills/bc-dataverse-entity-generator/references/generate-entity-script.md: b9353005accccb0a45828a588f357c5618027fbb3d5043ecefc35cd213fccde3
+    skills/bc-dataverse-entity-generator/references/workflow-examples.md: dd2b78bbbdafeee19551e27c27637d49178812b5d22a49938b2158dac5d72257
+    skills/bc-dataverse-entity-generator/scripts/Generate-Entity-List.ps1: 7f338676874e8c394d9a873a1f99e8b2e03f26b1bd160687e76fe5b80d362050
+    skills/bc-dataverse-entity-generator/scripts/Generate-Entity.ps1: 9357b5e1cc4cf6e3476f0aa8e5897daf1352a159e837998ca39747709a22025c
+    skills/bc-dataverse-mapping-generator/AUTHORS.md: d22cec8fdba3f704d0a509c0e32d69bdfaa38dbc206a8baafae0f29c197daadc
+    skills/bc-dataverse-mapping-generator/CHANGELOG.md: e7ecf2d497b78d80b56a6b3d086351fa30f13ea3290fc71e2764797cd52958e6
+    skills/bc-dataverse-mapping-generator/SKILL.md: fa6dc77c450b7545e9788855945a7efb90517d54ab33788b6ed5caec84118118
+    skills/bc-dataverse-mapping-generator/references/custom-entity-mapping.md: e42d0a78bbc288220637876ab31a6a974fffa75e7d034597bbac066e3b430fc9
+    skills/bc-dataverse-mapping-generator/references/oob-entity-mapping.md: 38df7f001af4e5b09bfafecc90ad8e6351b303acec51a3ac92d1ebbace461983
+    skills/bc-install-codeunit-generator/AUTHORS.md: 84c1fbcce23241280e0f9efb8208c8ff81957563aff9267daafc41d5e2a9e62d
+    skills/bc-install-codeunit-generator/CHANGELOG.md: 4bf8533352edac7e36b8047c47b363162a24f57c4183b4b1848fbd476f83be55
+    skills/bc-install-codeunit-generator/SKILL.md: 3e2cee5ea8667f380a2c88bc47f1f33445af494fc2a51385343436df770badac
+    skills/bc-install-codeunit-generator/references/install-examples.md: db50bccfda0e91f2b4714c40893b7e613d5d36e0a4658732c65ef1fe76124ea2
+    skills/bc-manifest-handoff-generator/AUTHORS.md: b92fbf4e38944eb7b31b9e15d59bc56ea6b32e0f27bf39d76a17f1f6545f821d
+    skills/bc-manifest-handoff-generator/CHANGELOG.md: 859b177fb9181d0bed4a5925767a422c1618fc92d6b42f78dd40dcf03836c2e6
+    skills/bc-manifest-handoff-generator/SKILL.md: 4bf7c616c8d5019f7f612ea70c4a0d61e8f2ef371bfa74aad035803211c232b8
+    skills/bc-manifest-handoff-generator/references/manifest-structure.md: c9b3c65d5ea750e92c496070a91da17a4b630590d282d0943720fb37b495665c
+    skills/bc-number-series-generator/AUTHORS.md: 84c1fbcce23241280e0f9efb8208c8ff81957563aff9267daafc41d5e2a9e62d
+    skills/bc-number-series-generator/CHANGELOG.md: 6b9d0e28a857436df136d13b91bbed5d7c7eff41c3550c95632f96138a413aec
+    skills/bc-number-series-generator/SKILL.md: 0e7cdb35fbf2ceae03821a74744b757e9be416b99e963049c3905a5387df80d8
+    skills/bc-number-series-generator/references/number-series-examples.md: 5551a70a81284101438032adbc25275d3c1d59171e7098f4fcccc8f17fcbd742
+    skills/bc-number-series-generator/references/number-series-troubleshooting.md: 5b063794ddb782abac6c310ffa4c71368d0f482b9d6db94db92c0ff3241ac8ca
+    skills/bc-setup-wizard-generator/AUTHORS.md: 539e04ed25c1899281581d9fcb2da7aa5d2127d7bd95f6f301105a21bb52451c
+    skills/bc-setup-wizard-generator/CHANGELOG.md: cad4f5a3ed53a4d5079a66f426895d69bbaf831a6d7560804bb866e20adb15fc
+    skills/bc-setup-wizard-generator/SKILL.md: 94586ff367f07b3e12d738eaed72cc149fdd9836e996814d6cf55d4fa89a590e
+    skills/bc-setup-wizard-generator/references/code-templates.md: 687025d9c5ff8eed29f0e06cb665373fc309aa9bb2323e063712c6f08f0a0ba4
+    skills/bc-telemetry-generator/AUTHORS.md: 84c1fbcce23241280e0f9efb8208c8ff81957563aff9267daafc41d5e2a9e62d
+    skills/bc-telemetry-generator/CHANGELOG.md: 60c74a1d9cf7982e1c188cd90de61db71f16b93c24bd96cb886d1fe5bc89cdc3
+    skills/bc-telemetry-generator/SKILL.md: 52351c267e7bb868c85b864e997696194e82a0959fe9fbb3d39d904f777b8c3a
+    skills/bc-telemetry-generator/references/kql-queries.md: 7cf41bf33bae5a5cf9d1cd7dadbc045393b9e9eb95c90ffc7134262a629b4cfb
+    skills/bc-telemetry-generator/references/telemetry-reference.md: c6170d6bb3692b3780fe6ea668d7cdc77808112bb867d37788f6615199a361f2
+    skills/onprem-remote-deploy/AUTHORS.md: 9ca28d2bcf5e1ab2c00aebffa3031c72bd6c79e2b78c26a6024a98b0dfe6b8c6
+    skills/onprem-remote-deploy/CHANGELOG.md: 916fa482a3b9e6e600f499a0688a9bffa58732cfa0c60abfe3ba44a2697b7f42
+    skills/onprem-remote-deploy/SKILL.md: 4ff656278846023d9ad431666706ef865eee3a2cb602539051ed05d8a9c29672
+    skills/onprem-remote-deploy/references/onprem-remote-deploy-reference.md: 5d84334ae8ba59ceaacf116667de6d5e85f0fd7b387afe31a5c14f2f8384c9f0
+    skills/onprem-remote-deploy/scripts/Setup-DeployAgent.Template.ps1: fba58282ab8aa04ff44fe95e5df686fdf07a65884420e6e121d29694a44c55ae
+    skills/skill-agent-instructions/SKILL.md: 86232bad64e4d52715d686ab3f2216028584c05a2187c0a6d3c035e03a07aa6c
+    skills/skill-agent-instructions/examples/agent-advanced-instructions.txt: f9938f734399e9ec2ad01186dbc761030dd815a1595b813e028c9914a10d9eba
+    skills/skill-agent-instructions/examples/agent-simple-instructions.txt: 4ad7eb9e8e961f179664118c37ab58c1734be60295bb69e78929cc765b6c98c1
+    skills/skill-agent-instructions/references/agent-keywords-reference.md: 9b15534aca3c701b57cb6859a4152d291edcba0fd7bdf499e9b062849b4b1c33
+    skills/skill-agent-task-patterns/SKILL.md: 77a2c728fa3eb2fb8360e05a72ed6ca260f8e95c474dcced8fe6a0d00f665c23
+    skills/skill-agent-task-patterns/examples/lead-handoff-with-attachment.md: d74bccb4d9ef7e58a95ed62bb3c08a9ca877cde9e73e708490aa28d575850e3a
+    skills/skill-agent-task-patterns/examples/session-events-binding.md: 39cc0ddf8d4269b9d2aee8931d5cca491c3bc2792b0600d3243c879bf9c69815
+    skills/skill-agent-toolkit/SKILL.md: e2bcb0f49a5e0d4df973ea35ff651ad059a7663d9b7d1b78577a61a2e22a6a08
+    skills/skill-api/SKILL.md: 6db35694c7d1938550d851f3b3d245df6fddc2840b4465dd54aa3ad40e9f3840
+    skills/skill-contribution-assistant/AUTHORS.md: 9ca28d2bcf5e1ab2c00aebffa3031c72bd6c79e2b78c26a6024a98b0dfe6b8c6
+    skills/skill-contribution-assistant/CHANGELOG.md: f27c9bdcd536e7f394a954147d2fb5b85f77c85100499d18c509007245d453d5
+    skills/skill-contribution-assistant/SKILL.md: 81b449052093a124ebc11afa5167ce40234f0e22d97a4bb1caf1f2c97b9997d8
+    skills/skill-contribution-assistant/references/onboarding-questionnaire.md: af56fca134131726d6265466bcee329f76b69ff8f2976a3ddb00ac785521b06f
+    skills/skill-contribution-assistant/references/opportunity-detection.md: da068493ca1625576b7415bfcf9754cbecd01313e629ea1d61e0bda9e4e5d4c2
+    skills/skill-contribution-assistant/references/pr-readiness-checklist.md: fe0848dd6e503e34444794cf8ccf0c96aafd1ad41104ca45ef8d93c7bbbed878
+    skills/skill-contribution-assistant/references/quality-gate.md: 200245b61c2159b31b334eff759eaf15d2c70c2650dc2579e6595c224d028e0d
+    skills/skill-copilot/SKILL.md: c4813439a3db7fcb7c2dfd7d14d78f9401e27c781f0eba04bfeaaf80f4664846
+    skills/skill-debug/SKILL.md: ca9e68689cb651c49eb05d5cd80674b6d92c805c965a10d68e201ab5681c71dd
+    skills/skill-estimation/SKILL.md: 193610d3404aa69394e51b6fd81278e693ff05a243f875aa0111ce6cac9a1694
+    skills/skill-events/SKILL.md: 1e535bdcae55d9d9169ec3ac14a5d9ca94c65217bb7fe341a2a5d8c8fff826fa
+    skills/skill-manifest/SKILL.md: 193140066f304524c24a89231bb7fbfba849b76f4c2133e1d5d5d09b061045cc
+    skills/skill-manifest/samples/extension-manifest/sample-manifest-both.md: 17fd8247f71c6f22faa3b93fecddf4b08b622bd7eb42c2e5e316fec7ccf03f07
+    skills/skill-manifest/samples/extension-manifest/sample-manifest-circe-only.md: 89423f4a6cdf4ce7cf5435abd8ae70dcb74e42b748a59aa196571793b1926fde
+    skills/skill-manifest/samples/extension-manifest/sample-manifest-delfos-only.md: 36ced82ef042460f87e441b0636cf43e555430f649944314bded61e2aad7687d
+    skills/skill-migrate/SKILL.md: 1f0e48a7bf8b6eb920b9838bdfdc10f72a82c7a9061718ae84931367fa4c9d1b
+    skills/skill-pages/SKILL.md: 6e02076b328de1875deb2511a7888aa4079fc5eaa9aee687d65093d0e3f955b4
+    skills/skill-performance/SKILL.md: e548feb84711e2600ad00fc9d7ba3d0eb1328dc54c36e51f479e3471d4f8ecc4
+    skills/skill-permissions/SKILL.md: 584c653f74c546cef61743e363e5123e3a54b509dbd8d86c65fccafb896d7471
+    skills/skill-testing/SKILL.md: 452526d801028294086d95effc261da75e6e91909a797fad672555ce6d9332fc
+    skills/skill-translate/SKILL.md: 66fd2af5dad967494b0b4342dd368b283e1eae745ec7cbdc2f5928f7e0285c57
+lockfile_version: '1'
+generated_at: '2026-05-15T17:49:46.531586+00:00'
+dependencies: []
+mcp_servers:
+- github-mcp-server
+- markitdown-mcp
+- microsoftdocs-mcp
+mcp_configs:
+  github-mcp-server:
+    name: github-mcp-server
+    transport: http
+    registry: false
+    url: https://api.githubcopilot.com/mcp/
+  markitdown-mcp:
+    name: markitdown-mcp
+    transport: stdio
+    args:
+    - markitdown-mcp@0.0.1a4
+    registry: false
+    command: uvx
+  microsoftdocs-mcp:
+    name: microsoftdocs-mcp
+    transport: http
+    registry: false
+    url: https://learn.microsoft.com/api/mcp
