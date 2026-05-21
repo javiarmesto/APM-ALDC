@@ -101,7 +101,7 @@ After completion, swap `[RUNNING]` for `[COMPLETE]`, show `100%` and add deliver
      ✓ AL-Go structure validated
    ```
 
-4. **Draft Comprehensive Plan**: Based on findings (and architecture/spec if available), create multi-phase plan following `<plan_style_guide>`. 3-10 phases, each strict TDD + AL patterns.
+4. **Draft Comprehensive Plan**: Based on findings (and architecture/spec if available), create a multi-phase plan following `<plan_style_guide>`. 3-10 phases, each strict TDD + AL patterns.
 
 5. **Present Plan to User**: Share synopsis highlighting AL objects, event subscribers/publishers, test strategy per AL-Go, open questions.
 
@@ -128,6 +128,12 @@ After completion, swap `[RUNNING]` for `[COMPLETE]`, show `100%` and add deliver
    • Phase doc: {req_name}-phase-1-complete.md ✅
    ✅ Plan APPROVED — proceeding to Phase 2
    ```
+
+   **🚨 HARD GATE — PHASE 1 ARTIFACTS PERSISTED**: Before showing the checkpoint above, you MUST have **written to disk** both files:
+   - `.github/plans/<task-name>/<task-name>-plan.md`
+   - `.github/plans/<task-name>/<task-name>-phase-1-complete.md`
+
+   Showing the plan in chat is NOT enough — the artifacts must exist on disk. If either file is missing when you reach this step, write it NOW before continuing. Skipping persistence is a Core v1.1 violation.
 
    **🚨 HARD GATE — IMPLEMENTATION START**: WAIT for user confirmation before invoking al-implement-subagent for Phase 2.
 
@@ -194,7 +200,7 @@ Analyze feedback:
    💾 Ready to commit?
    ```
 
-2. **Write Phase Completion File**: `.github/plans/<task-name>/<task-name>-phase-<N>-complete.md` following `<phase_complete_style_guide>`.
+2. **Write Phase Completion File**: Create `.github/plans/<task-name>/<task-name>-phase-<N>-complete.md` following `<phase_complete_style_guide>`.
 
 3. **Generate Git Commit Message** following `<git_commit_style_guide>` in plain text code block for easy copying.
 
@@ -211,7 +217,7 @@ Analyze feedback:
 
 ### Phase 3: Plan Completion
 
-1. **Compile Final Report**: Create `.github/plans/<task-name>/<task-name>-complete.md` following `<plan_complete_style_guide>`:
+1. **Compile Final Report**: Create `.github/plans/<task-name>/<task-name>-complete.md` following `<plan_complete_style_guide>` containing:
    - Overall summary
    - All phases completed
    - All AL objects created/modified
@@ -239,7 +245,7 @@ Analyze feedback:
 ```markdown
 ## Plan: {Task Title (2-10 words)}
 
-{Brief TL;DR — what, how, why. 1-3 sentences.}
+{Brief TL;DR of the plan - what, how and why. 1-3 sentences in length.}
 
 **AL Context:**
 - Base Objects: {Standard BC objects involved}
@@ -247,26 +253,36 @@ Analyze feedback:
 - AL-Go Structure: {App project path, Test project path}
 - Dependencies: {Required extensions or packages}
 
-**Phases ({3-10}):**
-1. **Phase {N}: {Title}**
-   - **Objective:** {What is to be achieved}
-   - **AL Objects to Create/Modify:** {Table/TableExtension/Codeunit/Page with IDs and names}
-   - **Event Architecture:** {Subscribers to create, integration events to publish}
-   - **Files/Functions to Modify/Create:** {Path in app/ or test/}
-   - **Tests to Write:** {Test codeunit names, specific test procedures}
-   - **AL Patterns:** {SetLoadFields, error handling, performance considerations}
+**Phases {3-10 phases}**
+1. **Phase {Phase Number}: {Phase Title}**
+   - **Objective:** {What is to be achieved in this phase}
+   - **AL Objects to Create/Modify:**
+     - {Table/TableExtension/Codeunit/Page/etc. with IDs and names}
+   - **Event Architecture:**
+     - {Event subscribers to create}
+     - {Integration events to publish (if any)}
+   - **Files/Functions to Modify/Create:**
+     - {Path in app/ or test/ project}
+   - **Tests to Write:**
+     - {Test codeunit names following AL-Go structure}
+     - {Specific test procedures}
+   - **AL Patterns:**
+     - {SetLoadFields usage}
+     - {Error handling patterns}
+     - {Performance considerations}
    - **Steps:**
-     1. Create test codeunit in `/test`
+     1. Create test codeunit in `/test` project
      2. Write failing tests
      3. Run tests to verify failure
-     4. Create AL objects in `/app`
+     4. Create AL objects in `/app` project
      5. Implement minimal code to pass tests
      6. Run tests to verify pass
      7. Verify no regressions in full test suite
      8. Apply linting/formatting
 
-**Open Questions ({1-5}, ~5-25 words each):**
+**Open Questions {1-5 questions, ~5-25 words each}**
 1. {Clarifying question? Option A / Option B / Option C}
+2. {...}
 ```
 
 **Plan Writing Rules:**
@@ -275,19 +291,19 @@ Analyze feedback:
 - Document event architecture (subscribers/publishers)
 - Reference AL performance patterns
 - Follow AL-Go structure (`app/` vs `test/` separation)
-- DON'T include code blocks; describe changes and link to relevant files
+- DON'T include code blocks; describe needed changes and link to relevant files
 - NO manual testing/validation unless explicitly requested
-- Each phase is incremental and self-contained with TDD cycle
+- Each phase incremental, self-contained, with TDD cycle
 - AVOID red/green processes spanning multiple phases for the same code
 
 ### <phase_complete_style_guide>
 
-File: `.github/plans/<plan-name>/<plan-name>-phase-<phase-number>-complete.md` (kebab-case)
+File name: `.github/plans/<plan-name>/<plan-name>-phase-<N>-complete.md` (kebab-case).
 
 ```markdown
-## Phase {N} Complete: {Title}
+## Phase {N} Complete: {Phase Title}
 
-{Brief TL;DR. 1-3 sentences.}
+{Brief TL;DR of what was accomplished. 1-3 sentences.}
 
 **AL Objects Created/Modified:**
 - {Table/TableExtension/Codeunit ID and name}
@@ -295,8 +311,8 @@ File: `.github/plans/<plan-name>/<plan-name>-phase-<phase-number>-complete.md` (
 - {Event subscribers added}
 
 **Files created/changed:**
-- `/app/...` - {Description}
-- `/test/...` - {Description}
+- `/app/...` — {Description}
+- `/test/...` — {Description}
 
 **Functions created/changed:**
 - {Function name in AL object}
@@ -306,59 +322,60 @@ File: `.github/plans/<plan-name>/<plan-name>-phase-<phase-number>-complete.md` (
 - {Test codeunit name}
 - {Test procedure names}
 
+(Omit the tests block if no tests were generated in this phase.)
+
 **AL Patterns Applied:**
 - {SetLoadFields usage}
 - {Error handling}
 - {Performance optimizations}
 
 **Skills Applied in This Phase:**
+
 | Skill | Pattern Used | Evidence |
 |-------|-------------|----------|
 | skill-api | ODataKeyFields = SystemId | Page 50103 line 8 |
 | skill-permissions | PermissionSet generation | CIECustAPIRead.PermissionSet.al |
-*(Consolidated from implement-subagent summary. Remove table if no domain skills were loaded.)*
 
-**Review Status:** {APPROVED / APPROVED with minor recommendations}
+(Remove this table entirely if no domain skills were loaded in this phase.)
+
+**Review Status:** {APPROVED / APPROVED with minor recommendations / NEEDS_REVISION}
 
 **Git Commit Message:**
-{Following <git_commit_style_guide>}
+{Following `<git_commit_style_guide>`.}
 ```
 
 ### <plan_complete_style_guide>
 
-File: `.github/plans/<plan-name>/<plan-name>-complete.md` (kebab-case)
+File name: `.github/plans/<plan-name>/<plan-name>-complete.md` (kebab-case).
 
 ```markdown
 ## Plan Complete: {Task Title}
 
-{Summary. 2-4 sentences describing what was built and value delivered.}
+{2-4 sentence summary describing what was built and the value delivered.}
 
 **AL Extension Summary:**
-- Extension Type: {TableExtension, Codeunit, etc.}
+- Extension Type: {TableExtension, Codeunit, Page, etc.}
 - Base Objects Extended: {List standard BC objects}
 - Event Architecture: {Subscribers and publishers added}
 - AL-Go Compliance: ✅ {App and Test projects properly structured}
 
 **Phases Completed:** {N} of {N}
-1. ✅ Phase 1: {Title}
-2. ✅ Phase 2: {Title}
+1. ✅ Phase 1: {Phase Title}
+2. ✅ Phase 2: {Phase Title}
 ...
 
 **All AL Objects Created/Modified:**
 - Table/TableExtension {ID}: {Name}
 - Codeunit {ID}: {Name}
 - Page/PageExtension {ID}: {Name}
-...
 
 **All Files Created/Modified:**
 - `/app/...`
 - `/test/...`
-...
 
 **Key Functions/Event Subscribers Added:**
 - {Function/procedure name}
 - {Event subscriber signature}
-...
 
 **Test Coverage:**
 - Total test codeunits: {count}
@@ -373,17 +390,22 @@ File: `.github/plans/<plan-name>/<plan-name>-complete.md` (kebab-case)
 - Error handling: ✅
 
 **Skills Utilization Summary:**
-| Skill | Phases Applied | Key Patterns Used |
-|-------|---------------|-------------------|
+
+| Skill | Phases Applied | Key Patterns |
+|-------|---------------|--------------|
 | skill-api | Phase 2, 3 | ODataKeyFields, APIPublisher, bound action |
 | skill-testing | Phase 1, 2, 3 | Given/When/Then, Library Assert |
 | skill-permissions | Phase 3 | READ/CALC permission sets |
 | skill-performance | Phase 2 | SetLoadFields, CalcFields grouping |
-*(Consolidated from all phase-complete files. List only skills actually applied.)*
+
+(List only skills actually applied. Remove rows for skills not loaded.)
 
 **Recommendations for Next Steps:**
-- {Optional suggestion}
+- {Optional suggestion 1}
+- {Optional suggestion 2}
 ```
+
+> The three style guides above are the **single source of truth** at runtime. The files under `.github/docs/templates/` (plan-template.md, phase-complete-template.md, plan-complete-template.md) are kept as a human reference but the conductor must NOT read them during orchestration — the format is already inline here.
 
 ### <git_commit_style_guide>
 
@@ -397,7 +419,7 @@ fix/feat/chore/test/refactor: Short description (max 50 characters)
 
 ## State Tracking
 
-Use `#todos` tool to track progress. Provide status updates in responses using the Visual Progress Format defined above. Include current phase ({N}/{Total}), last action completed, next action queued, and AL context (objects worked on, tests passing, blockers).
+Use `#todos` tool to track progress at **milestone boundaries only**: at the start of a phase, after a logical work block of 3-5 actions completes, and at HITL pause points. Do NOT update the todo after every tool call — that wastes turns. Provide ongoing status updates in chat responses using the Visual Progress Format above; the `#todos` tool is for persistence, the chat is for ongoing visibility. When you must update the todo, batch multiple state transitions into a single call.
 
 **🚨 CRITICAL PAUSE POINTS** — STOP and wait for user input at:
 1. After presenting the plan (before starting implementation)
@@ -405,18 +427,6 @@ Use `#todos` tool to track progress. Provide status updates in responses using t
 3. After plan completion document is created
 
 DO NOT proceed past these points without explicit user confirmation.
-
----
-
-## AL-Specific Guidelines (Reference)
-
-| Area | Rule |
-|------|------|
-| **Event-Driven** | NEVER modify base BC objects. ALWAYS use TableExtension, PageExtension, Event Subscribers. ALWAYS publish Integration Events for extensibility. |
-| **AL-Go Structure** | App code in `/app` or `/src`. Test code in `/test` with `"test"` scope dependency. NEVER mix. |
-| **Naming** | Object names ≤26 chars (allow 4-char prefix). Variables/procedures PascalCase, descriptive. Verb-noun for procedures. |
-| **Performance** | SetLoadFields before Get/FindSet on large tables. SetRange/SetFilter before FindSet. Temp tables for intermediate processing. |
-| **Error Handling** | TryFunctions for failable operations. Error labels for user-facing messages. Telemetry for diagnostics. |
 
 ---
 
@@ -466,7 +476,7 @@ Include **"Skills Applied in This Phase"** table consolidating implement-subagen
 ```
 
 ### In plan-complete.md (final summary)
-Include **"Skills Utilization Summary"** aggregating all phases (see `<plan_complete_style_guide>`).
+Include **"Skills Utilization Summary"** aggregating all phases (see `.github/docs/templates/plan-complete-template.md`).
 
 ### Validation responsibility
 Cross-check implement-subagent's "### Skills Loaded" against review-subagent's "Skills Compliance Check". If a skill was loaded but review found patterns not applied → flag as issue before committing.
@@ -561,7 +571,7 @@ Cross-check implement-subagent's "### Skills Loaded" against review-subagent's "
 
 ---
 
-## Example Usage (compact)
+## Example Usage
 
 **Request**: "Add email validation to Customer table"
 
@@ -570,9 +580,11 @@ Cross-check implement-subagent's "### Skills Loaded" against review-subagent's "
 3. Conductor drafts plan (3 phases: Test Setup → Implement Validation → Integration)
 4. Presents open questions (empty emails allowed? case-sensitive? .NET Regex vs custom?)
 5. **🚨 WAITS for user approval**
-6. After approval: writes plan.md + phase-1-complete.md → enters Phase 2 cycle
+6. After approval: **writes `plan.md` + `phase-1-complete.md` to disk** → enters Phase 2 cycle
 7. Per phase: 💻 implement (TDD) → ✅ review → 🚦 checkpoint → user commits → next phase
-8. At completion: writes plan-complete.md + appends to memory.md
+8. At completion: **writes `plan-complete.md` to disk** + appends to `memory.md`
+
+> Step 6 and step 8 require disk writes, not just chat output. The Phase 1 / Plan Completion artifacts are part of the agent contract — orchestration is incomplete without them.
 </orchestration_workflow>
 
 <context_requirements>
