@@ -222,15 +222,7 @@ To explicitly invoke a skill, use: `/skill-api`, `/skill-events`, etc.
 
 ## Skills Evidencing
 
-When generating `{req_name}.architecture.md`, include at the TOP (after frontmatter):
-
-```markdown
-> **Skills applied**: skill-api, skill-events
-```
-
-- List only skills actually loaded and applied during this architecture design.
-- If none: `> **Skills applied**: None (general architecture patterns only)`
-- **MANDATORY** — the Conductor and Review Subagent use this to verify skill coverage downstream.
+The `> **Skills applied**:` line at the top of the architecture document is **mandatory**. Format and placement are defined in `.github/docs/templates/architecture-template.md`. List only skills actually loaded; write "None (general architecture patterns only)" if no skill was applied. The Conductor and Review Subagent use this line to verify skill coverage downstream.
 
 <stopping_rules>
 ## Stopping Rules
@@ -287,47 +279,11 @@ Order: Spec A → Spec B (sequential)
 
 ## Architecture Document Structure
 
-**Use the template at `docs/templates/architecture-template.md`** (immutable — copy, never edit).
+When you write `{req_name}.architecture.md`, **read and fill `.github/docs/templates/architecture-template.md`**. The template is immutable and is the single source of truth for: required sections (14 for MEDIUM/HIGH), document header (Date, Complexity, Author, Status), the `> Skills applied:` traceability line, and the Status lifecycle (`Proposed` → `Approved` → `Implemented` → `Superseded`).
 
-The `{req_name}.architecture.md` MUST include these 14 sections for MEDIUM/HIGH complexity:
-
-1. **Executive Summary** (2-3 sentence overview)
-2. **Business Context** (Problem Statement + Success Criteria)
-3. **Solution Architecture** (with Mermaid diagrams: data flow, process flow, object relationships)
-4. **Data Model** (tables, extensions, enums — high level with relationships)
-5. **Business Logic** (codeunits, event architecture)
-6. **User Interface** (pages, factboxes, reports — layout design)
-7. **Integration Points** (events, APIs, external systems)
-8. **Security Model** (permission sets, data classification)
-9. **Performance Considerations** (hotspots, optimization strategy)
-10. **Technical Decisions** (min 3, with alternatives and rationale)
-11. **Implementation Phases** (ordered, with dependencies)
-12. **Risks & Mitigations** (min 3)
-13. **Deployment Plan** (pre/post checklist)
-14. **Spec Decomposition** (if applicable)
+Do not invent the structure inline. The Conductor and the Review Subagent rely on the template's section names being consistent across requirements.
 
 <response_style>
-### Document Header (required at top of every architecture.md)
-
-```markdown
-# Architecture: <Feature Name>
-
-**Date**: YYYY-MM-DD
-**Complexity**: [LOW/MEDIUM/HIGH]
-**Author**: al-architect
-**Status**: [Proposed/Approved/Implemented]
-
-> **Skills applied**: skill-api, skill-events, skill-performance
-> *(List only skills actually loaded. Remove line if none.)*
-```
-
-### Document Status Lifecycle
-
-Update the **Status** field as the document evolves:
-- `Proposed` — initial design, awaiting approval
-- `Approved` — user approved, ready for implementation
-- `Implemented` — code completed and deployed
-- `Superseded` — replaced by newer design
 
 ### Communication Style
 - **Strategic**: long-term architecture, not quick fixes

@@ -1,9 +1,0 @@
-{
-  "name": "aldc",
-  "version": "3.2.3",
-  "description": "AL Development Collection - skills-based, spec-driven, TDD-orchestrated development framework for Microsoft Dynamics 365 Business Central. Works with GitHub Copilot and Claude Code.",
-  "author": {
-    "name": "javiarmesto"
-  },
-  "license": "MIT"
-}

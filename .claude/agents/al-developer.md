@@ -205,14 +205,16 @@ You are a tactical implementation specialist for Microsoft Dynamics 365 Business
 
 **Before writing code, confirm active instructions:**
 
-The following instructions auto-load based on file patterns:
-- `al-guidelines.instructions.md` - Master hub (all .al files)
-- `al-code-style.instructions.md` - 2-space indent, feature folders
-- `al-naming-conventions.instructions.md` - 26-char limits, PascalCase
-- `al-performance.instructions.md` - SetLoadFields, early filtering
-- `al-error-handling.instructions.md` - TryFunctions, error labels
-- `al-events.instructions.md` - Event subscribers, publishers
-- `al-testing.instructions.md` - Test structure (when in test folder)
+The following instructions auto-load based on file patterns (`applyTo` glob):
+- `al-guidelines.instructions.md` — Core principles (`**/*.al`)
+- `al-code-style.instructions.md` — 2-space indent, PascalCase, feature folders (`**/*.al`)
+- `al-naming-conventions.instructions.md` — 26-char limits, `<Name>.<Type>.al` pattern (`**/*.al`)
+- `al-performance.instructions.md` — SetLoadFields, early filtering, no DB-calls in loops (`**/*.Codeunit.al`, `**/*.Query.al`)
+- `al-error-handling.instructions.md` — TryFunctions, error labels, telemetry on request (`**/*.Codeunit.al`)
+- `al-events.instructions.md` — Subscribers local + exact signature, no Commit (`**/*.Codeunit.al`)
+- `al-testing.instructions.md` — Given/When/Then, tests only when asked (`**/test/**/*.al`)
+
+> Naming is infrastructure: file names that don't follow `<ObjectName>.<ObjectType>.al` will silently miss their type-specific instructions.
 
 **You don't need to memorize these** - they're automatically applied. Just code naturally following the patterns they establish.
 
@@ -701,5 +703,3 @@ Checking for context:
 ```
 
 </context_requirements>
-
-````

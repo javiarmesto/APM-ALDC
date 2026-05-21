@@ -62,6 +62,7 @@ local_deployed_files:
 - .claude/agents/al-planning-subagent.md
 - .claude/agents/al-presales.md
 - .claude/agents/al-review-subagent.md
+- .claude/agents/index.md
 - .claude/commands/al-agent.build-instructions.md
 - .claude/commands/al-agent.create.md
 - .claude/commands/al-agent.task.md
@@ -118,6 +119,7 @@ local_deployed_files:
 - .github/agents/al-planning-subagent.agent.md
 - .github/agents/al-presales.agent.md
 - .github/agents/al-review-subagent.agent.md
+- .github/agents/index.agent.md
 - .github/instructions/al-agent-toolkit.instructions.md
 - .github/instructions/al-code-style.instructions.md
 - .github/instructions/al-error-handling.instructions.md
@@ -137,14 +139,15 @@ local_deployed_files:
 - .github/prompts/al-pr-prepare.prompt.md
 - .github/prompts/al-spec.create.prompt.md
 local_deployed_file_hashes:
-  .claude/agents/al-agent-builder.md: sha256:37ef1212b13c347fa3787db8f2c0e7ba7e6b68aaeb61b1d293660af5f526ff68
-  .claude/agents/al-architect.md: sha256:d374b04bddec7840aa67ac2759b7fa182d30788b42966431aed7aa43a2cb8a7d
-  .claude/agents/al-conductor.md: sha256:2c37bd1121f5258d93dad1f1d029af11ea6a85abe8b261e90ba4df59e79f709d
-  .claude/agents/al-developer.md: sha256:a59b9c3ec460903d0d7dbe6d952b1043bb3e3c2f5b9b9683d1457bbc6f5a8065
-  .claude/agents/al-implement-subagent.md: sha256:73af239736379f98581a2709e9fffcf622da43e41d026fe59fbb6d3ec453fca3
-  .claude/agents/al-planning-subagent.md: sha256:83d1724e913df31808d708088b6cff998a29b2b55ecab962f3fc6ad9bb32db2b
+  .claude/agents/al-agent-builder.md: sha256:31f667bd7846204cfb921ff40bb0f084ae6bb6446fbc66c471f5c242ac604d35
+  .claude/agents/al-architect.md: sha256:68eb14988bb73dc4501fbfc56461c662564e805c2a3fe61ee1b61dc0f733e331
+  .claude/agents/al-conductor.md: sha256:201922ceef277db0ab9b33776747db859940e4177e21651866e6903ec13ff728
+  .claude/agents/al-developer.md: sha256:454318af2715225d340b80d914a03ea073812994cf24f735096a69c089a3597b
+  .claude/agents/al-implement-subagent.md: sha256:ddec877163b31c9c28a00a534800a9e41009beca7780345619adaf3ab58ec245
+  .claude/agents/al-planning-subagent.md: sha256:5387746dbe4433ab123ac3bd6ae40e784463f5f55c04b727652c3e9f8b2b95f3
   .claude/agents/al-presales.md: sha256:266e4ed7a8bebfd4ffa1d2ed527510df59e1ffc19b747b84f65a038568947d9c
-  .claude/agents/al-review-subagent.md: sha256:bbfe66442a4d21ad30076ed43bbb8a7b2d7c65ee826107c776092c7c1815fb4f
+  .claude/agents/al-review-subagent.md: sha256:0150f91229623f9a3ad34564786bb71d395b1a34f2b2c4b5b096ee243fee4dee
+  .claude/agents/index.md: sha256:36611d1e96ec039fe3e48a4e198f6fe2696aa56a2de372ca6e9f8680a06787cd
   .claude/commands/al-agent.build-instructions.md: sha256:4a7520a5242bf8839ffe0f9bc3e770d9038bdb751221f14b75dc4ddbe0893664
   .claude/commands/al-agent.create.md: sha256:b4a1d2a974163a0811c12c268deedb73160b43a8e89123238ad4b7209f06fa2d
   .claude/commands/al-agent.task.md: sha256:b32214ba661199e86073bfc3ab1a0ae12528053a21a2ccf73c2e74457e6c179b
@@ -154,31 +157,32 @@ local_deployed_file_hashes:
   .claude/commands/al-initialize.md: sha256:2d3eea3a8280c3ac39f269b38b678bb1ffd7e0ac48e5010675c5505b303084b2
   .claude/commands/al-memory.create.md: sha256:cde611bea4517f5fda5641a88765089711bae6a0b5317e5e36f9d1d20ba84a8a
   .claude/commands/al-pr-prepare.md: sha256:d91402f01de1c08cee39b8335054be8a0196c46c1fb8900e4ebe949f416b340f
-  .claude/commands/al-spec.create.md: sha256:94d6feb1bef8bcb39782b67771809a0749495cdbdf21fc2ed1032ed3ae3baae0
-  .claude/rules/al-agent-toolkit.md: sha256:165815d12d19ef528646073aeb871f31221ccaa0b49e32fda2b21c3610cc3bca
-  .claude/rules/al-code-style.md: sha256:23cdef30ec211db8fc60f58e83da66b69026f30bda45be8ddd0180aef4c59ab8
-  .claude/rules/al-error-handling.md: sha256:3b9298119d401a6f32e7fe52bb64ce112d3ee2a0199eac75578d74e0f326f4f2
-  .claude/rules/al-events.md: sha256:1240b15f2e2e40384ee9c1ed2077604cde381591daa35d85cc621716ec0df44c
-  .claude/rules/al-guidelines.md: sha256:a147bcb90d4a000ead7fcd184f72779d213a800c37e1f157c97d53d64304b4cc
-  .claude/rules/al-naming-conventions.md: sha256:9c13745c9f952113c143a672355fc465d0acc93732ea30505ae37c799fec3221
-  .claude/rules/al-performance.md: sha256:e0d7e5bc0cb633241ab97f82adde030317e5dfd59cc9bc6a5399f26d1efedb74
-  .claude/rules/al-testing.md: sha256:7eb8ab12a49fbfb99253c2e0026d8fe9ac7af70678070471ba932efb43a66e34
-  .github/agents/al-agent-builder.agent.md: sha256:37ef1212b13c347fa3787db8f2c0e7ba7e6b68aaeb61b1d293660af5f526ff68
-  .github/agents/al-architect.agent.md: sha256:d374b04bddec7840aa67ac2759b7fa182d30788b42966431aed7aa43a2cb8a7d
-  .github/agents/al-conductor.agent.md: sha256:2c37bd1121f5258d93dad1f1d029af11ea6a85abe8b261e90ba4df59e79f709d
-  .github/agents/al-developer.agent.md: sha256:a59b9c3ec460903d0d7dbe6d952b1043bb3e3c2f5b9b9683d1457bbc6f5a8065
-  .github/agents/al-implement-subagent.agent.md: sha256:73af239736379f98581a2709e9fffcf622da43e41d026fe59fbb6d3ec453fca3
-  .github/agents/al-planning-subagent.agent.md: sha256:83d1724e913df31808d708088b6cff998a29b2b55ecab962f3fc6ad9bb32db2b
+  .claude/commands/al-spec.create.md: sha256:221e9e2639533fe1c332b096dadcb8fae39fbf7b5b44fd0e5dc1960ec2d3359a
+  .claude/rules/al-agent-toolkit.md: sha256:c7bb065153343810681bd56da26f884086cc644746a637098a69f14bf8c92278
+  .claude/rules/al-code-style.md: sha256:41f8431a31e29732e0d7a3d7e7163b75d244c442776df7bcdd8500e8f36d3676
+  .claude/rules/al-error-handling.md: sha256:2ebd7047519eeab8fd0dcc9ae195610da0037460545a6bdbf4e57dc556492a9c
+  .claude/rules/al-events.md: sha256:295a541c1b8d73242c44197b8f48d7786041a90a8736f0082bbe47af35521dea
+  .claude/rules/al-guidelines.md: sha256:1b13bff3e4082e4221d26356105f10fe48b4e229caa0315d833c8dca89dff433
+  .claude/rules/al-naming-conventions.md: sha256:74445662c312cbe13f520f884073e7b15f1aa95ae672577712a77ad0d904d617
+  .claude/rules/al-performance.md: sha256:1e511f832c81d89ffa754d796aca009fadbd747bfe21305c4f365b0dec2f9cc5
+  .claude/rules/al-testing.md: sha256:7dbcce02ed4c225bc0adebc2c514179d4cca59f02cca8bc0763397fbf135c53b
+  .github/agents/al-agent-builder.agent.md: sha256:31f667bd7846204cfb921ff40bb0f084ae6bb6446fbc66c471f5c242ac604d35
+  .github/agents/al-architect.agent.md: sha256:68eb14988bb73dc4501fbfc56461c662564e805c2a3fe61ee1b61dc0f733e331
+  .github/agents/al-conductor.agent.md: sha256:201922ceef277db0ab9b33776747db859940e4177e21651866e6903ec13ff728
+  .github/agents/al-developer.agent.md: sha256:454318af2715225d340b80d914a03ea073812994cf24f735096a69c089a3597b
+  .github/agents/al-implement-subagent.agent.md: sha256:ddec877163b31c9c28a00a534800a9e41009beca7780345619adaf3ab58ec245
+  .github/agents/al-planning-subagent.agent.md: sha256:5387746dbe4433ab123ac3bd6ae40e784463f5f55c04b727652c3e9f8b2b95f3
   .github/agents/al-presales.agent.md: sha256:266e4ed7a8bebfd4ffa1d2ed527510df59e1ffc19b747b84f65a038568947d9c
-  .github/agents/al-review-subagent.agent.md: sha256:bbfe66442a4d21ad30076ed43bbb8a7b2d7c65ee826107c776092c7c1815fb4f
-  .github/instructions/al-agent-toolkit.instructions.md: sha256:daecd996651cbdf9b9fcc971c897aecc4c2e65df04ea8d8cbb95fc7c2195b917
-  .github/instructions/al-code-style.instructions.md: sha256:24b03807bb8a0fb03145f095d52f0d14e979d0fa951ad148a3f3378cde6a41b3
-  .github/instructions/al-error-handling.instructions.md: sha256:9cbc1a23173fe794aca9fbab69cdd8d7386b75fe8be3229115288135e42788c5
-  .github/instructions/al-events.instructions.md: sha256:1f5a557ef4d5767538c3ec7620f3546a20336d9cc1adb8a2d0c5c18c01375240
-  .github/instructions/al-guidelines.instructions.md: sha256:d5f460d465aaf0fbfd3e63539772d31fe4fc2077bea3d043a642247f759cff93
-  .github/instructions/al-naming-conventions.instructions.md: sha256:07bbb5ada3fdc86b536a41ef1cb964d3dd29b954a19341be1413bd8ef63b3736
-  .github/instructions/al-performance.instructions.md: sha256:83dba00f19af798cc843e938c2767859604ed55979ce4cafd11508fc491952be
-  .github/instructions/al-testing.instructions.md: sha256:4c7cc0eba3f55f41f54746cee1348d87bcbaafeb90175d244d38fb2002254a15
+  .github/agents/al-review-subagent.agent.md: sha256:0150f91229623f9a3ad34564786bb71d395b1a34f2b2c4b5b096ee243fee4dee
+  .github/agents/index.agent.md: sha256:36611d1e96ec039fe3e48a4e198f6fe2696aa56a2de372ca6e9f8680a06787cd
+  .github/instructions/al-agent-toolkit.instructions.md: sha256:d9aab62106b7f24b198bcbe4c960e1eaedf6353cfffa26afdabaa6564e01f21b
+  .github/instructions/al-code-style.instructions.md: sha256:a4134988a9b7b0fc5c9f7e7718912193a8971f174c175c9cb4c6f213e6da9d19
+  .github/instructions/al-error-handling.instructions.md: sha256:2365a58164e445c9e5d3ed19ee6b47b2fe287400c82269c8c93c9a4036fd4423
+  .github/instructions/al-events.instructions.md: sha256:047917184d5e469790048fb33c7ed202d4bc72916df7d3457a24465f9b124745
+  .github/instructions/al-guidelines.instructions.md: sha256:ad5b7cf116da7f3bbfb89efe8ee6a883064516b8add12a04c6509b05bb27c540
+  .github/instructions/al-naming-conventions.instructions.md: sha256:b57bdb874f762582838d14c52e68cfab99ed194eb577f8d87141824d56654148
+  .github/instructions/al-performance.instructions.md: sha256:08afc4f932797524cbf0589661dd5bb329b086bc9ed02bf6415b3d955410c452
+  .github/instructions/al-testing.instructions.md: sha256:17f3029dd0ce204591d820db83d4abd3023d54875a303bf9cf6428a1b5901213
   .github/prompts/al-agent.build-instructions.prompt.md: sha256:a555138311922c4e2e585927e5cd1eb80046036f73cb158ea44cf1311efd9ac2
   .github/prompts/al-agent.create.prompt.md: sha256:21793449c47499383fab82e0b4a4d4b019b0ea7cefb3c5d5f9da1384ce6d4325
   .github/prompts/al-agent.task.prompt.md: sha256:7588975822062326d94766fc473dacdbda5075e7f8204512f97a6cd40cff22cb
@@ -188,4 +192,4 @@ local_deployed_file_hashes:
   .github/prompts/al-initialize.prompt.md: sha256:74048a2fb811ab61605eb84c19c1debc4a59d62d6de1218e66964124bf03a6f0
   .github/prompts/al-memory.create.prompt.md: sha256:31b5cb33e54565872611acb6cb0b1cab9f2011f82a82fb695dac8148a068e0ff
   .github/prompts/al-pr-prepare.prompt.md: sha256:137bcdf60b053d7c5cab9660629e7e4bf6ab0c2c7985ac7e56cc42d8ff99fbf3
-  .github/prompts/al-spec.create.prompt.md: sha256:852349788527d14ee4dbecc1ca0fd2a5d361031cbb08fd295d2368bc030f4b73
+  .github/prompts/al-spec.create.prompt.md: sha256:72c7869b8dc89cd9d3e1164aa898af6994bdaa88390b5f9c04675ad1176f6db7

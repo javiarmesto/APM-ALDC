@@ -1,17 +1,17 @@
 ---
 paths:
-  - "**/*.al"
+  - "**/*Factory.Codeunit.al, **/*Metadata.Codeunit.al, **/*TaskExecution.Codeunit.al, **/*Setup.Codeunit.al"
 ---
 
-# AL Agent Toolkit â€” Always-On Rules
+# AL Agent Toolkit — Always-On Rules
 
-Reglas que se aplican siempre que se edite cÃ³digo AL relacionado con el AI Development Toolkit o Agent SDK. Solo reglas. El conocimiento detallado (arquitectura, firmas de interfaces, patterns) vive en skills.
+Reglas que se aplican siempre que se edite código AL relacionado con el AI Development Toolkit o Agent SDK. Solo reglas. El conocimiento detallado (arquitectura, firmas de interfaces, patterns) vive en skills.
 
 ## Knowledge sources
 
 Para contenido detallado, carga el skill correspondiente:
 
-| Skill                          | CuÃ¡ndo                                                                   |
+| Skill                          | Cuándo                                                                   |
 | ------------------------------ | ------------------------------------------------------------------------ |
 | `skill-agent-toolkit`          | Arquitectura SDK, 3 interfaces, Setup Codeunit, ConfigurationDialog, Install/Upgrade, project structure |
 | `skill-agent-task-patterns`    | Public API, Agent Task Builder, attachments, multi-turn, session detection, API availability por runtime |
@@ -19,25 +19,25 @@ Para contenido detallado, carga el skill correspondiente:
 
 ## Non-negotiable rules
 
-1. **Public API es el entry point estÃ¡ndar** â€” toda creaciÃ³n de tasks pasa por un codeunit `Access = Public`; el resto de patterns (page action, event subscriber, multi-turn) llama por aquÃ.
-2. **TryFunction obligatorio en event-driven task creation** â€” nunca se bloquea un posting/release/approval por un fallo del agente.
-3. **Filtrar antes de crear** â€” la condiciÃ³n de negocio se evalÃºa ANTES del `Create()` del task builder, nunca dentro.
-4. **TelemetrÃa en cada fallo** â€” `Session.LogMessage` con categorÃa y `GetLastErrorText()`. Sin excepciÃ³n.
-5. **ExternalId con convenciÃ³n `{PREFIX}-{No.}`** â€” `SO-1001`, `LEAD-001`, `INV-103456`, `EMAIL-{threadId}`. Nunca GUID, nunca nÃºmero correlativo.
-6. **Mensaje del task contiene TODO el contexto** â€” el agente solo sabe lo que se le pasa por el mensaje + adjuntos.
-7. **Agent Task Message Builder** se usa para attachments y para controlar sanitizaciÃ³n; nunca se manipulan campos del builder por reflexiÃ³n.
-8. **Instrucciones en inglÃ©s** â€” los safeguards del runtime estÃ¡n optimizados para inglÃ©s.
+1. **Public API es el entry point estándar** — toda creación de tasks pasa por un codeunit `Access = Public`; el resto de patterns (page action, event subscriber, multi-turn) llama por aquí.
+2. **TryFunction obligatorio en event-driven task creation** — nunca se bloquea un posting/release/approval por un fallo del agente.
+3. **Filtrar antes de crear** — la condición de negocio se evalúa ANTES del `Create()` del task builder, nunca dentro.
+4. **Telemetría en cada fallo** — `Session.LogMessage` con categoría y `GetLastErrorText()`. Sin excepción.
+5. **ExternalId con convención `{PREFIX}-{No.}`** — `SO-1001`, `LEAD-001`, `INV-103456`, `EMAIL-{threadId}`. Nunca GUID, nunca número correlativo.
+6. **Mensaje del task contiene TODO el contexto** — el agente solo sabe lo que se le pasa por el mensaje + adjuntos.
+7. **Agent Task Message Builder** se usa para attachments y para controlar sanitización; nunca se manipulan campos del builder por reflexión.
+8. **Instrucciones en inglés** — los safeguards del runtime están optimizados para inglés.
 
 ## Naming conventions
 
-| Objeto                       | PatrÃ³n                                                      |
+| Objeto                       | Patrón                                                      |
 | ---------------------------- | ----------------------------------------------------------- |
 | Copilot Capability EnumExt   | `"{Agent} Copilot Capability"` extends `"Copilot Capability"` |
 | Metadata Provider EnumExt    | `"{Agent} Metadata Provider"` extends `"Agent Metadata Provider"` |
 | Factory codeunit             | `{Agent}Factory` implements `IAgentFactory`                 |
 | Metadata codeunit            | `{Agent}Metadata` implements `IAgentMetadata`               |
 | Task Execution codeunit      | `{Agent}TaskExecution` implements `IAgentTaskExecution`     |
-| Setup codeunit               | `"{Agent} Setup"` â€” lÃ³gica centralizada                     |
+| Setup codeunit               | `"{Agent} Setup"` — lógica centralizada                     |
 | Install codeunit             | `"{Agent} Install"` (Subtype = Install)                     |
 | Upgrade codeunit             | `"{Agent} Upgrade"` (Subtype = Upgrade)                     |
 | Public API codeunit          | `"{Agent} Public API"` (Access = Public) + Impl internal    |
@@ -47,7 +47,7 @@ Para contenido detallado, carga el skill correspondiente:
 | Profile / RoleCenter         | `"{Agent} Profile"` / `"{Agent} Role Center"`               |
 | PermissionSet                | `"{Agent}"` (Assignable, incluye D365 BASIC)                |
 
-## ConfigurationDialog page â€” invariantes
+## ConfigurationDialog page — invariantes
 
 `PageType = ConfigurationDialog` exige:
 
@@ -63,16 +63,16 @@ Para contenido detallado, carga el skill correspondiente:
 
 ```
 app/
-â”œâ”€â”€ .resources/Instructions/InstructionsV1.txt
-â”œâ”€â”€ Example/        (PageExt + PublicAPI + Impl)
-â”œâ”€â”€ Integration/    (CopilotCapability EnumExt + Install + Upgrade)
-â””â”€â”€ Setup/
-    â”œâ”€â”€ {Agent}Setup.{Codeunit,Page,Table}.al
-    â”œâ”€â”€ KPI/
-    â”œâ”€â”€ Metadata/   (Factory + Metadata + MetadataProvider EnumExt)
-    â”œâ”€â”€ Permissions/
-    â”œâ”€â”€ Profile/    (Profile + RoleCenter + PageCustomizations)
-    â””â”€â”€ TaskExecution/
+├── .resources/Instructions/InstructionsV1.txt
+├── Example/        (PageExt + PublicAPI + Impl)
+├── Integration/    (CopilotCapability EnumExt + Install + Upgrade)
+└── Setup/
+    ├── {Agent}Setup.{Codeunit,Page,Table}.al
+    ├── KPI/
+    ├── Metadata/   (Factory + Metadata + MetadataProvider EnumExt)
+    ├── Permissions/
+    ├── Profile/    (Profile + RoleCenter + PageCustomizations)
+    └── TaskExecution/
 ```
 
 Detalle de cada carpeta y ejemplos completos en `skill-agent-toolkit`.

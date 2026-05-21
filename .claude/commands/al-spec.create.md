@@ -213,6 +213,8 @@ pageextension {ID} "{Prefix} {BasePage} Ext" extends "{BasePage}"
 
 ## 7. Tests (Given/When/Then)
 
+For LOW complexity you may omit this section. For MEDIUM/HIGH it is mandatory.
+
 For each main scenario:
 
 ```al
@@ -263,7 +265,7 @@ permissionset {ID} "{Prefix} - {Feature}"
 
 ## 9. API Endpoints (if applicable)
 
-Only if this feature exposes or consumes APIs:
+Omit this section entirely if the feature does not expose or consume APIs.
 
 ```al
 page {ID} "{Prefix} {Entity} API"
@@ -323,11 +325,22 @@ page {ID} "{Prefix} {Entity} API"
 
 ## 12. Open Questions
 
+1-5 entries of 5-25 words each. Leave the table empty if every decision is resolved.
+
 | # | Question | Owner | Status |
 |---|---------|-------|--------|
 | 1 | {Question requiring human decision} | Human | Open |
+```
 
 ---
+
+### Filling rules
+
+- **Object IDs**: use values from the `app.json` `idRanges` reserved for this app. Cross-check with the codebase only if `memory.md` does not already list the IDs in use.
+- **Naming**: respect the prefix and naming conventions found in `memory.md` and existing `/src` objects (≤26-char object names, PascalCase).
+- **Architecture alignment**: if `{req_name}.architecture.md` exists, every object and event in this spec must trace back to a decision in that document. Do not introduce objects that are not justified by the architecture.
+
+> The structure above is the single source of truth. Do not read `docs/templates/spec-template.md` to obtain the layout — that file is a human reference; the prompt already encodes the contract.
 
 ## Next Steps
 
@@ -352,7 +365,6 @@ page {ID} "{Prefix} {Entity} API"
 >    @AL Implementation Specialist
 >    ```
 >    Developer reads this spec and implements directly (no TDD orchestration needed).
-```
 
 ---
 
