@@ -14,6 +14,13 @@
     "microsoftdocs-mcp": {
       "type": "http",
       "url": "https://learn.microsoft.com/api/mcp"
+    },
+    "al-symbols-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "al-mcp-server"
+      ]
     }
   }
 }

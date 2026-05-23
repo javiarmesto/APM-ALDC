@@ -2,10 +2,18 @@ lockfile_version: '1'
 generated_at: '2026-05-15T17:49:46.531586+00:00'
 dependencies: []
 mcp_servers:
+- al-symbols-mcp
 - github-mcp-server
 - markitdown-mcp
 - microsoftdocs-mcp
 mcp_configs:
+  al-symbols-mcp:
+    name: al-symbols-mcp
+    transport: stdio
+    args:
+    - al-mcp-server
+    registry: false
+    command: npx
   github-mcp-server:
     name: github-mcp-server
     transport: http

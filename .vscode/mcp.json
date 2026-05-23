@@ -16,6 +16,13 @@
       "type": "http",
       "url": "https://learn.microsoft.com/api/mcp",
       "headers": {}
+    },
+    "al-symbols-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "al-mcp-server"
+      ]
     }
   },
   "inputs": []
