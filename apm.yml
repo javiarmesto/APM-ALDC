@@ -1,5 +1,5 @@
-name: aldc
-version: 3.2.4
+﻿name: aldc
+version: 3.2.5
 description: >-
   AL Development Collection - skills-based, spec-driven, TDD-orchestrated
   development framework for Microsoft Dynamics 365 Business Central.
@@ -25,6 +25,11 @@ dependencies:
       registry: false
       transport: http
       url: "https://learn.microsoft.com/api/mcp"
+    - name: al-symbols-mcp
+      registry: false
+      transport: stdio
+      command: npx
+      args: ["al-mcp-server"]
 
 includes: auto
 scripts: {}
