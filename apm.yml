@@ -1,5 +1,5 @@
 ﻿name: aldc
-version: 3.2.5
+version: 3.2.6
 description: >-
   AL Development Collection - skills-based, spec-driven, TDD-orchestrated
   development framework for Microsoft Dynamics 365 Business Central.
@@ -32,4 +32,5 @@ dependencies:
       args: ["al-mcp-server"]
 
 includes: auto
-scripts: {}
+scripts:
+  scaffold: powershell -ExecutionPolicy Bypass -File .agents/skills/github-scaffold/scripts/Install-Scaffold.ps1

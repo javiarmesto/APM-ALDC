@@ -1,0 +1,52 @@
+﻿# Install-Scaffold.ps1
+# Instala .github/tools, docs y plans en el proyecto consumidor
+# Ejecutar con: apm run scaffold
+
+# El skill se despliega en .agents/skills/github-scaffold/scripts/
+# Este script asume que se ejecuta desde la raiz del proyecto consumidor
+$SkillScripts = Join-Path $PSScriptRoot "scripts"
+
+# Buscar raiz del proyecto (donde vive apm.yml o .git)
+$ProjectRoot = Get-Location
+if (Test-Path (Join-Path $ProjectRoot "apm.yml")) {
+    # ok, estamos en la raiz
+} elseif (Test-Path (Join-Path $ProjectRoot ".git")) {
+    # ok
+} else {
+    # subir un nivel
+    $ProjectRoot = Split-Path $ProjectRoot -Parent
+}
+
+$GithubDest = Join-Path $ProjectRoot ".github"
+New-Item -ItemType Directory -Force $GithubDest | Out-Null
+
+$folders = @{
+    "tools" = $false   # no sobreescribir (el dev puede haberlo tocado)
+    "docs"  = $true    # siempre actualizar (plantillas de referencia)
+    "plans" = $true    # siempre actualizar
+}
+
+foreach ($folder in $folders.Keys) {
+    $src  = Join-Path $SkillScripts $folder
+    $dest = Join-Path $GithubDest   $folder
+
+    if (-not (Test-Path $src)) {
+        Write-Host "~ .github/$folder/ no encontrado en el skill, omitido"
+        continue
+    }
+
+    if ($folders[$folder] -eq $false -and (Test-Path $dest)) {
+        Write-Host "~ .github/$folder/ ya existe, omitido"
+        continue
+    }
+
+    New-Item -ItemType Directory -Force $dest | Out-Null
+    $items = Get-ChildItem $src -ErrorAction SilentlyContinue
+    if ($items) {
+        Copy-Item "$src\*" $dest -Recurse -Force
+    }
+    Write-Host "✓ .github/$folder/ instalado/actualizado"
+}
+
+Write-Host ""
+Write-Host "Scaffold .github completado. Ejecuta 'git status' para ver los cambios."
