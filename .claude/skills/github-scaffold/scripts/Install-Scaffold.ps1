@@ -30,20 +30,21 @@ foreach ($folder in $folders.Keys) {
     $src  = Join-Path $SkillScripts $folder
     $dest = Join-Path $GithubDest   $folder
 
-    if (-not (Test-Path $src)) {
-        Write-Host "~ .github/$folder/ no encontrado en el skill, omitido"
-        continue
-    }
-
+    # tools: no sobreescribir si ya existe
     if ($folders[$folder] -eq $false -and (Test-Path $dest)) {
         Write-Host "~ .github/$folder/ ya existe, omitido"
         continue
     }
 
+    # Crear siempre el directorio destino
     New-Item -ItemType Directory -Force $dest | Out-Null
-    $items = Get-ChildItem $src -ErrorAction SilentlyContinue
-    if ($items) {
-        Copy-Item "$src\*" $dest -Recurse -Force
+
+    # Copiar contenido si existe en el skill (puede estar vacío, como plans/)
+    if (Test-Path $src) {
+        $items = Get-ChildItem $src -Exclude ".gitkeep" -ErrorAction SilentlyContinue
+        if ($items) {
+            Copy-Item "$src\*" $dest -Recurse -Force -Exclude ".gitkeep"
+        }
     }
     Write-Host "✓ .github/$folder/ instalado/actualizado"
 }
