@@ -2,9 +2,9 @@
 # Instala .github/tools, docs y plans en el proyecto consumidor
 # Ejecutar con: apm run scaffold
 
-# El skill se despliega en .agents/skills/github-scaffold/scripts/
-# Este script asume que se ejecuta desde la raiz del proyecto consumidor
-$SkillScripts = Join-Path $PSScriptRoot "scripts"
+# El script vive en .agents/skills/github-scaffold/scripts/
+# $PSScriptRoot ya ES la carpeta scripts/ — tools/, docs/ y plans/ están aquí mismo
+$SkillScripts = $PSScriptRoot
 
 # Buscar raiz del proyecto (donde vive apm.yml o .git)
 $ProjectRoot = Get-Location
