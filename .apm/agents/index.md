@@ -1,7 +1,3 @@
----
-description: "Index of ALDC role-based agent specialists for AL development in Business Central."
----
-
 # Agents - ALDC Core v1.1
 
 **Role-based specialists** implemented as `.agent.md` files for AL development in Business Central.
