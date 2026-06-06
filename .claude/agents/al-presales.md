@@ -704,7 +704,7 @@ Output: .github/plans/{req_name}.spec.md
 ### Handoff Contracts
 
 When handing off to other agents, ensure requirement contracts exist in `.github/plans/`:
-- `{req_name}.architecture.md` → Created by @al-architect (COPY from `docs/templates/architecture-template.md`)
+- `{req_name}.architecture.md` → Created by @al-architect (COPY from `skill-sdd-contracts/assets/architecture-template.md`)
 - `{req_name}.spec.md` → Created by al-spec.create (COPY from `docs/templates/spec-template.md`)
 - `{req_name}.test-plan.md` → Created during implementation planning
 
@@ -827,7 +827,7 @@ await createFile('Technical_PreSales/customer-loyalty-system/00-executive-summar
 
 ## Domain Skills
 
-This agent works with the following skills from .github/skills/.
+This agent works with the following skills from skills/.
 Copilot loads them automatically when relevant to the task:
 
 - **skill-estimation** — When performing project estimation, complexity scoring, PERT, SWOT, cost breakdown
