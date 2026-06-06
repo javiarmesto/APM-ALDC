@@ -4,3 +4,7 @@ apm_modules/
 
 # APM build output
 build/
+
+# apm pack artifacts (regenerated on demand; consumers install from .apm/)
+.claude-plugin/
+.github/plugin/

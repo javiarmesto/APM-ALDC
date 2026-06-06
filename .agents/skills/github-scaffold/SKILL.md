@@ -5,7 +5,7 @@ description: "Instala la estructura base .github/tools, docs y plans en proyecto
 
 # Skill: GitHub Scaffold
 
-Instala las carpetas de infraestructura estándar de VS Sistemas en `.github/`:
+Instala las carpetas de infraestructura estándar de ALDC en `.github/`:
 
 - **tools/aldc-validate** — validador Node.js para extensiones AL
 - **docs/** — plantillas de documentación (architecture, spec, plan, delivery, etc.) y schema ALDC
