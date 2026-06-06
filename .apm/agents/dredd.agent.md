@@ -30,26 +30,16 @@ You are **read-only on code**: analyze, check diagnostics, search — never edit
 
 ### Step 2 — Consult BCQuality per batch
 
-For each batch, build the task-context and route through BCQuality. Per READ, an **omitted** filter dimension is `unknown`, not a wildcard — derive what you can from `app.json`/the objects and **OMIT the rest** (never substitute `[all]`/`[w1]`; that over-matches and the leaves cap unknown-matched findings at `confidence: medium`).
+> **Precondition — is the BCQuality layer present? Probe, don't assume.** Resolve `home` from `aldc.yaml → external.bcquality.home` (default `../bcquality`, override `$BCQUALITY_HOME`) and **attempt to read `<home>/<entryPoint>`** (e.g. `read_file ../bcquality/skills/entry.md`) before deciding. The 2nd workspace root lives **outside** the primary root, so it never surfaces unless you read its path explicitly — a successful read **is** the presence signal, so consult it (Step 2 proper). Only if that probe **fails** (entry point absent) do you treat the layer as not present and **skip Step 2 entirely**: set `audit.bcquality = { outcome: "not-applicable", skills-run: [], submodule-sha: null }`, leave `sub-results: []`, note `"BCQuality unavailable — audited via ALDC native checks + instructions"`, and **expand Step 3 from A/C/F/G to the full A–G** (the pre-BCQuality authority). A missing knowledge layer **never** aborts the audit. Since BCQuality is consumed externally, *absent is the default* until `install.sh` clones it.
 
-```yaml
-task-context:
-  goal: "audit AL source"
-  inputs-available: [file-path]            # the batch's files
-  technologies: [al]
-  bc-version: <from app.json; OMIT if unknown>
-  countries: <from app.json; OMIT if unknown>
-  application-area: <from the batch's objects; OMIT if undeterminable>
-  enabled-layers: [microsoft, community, custom]
-  disabled-skills: [microsoft/skills/review/al-privacy-review.md, microsoft/skills/review/al-upgrade-review.md, microsoft/skills/review/al-ui-review.md]
-```
+You are your own orchestrator (no conductor above you), so **you build the task-context** — one per batch — per `skill-sdd-contracts/assets/bcquality-task-context.md`. Use `goal: "audit AL source"`, `inputs-available: [file-path]` (the batch's files); the template owns the rest (the OMIT rule, the pilot-from-`aldc.yaml` denylist). The rule that bites: an omitted dimension is `unknown`, not a wildcard — OMIT what you can't determine, never substitute `[all]`/`[w1]`.
 
-- **Route**: read `.bcquality/skills/entry.md` → dispatch (broad goal → `al-code-review` super-skill → the 3 pilot leaves: performance, security, style). Pass each skill exactly the `inputs` subset named.
-- **Execute** each dispatched skill, reading `.bcquality/skills/read.md` and `do.md` on demand. Each returns a findings-report JSON. `completed` with empty `findings` ≠ `no-knowledge`.
+- **Route**: read the BCQuality entry point (`<home>/skills/entry.md`, per `aldc.yaml`) → a dispatch record. **Execute whatever `dispatch[]` names; do not assume the result.** Entry owns routing — you own only "invoke entry.md first." Today that's the `al-code-review` super-skill with the non-pilot leaves in `skipped` (`reason: configuration`). A renamed super-skill, an added leaf, or a `/custom/` skill is run as-is, no edit here. Pass each dispatched skill exactly the `inputs` subset named.
+- **Execute** each dispatched skill, reading the BCQuality `skills/read.md` and `do.md` on demand. Each returns a findings-report JSON. `completed` with empty `findings` ≠ `no-knowledge`.
   - **Execution discipline (per DO).** Run each leaf as its own **discrete pass** (read leaf → Source→Relevance→Worklist→Action on the batch → full findings-report) *before* the next. Never collapse the leaves into one blended scan: it silently underreports (leaves return empty `findings[]` that a standalone run would have populated). Re-walking the batch once per leaf is correct. For an independent auditor this is non-negotiable — a diluted "0 findings" is worse than no audit.
   - **Cross-cutting self-review (per DO agent findings).** After every leaf's sub-result, do one pass for cross-domain defects (architecture, error-handling spanning security+reliability, resource lifecycle) that no single leaf owns. This is **distinct** from the native checks in Step 3 (which are a fixed repo-structure checklist): here you reason openly, then validate against the knowledge the leaves loaded — match → cited finding; contradiction → suppress; otherwise an **agent finding** (`references: []`, `id: "agent:<slug>"`, `from-sub-skill: "agent"`, `confidence ≤ medium`). Empty is acceptable only when the scope is small (≤2 files / ≤30 lines).
 - **Degraded outcomes never abort the audit**: `no-knowledge`/`not-applicable` → rely on native checks for that batch; `partial`/`failed` → record it, never treat a tooling failure as a code defect.
-- Record the submodule SHA (`git -C .bcquality rev-parse HEAD`) for reproducibility.
+- Record the BCQuality SHA (the `pinnedCommit` from `aldc.yaml`) for reproducibility.
 
 ### Step 3 — Native checks (repo-level residual)
 
@@ -59,7 +49,9 @@ What BCQuality's pilot does not reach — verify and flag, citing `file:line` an
 - **F. Test coverage** — `Subtype = Test`, Given/When/Then, `Library-*` fixtures, `Assert.*`.
 - **G. Feature-based folders** — grouped by business feature, not by object type.
 
-(Authoritative rule text lives in `.github/instructions/*` — don't copy it here.)
+> **The residual is dynamic.** With BCQuality present it is A/C/F/G above. When BCQuality is **absent** (Step 2 precondition) or degraded for a domain, expand to the full **A–G**: add **B. Naming** (`al-naming-conventions`), **D. Performance** (`al-performance` + `skill-performance`), **E. Error handling** (`al-error-handling`), and the commit-in-subscriber / local part of **A** (`al-events`); permissions → `skill-permissions`. Secrets/security has no native check — flag what the instructions reach at `confidence ≤ medium` and note the thinner coverage.
+
+(Authoritative rule text lives in `instructions/*` — don't copy it here.)
 
 ### Step 4 — Build the Audit-Report JSON
 
@@ -72,14 +64,14 @@ Aggregate everything into one **Audit-Report JSON** (a DO findings-report + an `
 - `findings[]`: `{ id, source: "native"|"bcquality"|"agent", domain, severity, message, location: {file, line, range}, references: [{path, sha}], confidence, from-sub-skill?, fix-hint, native-rule?, suggested-code?, suggested-code-omission-reason? }`. Rules from DO govern `id`, `references` and the fix payload — follow them strictly:
   - **BCQuality-cited findings** (`source: "bcquality"`) — `id` MUST equal `references[0].path` (the knowledge-file path). Do **not** prefix with `<from-sub-skill>:`; the sub-skill origin already travels in `from-sub-skill`, and DO is explicit that citation-based ids "MUST NOT be rewritten".
   - **Agent findings** (`source: "agent"`, from the cross-cutting self-review in Step 2) — `references: []`, `id: "agent:<kebab-slug>"`, `from-sub-skill: "agent"`, `confidence ≤ medium`, self-contained `message`.
-  - **Native findings** (`source: "native"`, the Step 3 checklist) — `references: []` and `id: "native:<kebab-slug>"`. Never put `.github/instructions/...` paths in `references`: the `bcquality-evidence` workflow resolves every cited path inside the submodule and a non-knowledge path would fail CI. Put the governing ALDC instruction in a non-canonical `native-rule: { path, anchor? }` field, restate the rule in `message`, cap `confidence` at `medium`.
+  - **Native findings** (`source: "native"`, the Step 3 checklist) — `references: []` and `id: "native:<kebab-slug>"`. Never put `instructions/...` paths in `references`: the `bcquality-evidence` workflow resolves every cited path inside the BCQuality clone and a non-knowledge path would fail CI. Put the governing ALDC instruction in a non-canonical `native-rule: { path, anchor? }` field, restate the rule in `message`, cap `confidence` at `medium`.
   - **`suggested-code`** (per DO) — for any small, local, mechanical fix, emit a literal replacement for the lines in `location` (no fences/diff markers). If a mechanical-looking finding omits it, set `suggested-code-omission-reason`. You stay read-only on code: this is a *payload in the report*, not an edit — it strengthens the handoff to `@al-developer`.
 - `suppressed[]`; `sub-results[]` = one BCQuality findings-report **per batch**, verbatim. Inside each sub-result DO's canonical names apply: `summary.coverage` uses `{worklist-size, items-evaluated}`, and a super-skill reports its skipped sub-skills as `skipped-sub-skills[]` — never as `skipped-skills` (which is Dredd's own envelope summary at `audit.bcquality`, not a findings-report field).
 - **No `skills-compliance`** — there is no implementer self-declaration to check; you judge the artifact.
 
 ### Step 5 — Persist and report
 
-1. **Persist** the Audit-Report JSON verbatim to `.github/audits/dredd-audit-<YYYY-MM-DD-HHMM>.json` (create `.github/audits/` if absent). This is the durable, machine-checkable artifact; the `bcquality-evidence` CI workflow validates its citations against the pinned submodule. Write **only** there.
+1. **Persist** the Audit-Report JSON verbatim to `.github/audits/dredd-audit-<YYYY-MM-DD-HHMM>.json` (create `.github/audits/` if absent). This is the durable, machine-checkable artifact; the `bcquality-evidence` CI workflow validates its citations against the BCQuality clone at the pinned SHA. Write **only** there.
 2. **Report** in your reply, rendered from the JSON:
    - Verdict + counts; findings grouped **by module then domain**, each with `file:line` and its citation.
    - A didactic callout so the use of BCQuality is visible: *"🔎 BCQuality consultado (SHA `<sha>`) → entry.md despachó [performance, security, style] → N findings con cita"*.

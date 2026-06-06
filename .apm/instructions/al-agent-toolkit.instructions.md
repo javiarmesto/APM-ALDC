@@ -14,19 +14,19 @@ For detailed content, load the corresponding skill:
 | Skill                          | When                                                                     |
 | ------------------------------ | ------------------------------------------------------------------------ |
 | `skill-agent-toolkit`          | SDK architecture, 3 interfaces, Setup Codeunit, ConfigurationDialog, Install/Upgrade, project structure |
-| `skill-agent-task-patterns`    | Public API, Agent Task Builder, attachments, multi-turn, session detection, API availability by runtime |
-| `skill-agent-instructions`     | Author `InstructionsV1.txt` (RGI framework + keywords)                   |
+| `skill-agent-task-patterns`    | Public API, Agent Task Builder, attachments, multi-turn, session detection, API availability per runtime |
+| `skill-agent-instructions`     | Authoring `InstructionsV1.txt` (RGI framework + keywords)                |
 
 ## Non-negotiable rules
 
-1. **Public API is the standard entry point** — all task creation goes through an `Access = Public` codeunit; all other patterns (page action, event subscriber, multi-turn) call through here.
-2. **TryFunction required in event-driven task creation** — a posting/release/approval must never be blocked by an agent failure.
-3. **Filter before creating** — the business condition is evaluated BEFORE the task builder's `Create()`, never inside.
+1. **Public API is the standard entry point** — all task creation goes through a codeunit with `Access = Public`; all other patterns (page action, event subscriber, multi-turn) call through here.
+2. **TryFunction mandatory for event-driven task creation** — a posting/release/approval must never be blocked by an agent failure.
+3. **Filter before creating** — the business condition is evaluated BEFORE the task builder's `Create()`, never inside it.
 4. **Telemetry on every failure** — `Session.LogMessage` with category and `GetLastErrorText()`. No exceptions.
 5. **ExternalId with convention `{PREFIX}-{No.}`** — `SO-1001`, `LEAD-001`, `INV-103456`, `EMAIL-{threadId}`. Never a GUID, never a sequential number.
-6. **Task message contains ALL context** — the agent only knows what is passed via the message + attachments.
-7. **Agent Task Message Builder** is used for attachments and to control sanitization; builder fields must never be manipulated via reflection.
-8. **Instructions in English** — runtime safeguards are optimized for English.
+6. **Task message contains ALL the context** — the agent only knows what is passed via the message + attachments.
+7. **Agent Task Message Builder** is used for attachments and sanitization control; builder fields are never manipulated via reflection.
+8. **Instructions in English** — the runtime safeguards are optimized for English.
 
 ## Naming conventions
 
@@ -45,21 +45,21 @@ For detailed content, load the corresponding skill:
 | KPI table / page             | `"{Agent} KPI"` / CardPart                                  |
 | Setup page                   | `"{Agent} Setup"` (PageType = ConfigurationDialog)          |
 | Profile / RoleCenter         | `"{Agent} Profile"` / `"{Agent} Role Center"`               |
-| PermissionSet                | `"{Agent}"` (Assignable, incluye D365 BASIC)                |
+| PermissionSet                | `"{Agent}"` (Assignable, includes D365 BASIC)               |
 
 ## ConfigurationDialog page — invariants
 
-`PageType = ConfigurationDialog` exige:
+`PageType = ConfigurationDialog` requires:
 
 - `SourceTableTemporary = true`
 - `Extensible = false`
 - `InherentEntitlements = X` + `InherentPermissions = X`
-- Primer elemento del layout: `part(AgentSetupPart; "Agent Setup Part")`
-- `OnOpenPage` comprueba `AzureOpenAI.IsEnabled(<capability>)`
-- `OnQueryClosePage` delega en el Setup Codeunit
-- System actions: `OK` (gated por `IsUpdated`) + `Cancel`, sin custom triggers
+- First layout element: `part(AgentSetupPart; "Agent Setup Part")`
+- `OnOpenPage` checks `AzureOpenAI.IsEnabled(<capability>)`
+- `OnQueryClosePage` delegates to the Setup Codeunit
+- System actions: `OK` (gated by `IsUpdated`) + `Cancel`, no custom triggers
 
-## Project structure (referencia)
+## Project structure (reference)
 
 ```
 app/
@@ -75,4 +75,4 @@ app/
     └── TaskExecution/
 ```
 
-Full folder detail and complete examples in `skill-agent-toolkit`.
+Details on each folder and complete examples in `skill-agent-toolkit`.
