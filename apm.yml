@@ -33,4 +33,8 @@ dependencies:
 
 includes: auto
 scripts:
-  scaffold: powershell -ExecutionPolicy Bypass -File .agents/skills/github-scaffold/scripts/Install-Scaffold.ps1
+  # Cross-platform consumer setup (run after `apm install`). Seeds the
+  # non-primitive pieces apm install does not deploy: Copilot entrypoint,
+  # aldc.yaml, plans/memory.md, tools/. Consumers point node at the deployed
+  # skill path (.agents/skills/... for Copilot, .claude/skills/... for Claude).
+  scaffold: node .apm/skills/github-scaffold/scripts/Install-Scaffold.mjs
