@@ -66,6 +66,22 @@ const RUNTIME_TEMPLATES = [
 
 const ASSET_BASE = `${SDD_SKILL}/assets`;
 
+// Setup-seed payload for the github-scaffold skill. APM has no automatic
+// post-install hook, so the non-primitive setup pieces the npm installer
+// seeds (Copilot entrypoint, aldc.yaml, plans/memory.md, tools/) ride inside
+// the github-scaffold skill's scripts/seed/ and are deployed by the
+// cross-platform Install-Scaffold.mjs the consumer runs after `apm install`.
+// build-apm keeps this seed in sync with the canonical repo. Each entry maps a
+// canonical source path to a destination under <skill>/scripts/seed/.
+const SCAFFOLD_SEED = [
+  { from: '.github/copilot-instructions.md', to: 'copilot-instructions.md' },
+  { from: 'aldc.yaml', to: 'aldc.yaml' },
+  { from: 'docs/templates/memory-template.md', to: 'memory.md' },
+  { from: 'tools/bcquality', to: 'tools/bcquality' },
+  { from: 'tools/aldc-validate', to: 'tools/aldc-validate' },
+  { from: 'tools/bc-agents', to: 'tools/bc-agents' },
+];
+
 // ─── Logging ───────────────────────────────────────────────────────────────
 const C = { reset: '\x1b[0m', green: '\x1b[32m', yellow: '\x1b[33m', cyan: '\x1b[36m', red: '\x1b[31m', bold: '\x1b[1m' };
 const ok = (m) => console.log(`  ${C.green}✓${C.reset} ${m}`);
@@ -146,6 +162,24 @@ for (const addon of ADDON_SKILLS) {
   else warn(`add-on declared but no source found: ${addon}`);
 }
 
+// 2c) Refresh github-scaffold setup seed from canonical -----------------------
+// Keeps the consumer-setup payload (entrypoint, aldc.yaml, memory, tools) in
+// sync without touching the hand-authored installer scripts or SKILL.md.
+header('2c. Sync github-scaffold setup seed from canonical');
+const seedDir = join(APM, 'skills', 'github-scaffold', 'scripts', 'seed');
+if (isDir(seedDir)) rmSync(seedDir, { recursive: true });
+ensureDir(seedDir);
+let seedCount = 0;
+for (const { from, to } of SCAFFOLD_SEED) {
+  const src = join(CANONICAL, from);
+  if (!existsSync(src)) { warn(`seed source missing, skipped: ${from}`); continue; }
+  const dst = join(seedDir, to);
+  ensureDir(dirname(dst));
+  cpSync(src, dst, { recursive: true });
+  seedCount++;
+}
+ok(`scaffold seed: ${seedCount}/${SCAFFOLD_SEED.length} entries synced`);
+
 // 3) skill-sdd-contracts: SKILL.md + assets/<14 templates> --------------------
 header('3. Generate skill-sdd-contracts (SDD templates → assets/)');
 const sddDir = join(APM, 'skills', SDD_SKILL);
@@ -205,6 +239,7 @@ const lock = {
     addonSkills: ADDON_SKILLS.length,
     sddTemplates: templates.length,
     runtimeRewrites: totalRewrites,
+    scaffoldSeed: seedCount,
   },
   runtimeTemplatesRewritten: RUNTIME_TEMPLATES,
   addonSkills: ADDON_SKILLS,

@@ -5,6 +5,27 @@ version tracks the canonical
 [`ALDC-AL-Development-Collection`](https://github.com/javiarmesto/ALDC-AL-Development-Collection)
 release.
 
+## [Unreleased] — setup parity
+
+Close the gap between `apm install` and the legacy npm/VS Code installer.
+
+### Added
+- Cross-platform `Install-Scaffold.mjs` in the `github-scaffold` skill that
+  seeds the non-primitive setup pieces APM does not deploy: the Copilot
+  routing entrypoint (`.github/copilot-instructions.md`), `aldc.yaml`,
+  `.github/plans/memory.md`, and `tools/{bcquality,aldc-validate,bc-agents}`.
+  Idempotent; `--force` to overwrite. Works on Windows, macOS, Linux and Claude
+  Code.
+- `build-apm.mjs` step 2c: syncs the scaffold `seed/` payload from the canonical
+  repo so the setup content never drifts.
+
+### Changed
+- `github-scaffold` is now cross-platform: `Install-Scaffold.ps1` is a thin
+  wrapper that delegates to the Node installer; `SKILL.md` and `apm.yml`
+  `scripts.scaffold` updated accordingly.
+- The scaffold no longer seeds `.github/docs/templates/` — templates live solely
+  in `skill-sdd-contracts/assets/` (single source of truth).
+
 ## [4.1.0]
 
 Reconcile the APM package with the canonical ALDC v4.1.0 and close the

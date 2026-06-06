@@ -47,6 +47,27 @@ apm compile --target claude  # generates CLAUDE.md + rules (Copilot reads .githu
 
 Supported `targets`: **copilot** and **claude**.
 
+### Project setup after install (scaffold)
+
+`apm install` deploys the ALDC **primitives**. APM has no automatic post-install
+hook, so the non-primitive setup pieces (Copilot routing entrypoint, `aldc.yaml`,
+`plans/memory.md`, `tools/`) are seeded by a cross-platform script shipped in the
+`github-scaffold` skill. Run it once from your project root:
+
+```bash
+# Copilot / Cursor / Codex (skills land in .agents/skills/)
+node .agents/skills/github-scaffold/scripts/Install-Scaffold.mjs
+
+# Claude Code (skills land in .claude/skills/)
+node .claude/skills/github-scaffold/scripts/Install-Scaffold.mjs
+```
+
+It seeds `.github/copilot-instructions.md`, `aldc.yaml`, `.github/plans/memory.md`,
+and `tools/{bcquality,aldc-validate,bc-agents}` — skipping anything that already
+exists (`--force` to overwrite). The result is equivalent to the legacy npm/VS Code
+install. The 14 SDD templates are **not** seeded here — they live in
+`skill-sdd-contracts/assets/`.
+
 > Compile is **optional for Copilot** — it reads `.github/instructions/*.instructions.md`
 > directly. It is **recommended for Claude** (and Cursor/Codex/Gemini/etc.), which load
 > instructions through a root context file the compile step generates.

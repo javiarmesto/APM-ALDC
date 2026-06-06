@@ -1,31 +1,53 @@
-﻿---
+---
 name: github-scaffold
-description: "Instala la estructura base .github/tools, docs y plans en proyectos BC. Usar cuando se inicializa un proyecto nuevo con ALDC."
+description: "Seeds the ALDC project setup that apm install does not deploy (Copilot entrypoint, aldc.yaml, plans/memory.md, tools/). Use when initializing a new Business Central project with ALDC, right after apm install, on any OS including Claude Code."
 ---
 
-# Skill: GitHub Scaffold
+# Skill: ALDC Project Scaffold
 
-Instala las carpetas de infraestructura estándar de ALDC en `.github/`:
+`apm install` deploys the ALDC **primitives** (agents, skills, prompts,
+instructions). It does **not** deploy the non-primitive setup pieces that the
+legacy npm/VS Code installer used to seed — APM has no automatic post-install
+hook. This skill carries those pieces and a cross-platform installer so you get
+a project layout equivalent to the npm install.
 
-- **tools/aldc-validate** — validador Node.js para extensiones AL
-- **docs/** — plantillas de documentación (architecture, spec, plan, delivery, etc.) y schema ALDC
-- **plans/** — carpeta para planes de proyecto
+## What it seeds
 
-## Uso
+Run from the consumer project root **after `apm install`**. Existing files are
+skipped (pass `--force` to overwrite):
 
-Desde la raíz del proyecto consumidor, después de `apm install`:
+| Target | Purpose |
+|--------|---------|
+| `.github/copilot-instructions.md` | Copilot routing entrypoint (routes to the 4 public agents) |
+| `aldc.yaml` | BCQuality / toolkit configuration (project root) |
+| `.github/plans/memory.md` | Session-continuity memory file |
+| `tools/bcquality`, `tools/aldc-validate`, `tools/bc-agents` | Helper tooling |
 
-```powershell
-apm run scaffold
+The 14 SDD document templates are **not** seeded here — they ship as assets of
+the `skill-sdd-contracts` skill (single source of truth) and resolve there.
+
+## Usage
+
+Cross-platform (recommended — Windows, macOS, Linux, Claude Code):
+
+```bash
+# Copilot / Cursor / Codex (skills land in .agents/skills/)
+node .agents/skills/github-scaffold/scripts/Install-Scaffold.mjs
+
+# Claude Code (skills land in .claude/skills/)
+node .claude/skills/github-scaffold/scripts/Install-Scaffold.mjs
 ```
 
-O directamente:
+Windows PowerShell wrapper:
 
 ```powershell
-powershell -File .agents/skills/github-scaffold/scripts/Install-Scaffold.ps1
+powershell -ExecutionPolicy Bypass -File .agents/skills/github-scaffold/scripts/Install-Scaffold.ps1
 ```
 
-## Comportamiento
+Add `--force` (or `-Force`) to overwrite files that already exist.
 
-- `tools/` — se instala solo si no existe (el dev puede haberlo modificado)
-- `docs/` y `plans/` — se actualizan siempre (son plantillas de referencia)
+## Behavior
+
+- Idempotent: re-running skips files that already exist.
+- The seed content lives in `scripts/seed/` and is kept in sync with the
+  canonical ALDC repo by `scripts/build-apm.mjs`.
