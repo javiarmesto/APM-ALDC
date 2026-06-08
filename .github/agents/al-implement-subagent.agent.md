@@ -3,7 +3,7 @@ name: AL Implementation Subagent
 description: 'TDD Implementation Subagent — Creates AL objects following strict RED→GREEN→REFACTOR cycle. Only invokable by al-conductor via runSubagent.'
 user-invocable: false
 disable-model-invocation: true
-tools: [execute/runInTerminal, read/problems, read/readFile, 'al-symbols-mcp/*', edit/createDirectory, edit/createFile, edit/editFiles, search/codebase, search/fileSearch, search/textSearch, 'microsoftdocs/mcp/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_downloadsymbols, ms-dynamics-smb.al/al_symbolsearch, ms-dynamics-smb.al/al_symbolrelations, sshadowsdk.al-lsp-for-agents/bclsp_goToDefinition, sshadowsdk.al-lsp-for-agents/bclsp_hover, sshadowsdk.al-lsp-for-agents/bclsp_findReferences, sshadowsdk.al-lsp-for-agents/bclsp_prepareCallHierarchy, sshadowsdk.al-lsp-for-agents/bclsp_incomingCalls, sshadowsdk.al-lsp-for-agents/bclsp_outgoingCalls, sshadowsdk.al-lsp-for-agents/bclsp_codeLens, sshadowsdk.al-lsp-for-agents/bclsp_codeQualityDiagnostics, sshadowsdk.al-lsp-for-agents/bclsp_documentSymbols, sshadowsdk.al-lsp-for-agents/bclsp_renameSymbol]
+tools: [vscode/memory, execute/runInTerminal, read/problems, read/readFile, edit/createDirectory, edit/createFile, edit/editFiles, edit/rename, search/codebase, search/fileSearch, search/listDirectory, search/textSearch, 'al-symbols-mcp/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_downloadsymbols, ms-dynamics-smb.al/al_symbolsearch, ms-dynamics-smb.al/al_symbolrelations, sshadowsdk.al-lsp-for-agents/bclsp_goToDefinition, sshadowsdk.al-lsp-for-agents/bclsp_hover, sshadowsdk.al-lsp-for-agents/bclsp_findReferences, sshadowsdk.al-lsp-for-agents/bclsp_prepareCallHierarchy, sshadowsdk.al-lsp-for-agents/bclsp_incomingCalls, sshadowsdk.al-lsp-for-agents/bclsp_outgoingCalls, sshadowsdk.al-lsp-for-agents/bclsp_codeLens, sshadowsdk.al-lsp-for-agents/bclsp_codeQualityDiagnostics, sshadowsdk.al-lsp-for-agents/bclsp_documentSymbols, sshadowsdk.al-lsp-for-agents/bclsp_renameSymbol, todo]
 model: Claude Sonnet 4.6 (copilot)
 ---
 
@@ -80,7 +80,7 @@ Before writing any test code:
 
 ### Object & Pattern Reference
 
-For object-creation patterns, naming, performance and error-handling rules, **rely on the active framework**: the matching micro-instructions in `instructions/al-*` auto-load when you edit `.al` files, and the relevant skill (`skill-events`, `skill-pages`, `skill-permissions`, `skill-performance`, `skill-api`, `skill-copilot`) provides full examples and patterns. Do not invent or duplicate those rules in your responses; load the skill and follow it.
+For object-creation patterns, naming, performance and error-handling rules, **rely on the active framework**: the matching micro-instructions in `.github/instructions/al-*` auto-load when you edit `.al` files, and the relevant skill (`skill-events`, `skill-pages`, `skill-permissions`, `skill-performance`, `skill-api`, `skill-copilot`) provides full examples and patterns. Do not invent or duplicate those rules in your responses; load the skill and follow it.
 
 ### Test Patterns (Given/When/Then)
 
@@ -132,7 +132,7 @@ end;
 
 ## Domain Skills
 
-This agent works with the following skills from skills/.
+This agent works with the following skills from .github/skills/.
 Copilot loads them automatically when relevant to the task:
 
 - **skill-api** — When creating API pages, OData endpoints, HttpClient integrations

@@ -2,7 +2,7 @@
 agent: agent
 model: GPT-5.3-Codex (copilot)
 description: 'Create a detailed technical specification (.spec.md) that serves as an implementable blueprint for Business Central features. Reads architecture.md if exists. Outputs to .github/plans/{req_name}/.'
-tools: [vscode, read, edit/editFiles, search, 'al-symbols-mcp/*', 'github/*', 'github/*', 'github/*', 'markitdown/*', 'microsoft-docs/*', 'github/*', 'context7/*', ms-dynamics-smb.al/al_symbolsearch, ms-vscode.vscode-websearchforcopilot/websearch, sshadowsdk.al-lsp-for-agents/bclsp_goToDefinition, sshadowsdk.al-lsp-for-agents/bclsp_hover, sshadowsdk.al-lsp-for-agents/bclsp_findReferences, sshadowsdk.al-lsp-for-agents/bclsp_prepareCallHierarchy, sshadowsdk.al-lsp-for-agents/bclsp_incomingCalls, sshadowsdk.al-lsp-for-agents/bclsp_outgoingCalls, sshadowsdk.al-lsp-for-agents/bclsp_codeLens, sshadowsdk.al-lsp-for-agents/bclsp_codeQualityDiagnostics, sshadowsdk.al-lsp-for-agents/bclsp_documentSymbols, sshadowsdk.al-lsp-for-agents/bclsp_renameSymbol, todo]
+tools: [vscode, read, edit/editFiles, search, 'al-symbols-mcp/*', github/get_file_contents, github/search_code, 'markitdown/*', 'microsoft-learn/*', 'upstash/context7/*', ms-dynamics-smb.al/al_symbolsearch, ms-vscode.vscode-websearchforcopilot/websearch, sshadowsdk.al-lsp-for-agents/bclsp_goToDefinition, sshadowsdk.al-lsp-for-agents/bclsp_hover, sshadowsdk.al-lsp-for-agents/bclsp_findReferences, sshadowsdk.al-lsp-for-agents/bclsp_prepareCallHierarchy, sshadowsdk.al-lsp-for-agents/bclsp_incomingCalls, sshadowsdk.al-lsp-for-agents/bclsp_outgoingCalls, sshadowsdk.al-lsp-for-agents/bclsp_codeLens, sshadowsdk.al-lsp-for-agents/bclsp_codeQualityDiagnostics, sshadowsdk.al-lsp-for-agents/bclsp_documentSymbols, sshadowsdk.al-lsp-for-agents/bclsp_renameSymbol, todo]
 ---
 
 # AL Technical Specification Workflow
@@ -340,7 +340,7 @@ page {ID} "{Prefix} {Entity} API"
 - **Naming**: respect the prefix and naming conventions found in `memory.md` and existing `/src` objects (≤26-char object names, PascalCase).
 - **Architecture alignment**: if `{req_name}.architecture.md` exists, every object and event in this spec must trace back to a decision in that document. Do not introduce objects that are not justified by the architecture.
 
-> The structure above is the single source of truth. Do not read `docs/templates/spec-template.md` to obtain the layout — that file is a human reference; the prompt already encodes the contract.
+> The structure above is the single source of truth. Do not read `.github/docs/templates/spec-template.md` to obtain the layout — that file is a human reference; the prompt already encodes the contract.
 
 ## Next Steps
 
