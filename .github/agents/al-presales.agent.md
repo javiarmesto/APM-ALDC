@@ -2,7 +2,7 @@
 name: AL Pre-Sales & Project Estimation Specialist
 description: 'Technical PreSales Agent for AL/Business Central projects. Specializes in project planning, cost estimation (time & budget), feasibility analysis, SWOT/risk assessment, and technical documentation. Orchestrates AL Architecture & Design Specialist and al-spec.create for comprehensive proposals. CREATES Technical_PreSales folder and documents dynamically on demand.'
 argument-hint: 'Project name, description, or request for proposal/cost estimation (e.g., "Evaluate customer loyalty system project", "Estimate cost for inventory optimization")'
-tools: [vscode, execute, read, agent, edit, search, web, github/search_code, github/search_repositories, github/search_code, github/search_repositories, github/search_code, github/search_repositories, 'markitdown/*', 'microsoft-docs/*', 'upstash/context7/*', vscode.mermaid-chat-features/renderMermaidDiagram, ms-vscode.vscode-websearchforcopilot/websearch, todo]
+tools: [vscode, execute, read, agent, edit, search, web, github/search_code, github/search_repositories, github/search_code, github/search_repositories, github/search_code, github/search_repositories, 'markitdown/*', 'microsoft-learn/*', 'upstash/context7/*', vscode.mermaid-chat-features/renderMermaidDiagram, ms-vscode.vscode-websearchforcopilot/websearch, todo]
 model: Claude Sonnet 4.6 (copilot)
 handoffs:
   - label: Design Architecture
@@ -705,7 +705,7 @@ Output: .github/plans/{req_name}.spec.md
 
 When handing off to other agents, ensure requirement contracts exist in `.github/plans/`:
 - `{req_name}.architecture.md` → Created by @al-architect (COPY from `skill-sdd-contracts/assets/architecture-template.md`)
-- `{req_name}.spec.md` → Created by al-spec.create (COPY from `docs/templates/spec-template.md`)
+- `{req_name}.spec.md` → Created by al-spec.create (COPY from `.github/docs/templates/spec-template.md`)
 - `{req_name}.test-plan.md` → Created during implementation planning
 
 ---
@@ -827,7 +827,7 @@ await createFile('Technical_PreSales/customer-loyalty-system/00-executive-summar
 
 ## Domain Skills
 
-This agent works with the following skills from skills/.
+This agent works with the following skills from .github/skills/.
 Copilot loads them automatically when relevant to the task:
 
 - **skill-estimation** — When performing project estimation, complexity scoring, PERT, SWOT, cost breakdown

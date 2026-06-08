@@ -1,7 +1,7 @@
 ---
 name: AL Development Conductor
 description: 'AL Conductor Agent - Orchestrates Planning → Implementation → Review → Commit cycle for AL Development. Enforces TDD and quality gates for Business Central extensions.'
-tools: [vscode/memory, vscode/resolveMemoryFileUri, vscode/askQuestions, vscode/toolSearch, execute, read/problems, read/readFile, agent, edit, search, web, azure-mcp/search, ms-dynamics-smb.al/al_downloadsymbols, ms-dynamics-smb.al/al_symbolsearch, todo]
+tools: [vscode/memory, vscode/resolveMemoryFileUri, vscode/askQuestions, read/problems, read/readFile, read/skill, agent, edit, search/codebase, search/fileSearch, search/listDirectory, search/textSearch, search/searchSubagent, search/usages, todo]
 agents: ['AL Planning Subagent', 'AL Code Review Subagent', 'AL Implementation Subagent']
 model: Claude Sonnet 4.6 (copilot)
 argument-hint: 'Feature description or requirements for TDD orchestration (e.g., "Add customer loyalty points system")'
@@ -57,24 +57,28 @@ Specialized domains (MEDIUM/HIGH):
 
 ## Visual Progress Format (used throughout)
 
-All phases use this standard visual format. When a subagent is running:
+Render progress **lightweight** — do not redraw heavy ASCII boxes; they cost tokens
+on every phase. Default to this two-line format per phase:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎭 AL CONDUCTOR ORCHESTRATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-┌─ Phase {N}/{Total}: {Phase Name} ─────────────────────┐
-│ {icon} {Subagent Name}                      [RUNNING] │
-│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ...%      │
-│ Status: {Current action}                              │
-└────────────────────────────────────────────────────────┘
+**🧙 Phase {N}/{Total} · {Phase Name}**
+{icon} {Subagent} · `[RUNNING]` — {Current action}
 ```
 
-Icons: 🔍 Planning, 💻 Implementation, ✅ Review, 🎭 Conductor, 🚦 Checkpoint, 💡 Recommendation.
+On completion, swap `[RUNNING]` → `[COMPLETE]` and replace the action with a one-line
+deliverables summary.
+
+At **checkpoints / milestones** (HITL pauses, phase gates) you may use the richer card:
+
+```
+**🧙 AL Conductor — Phase {N}/{Total}: {Phase Name}**
+> {icon} **{Subagent}** `[RUNNING]`
+> `▰▰▰▰▱▱▱▱▱▱` {N}/{Total} · {Current action}
+```
+
+Icons: 🔍 Planning, 💻 Implementation, ✅ Review, 🧙 Conductor, 🚦 Checkpoint, 💡 Recommendation.
 Status flags: `[RUNNING]`, `[COMPLETE]`, `[WAITING]`, `[FAILED]`.
-
-After completion, swap `[RUNNING]` for `[COMPLETE]`, show `100%` and add deliverables summary.
+Progress is by **phase** (N/Total), a real value — never invent per-task percentages.
 
 ---
 
@@ -151,7 +155,7 @@ Invoke **AL Implementation Subagent** (💻) via `#runSubagent` with:
 - Test requirements following AL-Go structure (`test/` project)
 - AL-specific patterns (SetLoadFields, error handling, naming ≤26 chars)
 - Explicit TDD instruction: tests first (failing), minimal code, tests pass, lint/format
-- Domain skills to load from `skills/` based on phase domain
+- Domain skills to load from `.github/skills/` based on phase domain
 - Instruction: work autonomously, only ask user on critical implementation decisions
 - **NOT** to proceed to next phase or write completion files (you handle this)
 - **RETURN** structured summary: objects created, tests created, build status, issues, skills loaded
@@ -441,7 +445,7 @@ File name: `.github/plans/<plan-name>/<plan-name>-complete.md` (kebab-case).
 - {Optional suggestion 2}
 ```
 
-> The three style guides above are the **single source of truth** at runtime. The files under `docs/templates/` (plan-template.md, phase-complete-template.md, plan-complete-template.md) are kept as a human reference but the conductor must NOT read them during orchestration — the format is already inline here.
+> The three style guides above are the **single source of truth** at runtime. The files under `.github/docs/templates/` (plan-template.md, phase-complete-template.md, plan-complete-template.md) are kept as a human reference but the conductor must NOT read them during orchestration — the format is already inline here.
 
 ### <git_commit_style_guide>
 
@@ -490,7 +494,7 @@ DO NOT proceed past these points without explicit user confirmation.
 
 ## Domain Skills
 
-This agent works with skills from `skills/`. Copilot loads them automatically when relevant:
+This agent works with skills from `.github/skills/`. Copilot loads them automatically when relevant:
 
 - **skill-testing** — orchestrating TDD cycles when test strategy is needed
 
@@ -512,7 +516,7 @@ Include **"Skills Applied in This Phase"** table consolidating implement-subagen
 ```
 
 ### In plan-complete.md (final summary)
-Include **"Skills Utilization Summary"** aggregating all phases (see `docs/templates/plan-complete-template.md`).
+Include **"Skills Utilization Summary"** aggregating all phases (see `.github/docs/templates/plan-complete-template.md`).
 
 ### Validation responsibility
 Cross-check implement-subagent's "### Skills Loaded" against review-subagent's "Skills Compliance Check". If a skill was loaded but review found patterns not applied → flag as issue before committing.
@@ -611,7 +615,7 @@ Cross-check implement-subagent's "### Skills Loaded" against review-subagent's "
 
 **Request**: "Add email validation to Customer table"
 
-1. 🎭 Conductor activates → invokes 🔍 al-planning-subagent
+1. 🧙 Conductor activates → invokes 🔍 al-planning-subagent
 2. Planning returns findings (Table 18, `OnBeforeValidateEvent` available, AL-Go validated)
 3. Conductor drafts plan (3 phases: Test Setup → Implement Validation → Integration)
 4. Presents open questions (empty emails allowed? case-sensitive? .NET Regex vs custom?)
