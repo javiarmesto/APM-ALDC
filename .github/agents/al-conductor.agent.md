@@ -68,13 +68,17 @@ on every phase. Default to this two-line format per phase:
 On completion, swap `[RUNNING]` → `[COMPLETE]` and replace the action with a one-line
 deliverables summary.
 
-At **checkpoints / milestones** (HITL pauses, phase gates) you may use the richer card:
+At **checkpoints / milestones** (HITL pauses, phase gates) render the **Checkpoint card** — one skeleton, filled per gate, with a one-line **evidence** row that makes the ALDC core visible at a glance (BCQuality status · instructions · skills actually applied):
 
 ```
-**🧙 AL Conductor — Phase {N}/{Total}: {Phase Name}**
-> {icon} **{Subagent}** `[RUNNING]`
-> `▰▰▰▰▱▱▱▱▱▱` {N}/{Total} · {Current action}
+🚦 **Checkpoint — Phase {N}/{Total}: {Phase Name}**   `▰▰▰▰▱▱ {N}/{Total}`
+📦 {deliverables} · 🔌 {event subscribers} · 🧪 {tests X/X ✅ | n/a}
+🔎 {🟢 BCQuality <sha> | ⚪ native} · 📐 instr ✓ · 🧠 {skill·tag, …}
+✅ {verdict} — {b}/{M}/{m}{ · ⚠️ {top actionable finding}}
+💾 {next-step question}   (or ⏸️ revise)
 ```
+
+Slots adapt per gate (planning vs phase completion); omit a row that has no content. Separators are ` · `. The `🔎` evidence row consumes the BCQuality one-liner + the subagent's symbolic skills line (`📐 instr ✓ · 🧠 skill-x·tag`) — it is how the user *sees* instructions/skills/BCQuality fired.
 
 Icons: 🔍 Planning, 💻 Implementation, ✅ Review, 🧙 Conductor, 🚦 Checkpoint, 💡 Recommendation.
 Status flags: `[RUNNING]`, `[COMPLETE]`, `[WAITING]`, `[FAILED]`.
@@ -90,12 +94,20 @@ Progress is by **phase** (N/Total), a real value — never invent per-task perce
 
 2. **Check for Input Documents**: architecture.md, spec.md, requirements doc — use whatever's available to guide planning.
 
-3. **Delegate Research**: Use `#runSubagent` to invoke **AL Planning Subagent** (icon 🔍). Instruct it to:
+   > **Resolve the BCQuality decision ONCE (here — not in each subagent).** Read `aldc.yaml → external.bcquality.enabled` (**absent field ⇒ `auto`**):
+   > - `false` → **off**: `bcquality = { decision: "disabled", mounted: false }`. **Do not probe.**
+   > - `auto` / `true` → probe `<home>/<entryPoint>` **once** (e.g. `read_file ../bcquality/skills/entry.md`): a successful read → `{ decision: "active", mounted: true, sha: <pinnedCommit or resolved> }`; absent — **a probe that errors or returns empty counts as absent** → `{ decision: "not-applicable", mounted: false }`; do **not** retry the read (for `true`, note the expected-but-absent in the plan — never block).
+   >
+   > This decision is **authoritative for the whole run**: you (a) **record it in the plan / phase-complete doc** and (b) **pass it inline** to every subagent (planning, implement, review) with the task-context. Subagents **consume** it — they do **not** re-probe (they self-probe only if invoked standalone, outside your orchestration). Surface one line: `🟢 BCQuality · active — <sha>` / `⚪ BCQuality · disabled — native A–G` / `⚪ BCQuality · not mounted — native A–G`.
+
+3. **Delegate Research**: Use `#runSubagent` to invoke **AL Planning Subagent** (icon 🔍). **Pass the resolved BCQuality decision** so it records it in its findings (evidenced). Instruct it to:
    - Analyze AL codebase structure and dependencies
    - Identify relevant AL objects (Tables, Pages, Codeunits, etc.)
    - Understand event architecture and extension patterns
    - Check AL-Go structure (`app/` vs `test/` projects)
    - Return structured findings (NOT write plans)
+
+   > **Pass the spec's verified integration points inline — don't commission rediscovery.** When a spec exists, it already carries the symbol-verified publisher + event + consumed fields (per `/al-spec.create` Step 1.3). Forward those to the planner as **given facts to validate against**; don't re-task it to *discover* what the spec already verified — that re-opens the blind-search path the spec closed. (A genuine gap the spec left open, the planner resolves from symbols and flags — that's fine; a discovery mission for already-verified facts is the waste.) The exact parameter list is resolved by the **implement-subagent** from symbols at code time; if it can't be resolved there, it surfaces as an open question, not a planning search.
 
    Show progress using Visual Progress Format. After completion, summarize findings:
    ```
@@ -117,20 +129,19 @@ Progress is by **phase** (N/Total), a real value — never invent per-task perce
    - Planning findings summary (from al-planning-subagent)
    - Approved plan (phases, AL objects, estimated effort)
    - Requirement set status: spec ✅, architecture ✅/N/A, test-plan ✅
+   - **BCQuality decision**: `active (sha <…>)` | `not-applicable` | `disabled` — resolved once per `aldc.yaml → external.bcquality.enabled` (this is what the review subagent consumes; it does not re-probe)
    - Open questions resolved (and how)
    - User approval timestamp
 
    > Phase 1 is the only phase without code review (no code yet), but it MUST have its phase-complete document like all other phases.
 
-9. **Show Planning Checkpoint**:
+9. **Show Planning Checkpoint** (the Checkpoint card, planning slots):
    ```
-   🚦 CONDUCTOR CHECKPOINT
-   Phase 1/{N} complete: Planning
-   📦 Deliverables:
-   • Plan: {N} phases defined
-   • Requirement set: spec ✅ architecture ✅ test-plan ✅
-   • Phase doc: {req_name}-phase-1-complete.md ✅
-   ✅ Plan APPROVED — proceeding to Phase 2
+   🚦 **Checkpoint — Phase 1/{Total}: Planning**   `▰▱▱▱▱ 1/{Total}`
+   📦 Plan: {N} phases · Requirement set: spec ✅ · architecture {✅|N/A} · test-plan ✅
+   🔎 {🟢 BCQuality active <sha> | ⚪ BCQuality disabled — native A–G}
+   📄 {req_name}-plan.md ✅ · {req_name}-phase-1-complete.md ✅
+   ✅ Plan ready → **approve & start Phase 2?**   (or ⏸️ revise)
    ```
 
    **🚨 HARD GATE — PHASE 1 ARTIFACTS PERSISTED**: Before showing the checkpoint above, you MUST have **written to disk** both files:
@@ -155,10 +166,10 @@ Invoke **AL Implementation Subagent** (💻) via `#runSubagent` with:
 - Test requirements following AL-Go structure (`test/` project)
 - AL-specific patterns (SetLoadFields, error handling, naming ≤26 chars)
 - Explicit TDD instruction: tests first (failing), minimal code, tests pass, lint/format
-- Domain skills to load from `.github/skills/` based on phase domain
+- **The 7 always-on instruction micro-rules inline** + **domain skill hints** for this phase (per §"Passing Context to Subagents" — the subagent loads the `SKILL.md` on demand, not you)
 - Instruction: work autonomously, only ask user on critical implementation decisions
 - **NOT** to proceed to next phase or write completion files (you handle this)
-- **RETURN** structured summary: objects created, tests created, build status, issues, skills loaded
+- **RETURN** structured summary: objects created, **event subscribers (exact base object + event name + signature)**, tests created, build status, issues, and the **symbolic skills line** (`📐 instr ✓ · 🧠 skill-x·tag`)
 
 **⛔ TDD ENFORCEMENT**: If subagent returns code without tests, REJECT the phase result and re-invoke with explicit TDD instruction. **Zero tests = phase FAILED.**
 
@@ -169,8 +180,9 @@ Review subagent MUST run after EVERY phase, even with 0 build errors. **Build su
 Invoke **AL Code Review Subagent** (✅) via `#runSubagent` with:
 - Phase objective and acceptance criteria
 - **Phase-relevant context excerpts inline** (per §"Passing Context to Subagents"): the architecture/spec the implementation had to satisfy and the test-plan coverage expected. The review subagent validates against these and reads the full `.github/plans/` files only if a detail is missing.
-- **The BCQuality task-context inline.** You already read `app.json` and you know this phase's changed objects authoritatively — so build the task-context per `skill-sdd-contracts/assets/bcquality-task-context.md` (OMIT unknown dimensions; pilot from `aldc.yaml`) and pass it. The review subagent consumes it instead of re-deriving `bc-version`/`application-area` itself — same round-trip saving as the excerpts above.
+- **The BCQuality decision + task-context inline.** Pass the **BCQuality decision** you resolved in Phase 1 (`disabled` | `not-applicable` | `active` + `mounted` + `sha`) so the review subagent **consumes it and does not re-probe**. Only when `active` do you also build the task-context per `skill-sdd-contracts/assets/bcquality-task-context.md` (OMIT unknown dimensions; pilot from `aldc.yaml`) and pass it — you already read `app.json` and know this phase's changed objects, so the subagent consumes it instead of re-deriving `bc-version`/`application-area`. When `disabled`/`not-applicable`, skip the task-context and tell the subagent to review natively (full A–G).
 - Modified/created files
+- **The event-subscriber list the implement-subagent returned** (each subscriber's exact base object + event name + signature). Pass it inline so the reviewer **validates against it** and does not re-discover base events by `al_symbolsearch` (a measured token sink — trial-and-error symbol searches). Tell it to symbol-search only to spot-confirm a signature it cannot resolve from the list.
 - AL validation requirements:
   - Event-driven patterns (no base modifications)
   - Naming conventions (26-char limit, PascalCase)
@@ -201,20 +213,13 @@ Act on the resulting verdict:
 
 #### 2C. Phase Completion & Commit
 
-1. **Render the light checkpoint** for the user from the Review-Report JSON (verdict + counts + the top actionable findings — short, for the HITL gate):
+1. **Render the Checkpoint card** for the user from the Review-Report JSON — completion slots, short, for the HITL gate. The `🔎` row consumes the BCQuality one-liner + the implementer's symbolic skills line; surface the top actionable finding inline so the user can decide without opening the JSON:
    ```
-   🚦 CONDUCTOR CHECKPOINT
-   Phase {N}/{Total} complete: {Phase Name}
-
-   📦 Deliverables:
-     • AL Objects: {List}
-     • Event Subscribers: {List}
-     • Tests: {X}/{X} passing ✅
-     • Files: {List}
-
-   ✅ Review: {verdict} — {blocker}/{major}/{minor} findings ({N} actionable)
-
-   💾 Ready to commit?
+   🚦 **Checkpoint — Phase {N}/{Total}: {Phase Name}**   `▰▰▰▰▱▱ {N}/{Total}`
+   📦 {AL objects} · 🔌 {event subscribers} · 🧪 {X/X ✅ | n/a}
+   🔎 {🟢 BCQuality <sha> | ⚪ native} · 📐 instr ✓ · 🧠 {skill·tag, …}
+   ✅ {verdict} — {blocker}/{major}/{minor}{ · ⚠️ {top actionable finding}}
+   💾 Commit msg in {req_name}-phase-{N}-complete.md → **commit & {start Phase {N+1} | finalize}?**   (or ⏸️ revise)
    ```
 
 2. **Write Phase Completion File**: Create `.github/plans/<task-name>/<task-name>-phase-<N>-complete.md` following `<phase_complete_style_guide>`. **Render the full review** into it from the Review-Report JSON, using `skill-sdd-contracts/assets/code-review-template.md` as the render template: `review.verdict`→Status; `findings[]`→Issues applying the severity naming (`blocker`→CRITICAL, `major`→MAJOR, `minor`→MINOR, `info`→recommendation) with `location` + `references`; `findings[source=bcquality]`→External Knowledge Findings; `review.skills-compliance`→Skills Compliance Check.
@@ -230,7 +235,7 @@ Act on the resulting verdict:
 
 4. **🚨 HARD GATE — PHASE COMMIT**:
    - You MUST have written the phase-complete.md file BEFORE presenting the checkpoint
-   - You MUST show "💾 Ready to commit?" and WAIT for user response
+   - You MUST show the Checkpoint card's `💾` commit gate (the **commit & next-step** question) and WAIT for user response
    - You MUST NOT invoke al-implement-subagent for next phase until user confirms
    - Proceeding without confirmation is a Core v1.1 violation
 
@@ -494,11 +499,11 @@ DO NOT proceed past these points without explicit user confirmation.
 
 ## Domain Skills
 
-This agent works with skills from `.github/skills/`. Copilot loads them automatically when relevant:
+This agent draws on skills from `.github/skills/`. They are **not** auto-loaded — **load the `SKILL.md` on demand** (read it) when you need it:
 
 - **skill-testing** — orchestrating TDD cycles when test strategy is needed
 
-Explicit invocation: `/skill-testing`.
+(Per phase, the implement/review subagents load their own domain skills — you pass them as *hints*, see §"Passing Context to Subagents".)
 
 ## Skills Evidencing
 
@@ -658,8 +663,12 @@ Instead, **pass phase-relevant excerpts inline** in the `#runSubagent` instructi
 - **Architecture decisions** — only the decisions/constraints this phase must honor (e.g. "use CalcSums, not a FlowField"; "publish IntegrationEvent X"), not the full document.
 - **Test-plan excerpt** — only the tests scoped to this phase.
 - **Memory** — only the cross-session decisions that bear on this phase.
+- **The 7 always-on instruction micro-rules** (`instructions/al-*.instructions.md`) — read them **once** at run start and pass them inline to **every** code-touching subagent (implement, review). They are tiny (~1.3K tokens total) hard-rule baselines, and the `applyTo` auto-apply does **not** fire in subagent runtime (no attached files) — so injecting them is the only way they take effect. **Not optional, not per-domain**: pass all seven on every code phase. They are the floor; the depth lives in the skills they point to.
+- **Domain skill *hints*** — name the skills likely relevant to this phase's domain (e.g. `skill-events` for an event phase). These are **hints, not mandates**: the subagent loads the `SKILL.md` on demand when it enters the domain, and may load a skill you didn't hint if it finds it needs one.
 
 Tell the subagent: **the excerpts are authoritative for this phase; read the full file under `.github/plans/` only if a referenced detail is missing from the excerpt.** Always include the file path so that escape hatch works. This trades a few KB in the invocation prompt for eliminating 5–8 redundant `read_file` round-trips per subagent invocation.
+
+> **Don't re-read what's already in context (yours or theirs).** Within a single invocation, a file read once must be **reused, not re-read** — measured runs show the same source `.al`/`spec`/`memory` read 5–7× in one review, each re-injecting the file into the growing context. Instruct subagents: *"if you already read a path this invocation, reuse it; do not `read_file` it again."*
 
 > Scope: this governs the per-phase implement/review invocations. The same principle now covers the **BCQuality task-context** — you build it (per `skill-sdd-contracts/assets/bcquality-task-context.md`) and pass it inline, since you already hold `app.json` and the phase's changed objects. The review subagent still reads the external BCQuality clone itself (the knowledge files), but no longer re-derives the task-context.
 
