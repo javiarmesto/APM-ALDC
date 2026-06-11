@@ -3,11 +3,12 @@ version: 4.1.0
 description: >-
   AL Development Collection - skills-based, spec-driven, TDD-orchestrated
   development framework for Microsoft Dynamics 365 Business Central.
-  Works with GitHub Copilot and Claude Code.
+  GitHub Copilot distribution; the Claude Code distribution is
+  javiarmesto/APM-ALDC---Claude.
 author: javiarmesto
 license: MIT
 
-target: [copilot, claude]
+target: [copilot]
 
 dependencies:
   apm: []
@@ -36,5 +37,5 @@ scripts:
   # Cross-platform consumer setup (run after `apm install`). Seeds the
   # non-primitive pieces apm install does not deploy: Copilot entrypoint,
   # aldc.yaml, plans/memory.md, tools/. Consumers point node at the deployed
-  # skill path (.agents/skills/... for Copilot, .claude/skills/... for Claude).
+  # skill path (.agents/skills/...).
   scaffold: node .apm/skills/github-scaffold/scripts/Install-Scaffold.mjs

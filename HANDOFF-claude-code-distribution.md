@@ -2,7 +2,7 @@
 
 **Owner handing off:** (this session)
 **Goal:** Ship the **Claude Code** distribution of ALDC through **APM**, mirroring the canonical monorepo's `claude-plugin/` into the dedicated package repo **[`javiarmesto/APM-ALDC---Claude`](https://github.com/javiarmesto/APM-ALDC---Claude)** (already created, empty). The canonical monorepo is **not touched** — propagation is one-way, by build script, exactly like this repo already does for the Copilot flavor.
-**Status:** Briefing only. Architecture decided (§3); implementation pending in `APM-ALDC---Claude`.
+**Status:** ✅ Implemented — `APM-ALDC---Claude` is regenerated from canonical `claude-plugin/` via its own `scripts/build-apm.mjs`, and this repo is narrowed to `target: [copilot]`. Architecture decided (§3); implementation pending in `APM-ALDC---Claude`.
 
 ---
 
