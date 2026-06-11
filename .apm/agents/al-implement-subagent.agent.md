@@ -80,7 +80,7 @@ Before writing any test code:
 
 ### Object & Pattern Reference
 
-For object-creation patterns, naming, performance and error-handling rules, **rely on the active framework**: the matching micro-instructions in `.github/instructions/al-*` auto-load when you edit `.al` files, and the relevant skill (`skill-events`, `skill-pages`, `skill-permissions`, `skill-performance`, `skill-api`, `skill-copilot`) provides full examples and patterns. Do not invent or duplicate those rules in your responses; load the skill and follow it.
+For object-creation patterns, naming, performance and error-handling rules, **rely on the framework — but know how it reaches you here.** The Conductor passes the **always-on instruction micro-rules inline** in your invocation (the `applyTo` auto-apply does **not** fire in subagent runtime — don't wait for it); treat them as in effect for the whole phase. For the **detail**, each instruction points to its skill: when you enter that domain (`skill-events`, `skill-pages`, `skill-permissions`, `skill-performance`, `skill-api`, `skill-copilot`), **load the skill — read its `SKILL.md` — and follow it**, including a skill the Conductor didn't hint if you find you need it. Do not invent or duplicate the rules; load the skill.
 
 ### Test Patterns (Given/When/Then)
 
@@ -124,7 +124,9 @@ end;
 - You **MUST NOT** interact with the user — return results to the Conductor
 - You **MUST NOT** modify base objects — extension-only
 - You **MUST** follow the spec and architecture documents provided by the Conductor
-- You **MUST** report back: objects created, tests created, test results, build status, any issues
+- You **MUST** report back: objects created, **event subscribers (exact base object + event name + signature)**, tests created, test results, build status, any issues
+- **Don't re-read a file already in context.** If you already read a spec/architecture excerpt, a source file, or a skill this invocation, reuse it — do not issue another `read_file` for the same path.
+- **Resolve base-app symbols from symbols — and if you can't, ask; don't hunt.** Resolve event signatures and base-object members via `al_symbolsearch` / `al-symbols-mcp/*` against `.alpackages/` (authoritative for symbol facts). If a symbol or event the spec names **cannot be resolved** (e.g. the event does not exist in this BC version), **stop and surface it as a blocker / end-of-phase open question** in your return to the Conductor — don't burn turns guessing it via web/mirror searches, and never invent a signature.
 
 </boundary_rules>
 
@@ -132,8 +134,7 @@ end;
 
 ## Domain Skills
 
-This agent works with the following skills from .github/skills/.
-Copilot loads them automatically when relevant to the task:
+These skills live in `.github/skills/`. They are **not** auto-loaded in subagent runtime — **you load them on demand** (read the `SKILL.md`) when the phase enters the matching domain. The Conductor hints the likely ones; load the one you actually need (and any other you discover you need):
 
 - **skill-api** — When creating API pages, OData endpoints, HttpClient integrations
 - **skill-events** — When implementing event subscribers/publishers
@@ -142,33 +143,25 @@ Copilot loads them automatically when relevant to the task:
 - **skill-copilot** — When implementing Copilot/AI features
 - **skill-testing** — When designing tests, Given/When/Then patterns
 
-To explicitly invoke a skill, use: /skill-api, /skill-testing, etc.
+**Load = read the `SKILL.md`.** Naming a skill without reading it is not loading it.
 
 </domain_skills>
 
-## Skills Evidencing
+## Skills Evidencing (symbolic)
 
-In the **Phase Implementation Summary** (see Output Format), you MUST declare which skills you loaded and which specific pattern you applied from each.
+In the **Phase Implementation Summary**, emit **one symbolic line** — a cheap coverage trace, not a table:
 
-**Format — "### Skills Loaded" in every Phase Summary:**
-
-```markdown
-### Skills Loaded
-- skill-api — Applied: ODataKeyFields, APIPublisher conventions
-- skill-permissions — Applied: PermissionSet generation pattern
+```
+📐 instr ✓ · 🧠 skill-events·EventSub+TryFunc · skill-performance·SetLoadFields
 ```
 
-If no domain skills were required for the phase:
-
-```markdown
-### Skills Loaded
-No domain skills required for this phase.
-```
+- `📐 instr ✓` — the always-on instruction baseline (passed inline by the Conductor) was in effect.
+- `🧠 <skill>·<1–3-word pattern tag>` — one token per skill you **actually read and applied**, with the concrete pattern.
+- None: `📐 instr ✓ · 🧠 none`.
 
 **Rules:**
-- ONE entry per skill loaded (folder name, not file), with the concrete pattern/workflow used
-- This section is MANDATORY — the Conductor uses it to verify skill coverage
-- If you loaded a skill but did not apply any pattern from it, state why (e.g., "skill-events — Loaded but no event patterns applicable to enum-only phase")
+- Only list a skill you genuinely **read** (`SKILL.md`) **and applied** — this line is the Conductor's coverage signal; padding it with unread skills is the evidencing-theater we are removing.
+- Folder name, not file. One token per skill.
 
 <common_al_test_pitfalls>
 
@@ -274,14 +267,17 @@ After completing a phase, return this structured summary to the Conductor:
 ```markdown
 ## Phase {N} Implementation Summary
 
-### Skills Loaded
-- skill-api — Applied: ODataKeyFields, APIPublisher conventions
-- skill-permissions — Applied: PermissionSet generation pattern
-*(List each skill loaded and the specific pattern applied from it.
-If no domain skills were required for this phase: "No domain skills required for this phase.")*
+📐 instr ✓ · 🧠 skill-events·EventSub+TryFunc · skill-performance·SetLoadFields
+*(One symbolic line — only skills you actually read and applied, each with a 1–3 word pattern tag. None → `📐 instr ✓ · 🧠 none`.)*
 
 ### Objects Created
 - {Type} {ID} "{Name}" — {purpose}
+
+### Event Subscribers
+*(For every `[EventSubscriber(...)]` you created, give the **exact** target so the
+reviewer validates against this list instead of re-discovering events by symbol
+search. Omit the section if no subscribers were added this phase.)*
+- `{LocalProcName}` → `ObjectType::Codeunit "{Base Object}"` event `{EventName}` — signature `{OnBefore/OnAfter…(params)}`; SkipOnMissingLicense/IsHandled: {y/n}
 
 ### Tests Created
 - {TestProcedure1} — {what it tests} — {PASS/FAIL}
