@@ -3,7 +3,13 @@
 **AL Development Collection** packaged for [APM](https://github.com/microsoft/apm)
 (the Agent Package Manager). ALDC is a skills-based, spec-driven, TDD-orchestrated
 framework for developing Microsoft Dynamics 365 **Business Central** extensions
-with GitHub Copilot and Claude Code.
+with GitHub Copilot.
+
+> **Using Claude Code?** This package carries the **Copilot** agent prose
+> (VS Code AL extension tools: `al_build`, `ms-dynamics-smb.al/*`, `#search`, …).
+> The **Claude Code (bare harness)** distribution lives in its own sibling
+> package: [`javiarmesto/APM-ALDC---Claude`](https://github.com/javiarmesto/APM-ALDC---Claude)
+> (`target: [claude]`), regenerated from the canonical repo's `claude-plugin/`.
 
 This repository is an **APM distribution** of ALDC. It is a *transformation* of the
 canonical source — not a fork. The single source of truth is
@@ -16,7 +22,7 @@ exactly the way the canonical repo regenerates its npm installer and VS Code plu
 ## What's in the package
 
 All primitives live under `.apm/` (the APM source root). `apm install` deploys them
-into each harness's runtime directories; the committed `.github/`, `.claude/`, and
+into each harness's runtime directories; the committed `.github/` and
 `.agents/` trees are generated output kept for convenience.
 
 | Primitive | Count | Notes |
@@ -38,14 +44,14 @@ dependencies:
     - javiarmesto/APM-ALDC#v4.1.0
 ```
 
-…then install and (for non-Copilot harnesses) compile:
+…then install:
 
 ```bash
 apm install                  # deploys agents, skills, prompts, instructions, MCP
-apm compile --target claude  # generates CLAUDE.md + rules (Copilot reads .github/ natively)
 ```
 
-Supported `targets`: **copilot** and **claude**.
+Supported `target`: **copilot** only. For Claude Code, depend on
+[`javiarmesto/APM-ALDC---Claude`](https://github.com/javiarmesto/APM-ALDC---Claude) instead.
 
 ### Project setup after install (scaffold)
 
@@ -57,9 +63,6 @@ hook, so the non-primitive setup pieces (Copilot routing entrypoint, `aldc.yaml`
 ```bash
 # Copilot / Cursor / Codex (skills land in .agents/skills/)
 node .agents/skills/github-scaffold/scripts/Install-Scaffold.mjs
-
-# Claude Code (skills land in .claude/skills/)
-node .claude/skills/github-scaffold/scripts/Install-Scaffold.mjs
 ```
 
 It seeds `.github/copilot-instructions.md`, `aldc.yaml`, `.github/plans/memory.md`,
@@ -69,8 +72,7 @@ install. The 14 SDD templates are **not** seeded here — they live in
 `skill-sdd-contracts/assets/`.
 
 > Compile is **optional for Copilot** — it reads `.github/instructions/*.instructions.md`
-> directly. It is **recommended for Claude** (and Cursor/Codex/Gemini/etc.), which load
-> instructions through a root context file the compile step generates.
+> directly.
 
 ## SDD templates — how they resolve
 
