@@ -1,102 +1,91 @@
-# HANDOFF — Distribute "ALDC for Claude Code" via APM
+# HANDOFF — Distribute "ALDC for Claude Code" via APM (`APM-ALDC---Claude`)
 
 **Owner handing off:** (this session)
-**Goal:** Ship the **Claude Code** distribution of ALDC through **APM** (`javiarmesto/APM-ALDC`) so consumers install it with `apm install`, **without touching the canonical monorepo** for sync (the build script does that).
-**Status:** Briefing only — no build/transform changes made yet. One architectural decision must be made first (§3).
+**Goal:** Ship the **Claude Code** distribution of ALDC through **APM**, mirroring the canonical monorepo's `claude-plugin/` into the dedicated package repo **[`javiarmesto/APM-ALDC---Claude`](https://github.com/javiarmesto/APM-ALDC---Claude)** (already created, empty). The canonical monorepo is **not touched** — propagation is one-way, by build script, exactly like this repo already does for the Copilot flavor.
+**Status:** Briefing only. Architecture decided (§3); implementation pending in `APM-ALDC---Claude`.
 
 ---
 
-## 1. The three artifacts in play (so you don't confuse them)
+## 1. The artifacts in play (so you don't confuse them)
 
 | Artifact | Repo / path | Target runtime | Tool vocabulary |
 |---|---|---|---|
-| **Copilot-native** | monorepo top-level `agents/ prompts/ instructions/` | GitHub Copilot in VS Code + AL extension | `#search`, `al_build`, `ms-dynamics-smb.al/*`, `vscode/*` |
-| **Claude Code plugin** | monorepo `claude-plugin/` | **bare Claude Code harness** (CLI/desktop/marketplace) | `Read/Glob/Grep/Bash/Task` + `al compile` + `al-symbols-mcp`/`context7`/`microsoft-docs` |
-| **APM package** | `APM-ALDC` (`.apm/` source → `.claude/`, `.agents/` output) | both `copilot` and `claude` targets | **same as Copilot** (see §3 — this is the catch) |
+| **Copilot-native** (canonical) | monorepo top-level `agents/ prompts/ instructions/ skills/` | GitHub Copilot in VS Code + AL extension | `#search`, `al_build`, `ms-dynamics-smb.al/*`, `vscode/*` |
+| **Claude Code plugin** (canonical) | monorepo `claude-plugin/` | **bare Claude Code harness** (CLI / desktop / marketplace) | `Read/Glob/Grep/Bash/Task` + `al compile` + `al-symbols-mcp`/`context7`/`microsoft-docs` |
+| **APM package — Copilot** | `APM-ALDC` (this repo) | Copilot (and "Claude inside VS Code") | same as Copilot-native |
+| **APM package — Claude** | **`APM-ALDC---Claude`** (new, empty) | bare Claude Code harness | same as `claude-plugin/` |
 
-The plugin was modernized for the bare harness in monorepo PR **#69** (ported #66–#71). That modernization is **not** in the APM package.
+The bare-harness plugin was modernized in monorepo PR **#69** (tool prose + sync of #66–#71). That content is the source for `APM-ALDC---Claude`.
 
-## 2. How APM-ALDC works today
+## 2. Why TWO sibling APM packages (the verified constraint)
 
-- It is a **regenerated transformation** of the canonical monorepo, **not a fork**. Source of truth stays `javiarmesto/ALDC-AL-Development-Collection`.
-- `scripts/build-apm.mjs` mirrors canonical **top-level** `agents/ instructions/ prompts/ skills/` into `.apm/` (confirmed: `syncFlatDir(CANONICAL/'agents', …)`), preserves 2 APM-only skills (`github-scaffold`, `onprem-remote-deploy`), ships SDD templates as `skill-sdd-contracts/assets/`, and aligns `apm.yml`/`plugin.json` to the canonical version. Resolved commit pinned in `scripts/build-apm.lock.json`.
-- `apm.yml`: `name: aldc`, `version: 4.1.0`, `target: [copilot, claude]`, MCP deps `github / markitdown / microsoftdocs / al-symbols`.
-- **Consumer flow** (already documented in `README.md`):
-  ```yaml
-  # consumer project apm.yml
-  dependencies:
-    apm:
-      - javiarmesto/APM-ALDC#v4.1.0
-  ```
-  ```bash
-  apm install                  # deploys agents/skills/prompts/instructions/MCP
-  apm compile --target claude  # generates CLAUDE.md + .claude/rules
-  node .claude/skills/github-scaffold/scripts/Install-Scaffold.mjs   # seeds aldc.yaml, plans/memory.md, tools/
-  ```
+**One APM package cannot ship divergent agent prose per target.** Verified in this repo: the compiled Copilot output (`.github/agents/al-developer.agent.md`) and Claude output (`.claude/agents/al-developer.md`) are **byte-identical** copies of the single `.apm/agents/` source — `apm compile --target claude` only generates context files (CLAUDE.md, rules), it does **not** transform agent prose. Since the Copilot and bare-harness prose genuinely diverge (different tool universes), they need **two packages**.
 
-## 3. ⚠️ The decision that gates everything
+The model stays clean because both are *regenerated transformations* of the **same canonical monorepo**:
 
-**APM's current `claude` output is the Copilot agents in APM layout — NOT the modernized bare-harness plugin.**
+```
+ALDC-AL-Development-Collection (canonical, source of truth)
+├── top-level (Copilot prose) ──build-apm.mjs──▶ APM-ALDC          (target: [copilot])
+└── claude-plugin/ (harness prose) ──build script──▶ APM-ALDC---Claude (target: [claude])
+```
 
-Evidence: the compiled `.claude/agents/al-developer.md` still has, in its `tools:` frontmatter, `vscode/*`, `ms-dynamics-smb.al/al_debug`, `al_downloadsymbols`, `al_symbolsearch`, `sshadowsdk.al-lsp-for-agents/bclsp_*`, `web/githubTextSearch`, `upstash/context7/*`, `microsoft-learn/*`. Those tools **do not exist in the bare Claude Code harness** — they assume **Claude running inside VS Code with the AL extension + agent-LSP**. `build-apm.mjs` mirrors the Copilot top-level, so the `claude` target inherits that vocabulary.
+No manual sync; no fork; content changes go to the canonical repo, packages regenerate.
 
-So "distribute the Claude Code option via APM" forks into two products. **Decide which "Claude" you mean:**
+## 3. What to build in `APM-ALDC---Claude`
 
-- **Path A — "Claude inside VS Code + AL extension" (status quo).** APM already produces this. It is internally consistent for that environment. **Work: ~none** — tag a release, document. **Risk:** it is *not* the modernized bare-harness plugin; the `tools:` frontmatter is meaningless on the plain Claude Code CLI/desktop.
-- **Path B — "bare Claude Code harness" = the modernized `claude-plugin/` (recommended if your Claude users are on the CLI/desktop/marketplace).** Then APM's `claude` target must produce the harness-correct vocabulary (`al compile`, `Grep`, `al-symbols-mcp`, no `#`-vars, no `ms-dynamics-smb`). **Work: extend `build-apm.mjs` (§4).**
+Bootstrap it as a sibling of this repo (same skeleton, different source dir and target):
 
-> Recommendation: **Path B**, because (a) you just invested in the bare-harness modernization (#69), and (b) APM's value is precisely *no manual sync* — but only if its `claude` output equals the canonical `claude-plugin/`. Path A re-introduces exactly the divergence #69 removed.
+1. **`scripts/build-apm.mjs`** — copy from this repo and retarget the mirror:
+   - Source: canonical **`claude-plugin/`** → `.apm/`:
+     - `claude-plugin/agents/*.md` → `.apm/agents/` (already harness-correct).
+     - `claude-plugin/commands/*.md` → `.apm/prompts/` — **naming map needed**: plugin uses `commands/al-spec-create.md`; APM prompt convention is `al-spec.create.prompt.md`. Pick one mapping and encode it in the script.
+     - `claude-plugin/skills/` → `.apm/skills/` (the modernized skills from #69 — do **not** source the top-level Copilot skills).
+     - `claude-plugin/rules-templates/` → the instructions/rules input that `apm compile --target claude` turns into `.claude/rules/`.
+     - `claude-plugin/hooks/hooks.json`, `tools/bcquality/` → carry through (hooks already use `${CLAUDE_PLUGIN_ROOT}`-style portability; adapt path variable if APM deploys differently).
+   - Keep the add-on allowlist mechanism if you want `github-scaffold` / `onprem-remote-deploy` here too (recommended — the scaffold step is harness-agnostic).
+   - Record the canonical commit in `scripts/build-apm.lock.json` (must be ≥ the #69 merge).
+2. **`apm.yml`** — `name: aldc` (or `aldc-claude` if APM can't disambiguate two packages with the same name for one consumer — check before publishing), `target: [claude]`, and MCP deps aligned to the plugin's set: `al-symbols-mcp` (npx), `context7` (http), `microsoft-docs` (npx) — **not** the Copilot set (`github`/`markitdown`).
+3. **`README.md`** — consume section (see §5) + "Keeping in sync" section pointing at canonical `claude-plugin/`.
+4. **Governance** — same as this repo: committed `apm.lock.yaml`, `apm audit` clean, tag releases `vX.Y.Z` aligned to canonical (4.1.0 today).
 
-## 4. Path B — what to implement (in `APM-ALDC`, monorepo untouched)
+**And one change in THIS repo (`APM-ALDC`):** narrow `apm.yml` `target: [copilot, claude]` → **`[copilot]`**, and note in the README that the Claude package lives at `APM-ALDC---Claude`. Otherwise consumers keep getting Copilot prose under a `claude` label.
 
-Make the `claude` target of `build-apm.mjs` source from the canonical **`claude-plugin/`** instead of the Copilot top-level. Concretely:
+## 4. Acceptance checks
 
-1. **Split the mirror by target.** Keep `copilot` ← canonical `agents/ prompts/ instructions/ skills/` (unchanged). Add `claude` ← canonical `claude-plugin/{agents, commands, skills, rules-templates, hooks, .mcp.json}`.
-   - `claude-plugin/agents/*.md` → `.apm`/`.claude` agents (already harness-correct vocabulary).
-   - `claude-plugin/commands/*.md` → APM prompts / `.claude/commands` (note: monorepo plugin uses `commands/` with `al-spec-create.md` naming; APM uses `prompts/` with `al-spec.create` — reconcile the naming map).
-   - `claude-plugin/rules-templates/*` → `.claude/rules` (the auto-applied AL rules).
-   - `claude-plugin/hooks/hooks.json`, `.mcp.json` → carry through.
-2. **Align MCP in `apm.yml` for the claude target** to the plugin's set: `al-symbols-mcp`, `context7`, `microsoft-docs` (drop `github`/`markitdown` for claude if the plugin doesn't use them). Today `apm.yml` lists `github/markitdown/microsoftdocs/al-symbols` for both.
-3. **Skills:** the plugin's `skills/` are already the modernized ones (PR #69 touched 10 skills). Mirror `claude-plugin/skills/` for the claude target so you don't re-inherit Copilot `al_build` prose.
-4. **Regenerate & verify:**
-   ```bash
-   ALDC_CANONICAL=/path/to/ALDC-AL-Development-Collection node scripts/build-apm.mjs
-   apm install
-   apm audit            # expect: No drift detected
-   ```
-   **Acceptance check:** `grep -R "al compile\|al-symbols-mcp" .claude/agents/al-developer.md` returns hits and `grep -R "al_build\|ms-dynamics-smb\|#search" .claude/agents/` returns **none**.
-5. **Update `scripts/build-apm.lock.json`** (pin canonical commit — should be ≥ the merge of #69, currently `main`).
-6. **Tag a release** (`v4.1.x`) and update `README.md` consume section to state which Claude runtime the `claude` target now serves.
+- `ALDC_CANONICAL=<path> node scripts/build-apm.mjs && apm install && apm audit` → No drift.
+- `grep -R "al compile\|al-symbols-mcp" .claude/agents/al-developer.md` → **hits**.
+- `grep -RE "al_build|ms-dynamics-smb|#search|vscode/" .claude/agents/` → **empty**.
+- Fresh consumer project: `apm install` + `apm compile --target claude` + scaffold script → agents/commands/rules present and harness-correct.
 
-## 5. Consumer-facing result (Path B)
+## 5. Consumer-facing result
 
 ```yaml
+# consumer project apm.yml
 dependencies:
   apm:
-    - javiarmesto/APM-ALDC#v4.1.x
+    - javiarmesto/APM-ALDC---Claude#v4.1.0
 ```
 ```bash
 apm install
 apm compile --target claude
-node .claude/skills/github-scaffold/scripts/Install-Scaffold.mjs
+node .claude/skills/github-scaffold/scripts/Install-Scaffold.mjs   # seeds aldc.yaml, plans/memory.md, tools/
 ```
-→ consumer gets the **modernized bare-harness** agents/commands/skills/rules under `.claude/`, plus `aldc.yaml`, `plans/memory.md`, `tools/`. No marketplace needed; no manual Copilot→Claude sync (build script owns it).
 
-## 6. Open questions for the owner
+## 6. Relationship to other open work
 
-1. **Which Claude runtime is the audience?** VS Code + AL extension (Path A) or bare Claude Code CLI/desktop (Path B)? This is the only real fork.
-2. **APM vs marketplace plugin — both, or APM only?** If APM becomes the Claude channel, do you retire the marketplace-plugin install path, or keep both (they'd share the `claude-plugin/` source under Path B)?
-3. **Port-back add-ons:** `github-scaffold` + `onprem-remote-deploy` live only in APM — the README already flags porting them back to canonical. In scope here or separate?
-4. **Versioning:** keep APM aligned to canonical `4.1.0`, or let the Claude channel version independently?
+- **Monorepo extraction plan** (`.github/plans/claude-plugin-extraction.md`, branch `claude/claude-plugin-extraction-plan`): **superseded by this route.** APM-ALDC---Claude achieves the same goals (dedicated Claude repo, clean install, no manual sync) while keeping the canonical monorepo as single source — strictly better than a hard split. Close/annotate that plan when this lands.
+- **Marketplace plugin install** (`/plugin marketplace add`): still possible directly from the monorepo's `claude-plugin/` for marketplace users; APM is the package-manager channel. Both share the same canonical source, so keeping both costs nothing.
 
-## 7. Pointers
+## 7. Open questions for the owner
 
-- `apm-aldc`: `apm.yml`, `scripts/build-apm.mjs` (mirror logic), `scripts/build-apm.lock.json`, `README.md` (§"Keeping in sync"), compiled `.claude/`.
-- monorepo: `claude-plugin/` (the modernized source for Path B), `.github/plans/claude-plugin-tool-modernization.md` (what #69 changed + the tool mapping), `.github/plans/claude-plugin-extraction.md` (the alternative "separate repo" route — APM is the other way to avoid the dual-maintenance, doing it via single-source instead of split).
+1. **Package name in `apm.yml`**: `aldc` (same as Copilot package) vs `aldc-claude` — depends on whether APM resolves dependencies by repo (then same name is fine) or by name (then it must differ). Verify against APM's resolver before tagging.
+2. **Add-ons**: include `github-scaffold`/`onprem-remote-deploy` in the Claude package? (Recommended: yes, scaffold is needed for `aldc.yaml`/plans seeding.)
+3. **Versioning**: track canonical `4.1.x` (recommended) or version independently.
 
 ## 8. Definition of done
 
-- `apm install` + `apm compile --target claude` from a clean consumer project yields working ALDC agents/commands/skills for the **intended** Claude runtime (per §6.1).
-- (Path B) acceptance grep in §4.4 passes.
-- `apm audit` → No drift; lockfile updated; release tagged; README states the target runtime.
-- Canonical monorepo: **unchanged** (source of truth; regeneration is one-way canonical → APM).
+- `APM-ALDC---Claude` regenerates from canonical `claude-plugin/` via its own `build-apm.mjs`; lockfile pins the canonical commit.
+- Acceptance greps in §4 pass; `apm audit` clean; release tagged.
+- `APM-ALDC` narrowed to `target: [copilot]` with a README pointer to the Claude package.
+- Canonical monorepo: **unchanged** (one-way regeneration only).
+- Monorepo extraction plan annotated as superseded.
