@@ -3,7 +3,7 @@
 **AL Development Collection** packaged for [APM](https://github.com/microsoft/apm)
 (the Agent Package Manager). ALDC is a skills-based, spec-driven, TDD-orchestrated
 framework for developing Microsoft Dynamics 365 **Business Central** extensions
-with GitHub Copilot and Claude Code.
+with GitHub Copilot. (This package targets the **copilot** harness only.)
 
 This repository is an **APM distribution** of ALDC. It is a *transformation* of the
 canonical source — not a fork. The single source of truth is
@@ -16,8 +16,9 @@ exactly the way the canonical repo regenerates its npm installer and VS Code plu
 ## What's in the package
 
 All primitives live under `.apm/` (the APM source root). `apm install` deploys them
-into each harness's runtime directories; the committed `.github/`, `.claude/`, and
-`.agents/` trees are generated output kept for convenience.
+into the Copilot runtime directories: `.github/` (agents, prompts, instructions) and
+`.agents/skills/` (skills). Those committed trees are generated output; other harness
+outputs (`.claude/`, `AGENTS.md`, `CLAUDE.md`) are intentionally not produced.
 
 | Primitive | Count | Notes |
 |-----------|-------|-------|
@@ -38,14 +39,14 @@ dependencies:
     - javiarmesto/APM-ALDC#v4.1.0
 ```
 
-…then install and (for non-Copilot harnesses) compile:
+…then install:
 
 ```bash
 apm install                  # deploys agents, skills, prompts, instructions, MCP
-apm compile --target claude  # generates CLAUDE.md + rules (Copilot reads .github/ natively)
 ```
 
-Supported `targets`: **copilot** and **claude**.
+Supported `targets`: **copilot** only. No `apm compile` step is needed — Copilot reads
+`.github/instructions/*.instructions.md` natively.
 
 ### Project setup after install (scaffold)
 
@@ -55,11 +56,8 @@ hook, so the non-primitive setup pieces (Copilot routing entrypoint, `aldc.yaml`
 `github-scaffold` skill. Run it once from your project root:
 
 ```bash
-# Copilot / Cursor / Codex (skills land in .agents/skills/)
 node .agents/skills/github-scaffold/scripts/Install-Scaffold.mjs
-
-# Claude Code (skills land in .claude/skills/)
-node .claude/skills/github-scaffold/scripts/Install-Scaffold.mjs
+# Windows:  powershell -ExecutionPolicy Bypass -File .agents\skills\github-scaffold\scripts\Install-Scaffold.ps1
 ```
 
 It seeds `.github/copilot-instructions.md`, `aldc.yaml`, `.github/plans/memory.md`,
@@ -67,10 +65,6 @@ and `tools/{bcquality,aldc-validate,bc-agents}` — skipping anything that alrea
 exists (`--force` to overwrite). The result is equivalent to the legacy npm/VS Code
 install. The 14 SDD templates are **not** seeded here — they live in
 `skill-sdd-contracts/assets/`.
-
-> Compile is **optional for Copilot** — it reads `.github/instructions/*.instructions.md`
-> directly. It is **recommended for Claude** (and Cursor/Codex/Gemini/etc.), which load
-> instructions through a root context file the compile step generates.
 
 ## SDD templates — how they resolve
 

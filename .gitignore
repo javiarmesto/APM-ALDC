@@ -8,3 +8,8 @@ build/
 # apm pack artifacts (regenerated on demand; consumers install from .apm/)
 .claude-plugin/
 .github/plugin/
+
+# Non-copilot compiled output (this package targets copilot only)
+.claude/
+CLAUDE.md
+AGENTS.md
