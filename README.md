@@ -17,10 +17,13 @@ canonical source — not a fork. The single source of truth is
 this repo regenerates its `.apm/` tree from there with `scripts/build-apm.mjs`,
 exactly the way the canonical repo regenerates its npm installer and VS Code plugin.
 
-> **Version:** tracks the canonical release (currently **4.1.0**).
+> **Version:** tracks the canonical release (currently **4.2.0**).
 
-> **Next release:** the findings, implementation plan, validation matrix, and
-> release criteria for v4.2.0 are captured in
+> **v4.2.0** closes the APM/canonical layout gap: an APM-aware `aldc.yaml`
+> (`distribution.roots` + hash-mode Copilot entrypoint coherence), a
+> layout-aware `aldc.code-workspace` scaffold, and reconciliation with
+> canonical `main`. See [`CHANGELOG.md`](./CHANGELOG.md) for the full list;
+> the original findings/plan are archived in
 > [`HANDOFF-APM-ALDC-v4.2.0.md`](./HANDOFF-APM-ALDC-v4.2.0.md).
 
 ## What's in the package
@@ -45,7 +48,7 @@ Add ALDC to your project's `apm.yml` (pin to a release tag):
 ```yaml
 dependencies:
   apm:
-    - javiarmesto/APM-ALDC#v4.1.0
+    - javiarmesto/APM-ALDC#v4.2.0
 ```
 
 …then install:
@@ -102,6 +105,51 @@ The other 9 templates are **human-reference only** — their format is already i
 in the agent/prompt that owns them, and the canonical sources explicitly say *not* to
 read them at runtime. They still ship in `assets/` for browsing, keeping their
 canonical `docs/templates/` mention untouched.
+
+## APM-aware `aldc.yaml` and lifecycle boundary
+
+Canonical `aldc.yaml` and `tools/aldc-validate` assume a single `toolkitRoot`
+prefix for every primitive — that's correct for the npm/VS Code installer's
+unified layout, but APM's Copilot deployment is **split**: agents/prompts/
+instructions land under `.github/*` while skills and SDD templates land under
+`.agents/skills/*`. `build-apm.mjs` step 2d patches the scaffold-seeded
+`aldc.yaml` (every sync, from pristine canonical content) to add a
+`distribution.roots` block:
+
+```yaml
+distribution:
+  kind: apm
+  target: copilot
+  roots:
+    agents: .github/agents
+    subagents: .github/agents
+    workflows: .github/prompts
+    skills: .agents/skills
+    instructions: .github/instructions
+    templates: .agents/skills/skill-sdd-contracts/assets
+    tools: tools
+```
+
+`tools/aldc-validate/index.js` resolves each category through
+`distribution.roots` when present, falling back to the legacy `toolkitRoot`
+prefix for non-APM (canonical/npm) installs — the validator stays a single
+source that works for both distributions.
+
+**Copilot entrypoint coherence caveat**: the canonical validator's default
+"trimmed" mode byte/size-diffs the deployed entrypoint against its full
+source (`instructions/copilot-instructions.md`), which APM never deploys to a
+consumer. The APM seed instead pins `copilotEntrypointMode: "hash"` +
+a SHA-256 `copilotEntrypointHash` computed at scaffold-seed time. This is a
+**trust-boundary trade-off**: it reliably catches *local* drift (someone
+hand-edited the deployed entrypoint after scaffolding) but cannot detect the
+upstream canonical entrypoint evolving — that only surfaces on the next
+`apm install` + re-scaffold.
+
+`aldc.code-workspace` follows the same "seed, don't copy verbatim" pattern:
+`Install-Scaffold.mjs` detects the consumer's layout (`App/app.json` +
+`Test/app.json` = split AL-Go project, root `app.json` = simple project) and
+generates the multi-root `folders` array accordingly, reading the BCQuality
+`home` path from the project's own `aldc.yaml`.
 
 ## Keeping in sync with the canonical repo
 

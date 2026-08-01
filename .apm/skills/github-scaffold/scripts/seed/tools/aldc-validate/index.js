@@ -19,6 +19,7 @@
 const fs = require("fs");
 const path = require("path");
 const yaml = require("js-yaml"); // npm i js-yaml
+const crypto = require("crypto");
 
 const args = process.argv.slice(2);
 let configPath = "aldc.yaml";
@@ -51,7 +52,13 @@ try {
   process.exit(1);
 }
 
-const root = cfg.toolkitRoot === "." ? "" : cfg.toolkitRoot + "/";
+const legacyRoot = cfg.toolkitRoot === "." ? "" : cfg.toolkitRoot + "/";
+function rootFor(category) {
+  const distRoot = cfg.distribution?.roots?.[category];
+  if (distRoot === undefined) return legacyRoot;
+  return distRoot === "." ? "" : distRoot + "/";
+}
+const root = legacyRoot; // back-compat direct uses (AL naming section, etc.)
 const rules = cfg.validation?.rules || {};
 function severity(rule) { return rules[rule] || "warn"; }
 function issue(rule, msg) { severity(rule) === "error" ? error(msg) : warn(msg); }
@@ -113,7 +120,7 @@ if (fileExists(plansRoot)) {
 // ─── 5. Templates ────────────────────────────────────────────────
 const templates = cfg.required?.templates || [];
 for (const t of templates) {
-  const tp = root + t;
+  const tp = rootFor("templates") + t;
   if (!fileExists(tp)) {
     issue("missingTemplates", `Template not found: ${tp}`);
   } else {
@@ -126,7 +133,7 @@ for (const t of templates) {
 // 6a. Agents
 const agents = cfg.required?.agents || [];
 for (const a of agents) {
-  const ap = root + a;
+  const ap = rootFor("agents") + a;
   if (!fileExists(ap)) {
     issue("missingToolkitFiles", `Agent not found: ${ap}`);
   } else {
@@ -137,7 +144,7 @@ for (const a of agents) {
 // 6b. Subagents
 const subagents = cfg.required?.subagents || [];
 for (const s of subagents) {
-  const sp = root + s;
+  const sp = rootFor("subagents") + s;
   if (!fileExists(sp)) {
     issue("missingToolkitFiles", `Subagent not found: ${sp}`);
   } else {
@@ -148,7 +155,7 @@ for (const s of subagents) {
 // 6c. Workflows
 const workflows = cfg.required?.workflows || [];
 for (const w of workflows) {
-  const wp = root + w;
+  const wp = rootFor("workflows") + w;
   if (!fileExists(wp)) {
     issue("missingToolkitFiles", `Workflow not found: ${wp}`);
   } else {
@@ -159,7 +166,7 @@ for (const w of workflows) {
 // 6d. Skills (required)
 const requiredSkills = cfg.required?.skills?.required || [];
 for (const sk of requiredSkills) {
-  const skp = root + sk;
+  const skp = rootFor("skills") + sk;
   if (!fileExists(skp)) {
     issue("missingSkills", `Required skill not found: ${skp}`);
   } else {
@@ -170,7 +177,7 @@ for (const sk of requiredSkills) {
 // 6e. Skills (recommended)
 const recommendedSkills = cfg.required?.skills?.recommended || [];
 for (const sk of recommendedSkills) {
-  const skp = root + sk;
+  const skp = rootFor("skills") + sk;
   if (!fileExists(skp)) {
     issue("missingRecommendedSkills", `Recommended skill not found: ${skp}`);
   } else {
@@ -181,7 +188,7 @@ for (const sk of recommendedSkills) {
 // 6f. Instructions
 const instructions = cfg.required?.instructions || [];
 for (const i of instructions) {
-  const ip = root + i;
+  const ip = rootFor("instructions") + i;
   if (!fileExists(ip)) {
     issue("missingToolkitFiles", `Instruction not found: ${ip}`);
   } else {
@@ -266,6 +273,20 @@ const entrypointMode = cfg.copilotEntrypointMode || "mirror";
 
 if (entrypoint && !fileExists(entrypoint)) {
   issue("copilotEntrypointCoherence", `Copilot entrypoint not found: ${entrypoint}`);
+} else if (entrypoint && entrypointMode === "hash") {
+  if (fileExists(entrypoint)) {
+    const ep = readFile(entrypoint).trim();
+    const actualHash = crypto.createHash("sha256").update(ep, "utf8").digest("hex");
+    const expectedHash = cfg.copilotEntrypointHash;
+    if (!expectedHash) {
+      issue("copilotEntrypointCoherence", `copilotEntrypointHash not set in aldc.yaml for hash mode`);
+    } else if (actualHash !== expectedHash) {
+      issue("copilotEntrypointCoherence",
+        `Copilot entrypoint hash mismatch (local edit, or scaffold is stale): expected ${expectedHash.slice(0, 12)}…, got ${actualHash.slice(0, 12)}…`);
+    } else {
+      info("Copilot entrypoint hash matches pinned provenance (no local drift)");
+    }
+  }
 } else if (entrypoint && source) {
   const sourcePath = root + source;
   if (fileExists(entrypoint) && fileExists(sourcePath)) {

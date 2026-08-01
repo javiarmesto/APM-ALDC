@@ -29,8 +29,9 @@
  */
 
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import {
-  cpSync, existsSync, mkdirSync, readdirSync, readFileSync,
+  copyFileSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync,
   rmSync, statSync, writeFileSync,
 } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -76,6 +77,7 @@ const ASSET_BASE = `${SDD_SKILL}/assets`;
 const SCAFFOLD_SEED = [
   { from: '.github/copilot-instructions.md', to: 'copilot-instructions.md' },
   { from: 'aldc.yaml', to: 'aldc.yaml' },
+  { from: 'aldc.code-workspace', to: 'aldc.code-workspace' },
   { from: 'docs/templates/memory-template.md', to: 'memory.md' },
   { from: 'tools/bcquality', to: 'tools/bcquality' },
   { from: 'tools/aldc-validate', to: 'tools/aldc-validate' },
@@ -93,6 +95,21 @@ const header = (t) => { console.log(`\n${C.cyan}${'═'.repeat(60)}${C.reset}`);
 const isDir = (p) => existsSync(p) && statSync(p).isDirectory();
 
 function ensureDir(p) { mkdirSync(p, { recursive: true }); }
+
+// fs.cpSync({recursive:true}) reproducibly crashes the Node process (native
+// access violation, exit 0xC0000409) on this machine/Node v22.20.0 even for
+// tiny directories — a hand-rolled walk + copyFileSync sidesteps it entirely.
+const COPY_SKIP = new Set(['node_modules', '.git', '.DS_Store']);
+function copyDirSync(src, dst) {
+  ensureDir(dst);
+  for (const entry of readdirSync(src, { withFileTypes: true })) {
+    if (COPY_SKIP.has(entry.name)) continue;
+    const s = join(src, entry.name);
+    const d = join(dst, entry.name);
+    if (entry.isDirectory()) copyDirSync(s, d);
+    else copyFileSync(s, d);
+  }
+}
 
 function listFiles(dir) {
   return isDir(dir) ? readdirSync(dir).filter((f) => statSync(join(dir, f)).isFile()) : [];
@@ -147,7 +164,7 @@ ensureDir(join(APM, 'skills'));
 for (const skill of canonicalSkills) {
   const dst = join(APM, 'skills', skill);
   if (isDir(dst)) rmSync(dst, { recursive: true });
-  cpSync(join(canonicalSkillsDir, skill), dst, { recursive: true });
+  copyDirSync(join(canonicalSkillsDir, skill), dst);
 }
 ok(`canonical skills: ${canonicalSkills.length} synced`);
 
@@ -158,7 +175,7 @@ for (const addon of ADDON_SKILLS) {
   // Self-heal: promote from compiled output if it leaked there but isn't sourced.
   const candidates = [join(REPO, '.agents', 'skills', addon), join(REPO, '.claude', 'skills', addon)];
   const src = candidates.find(isDir);
-  if (src) { cpSync(src, dst, { recursive: true }); ok(`add-on promoted to source: ${addon} (from ${src.replace(REPO + '/', '')})`); }
+  if (src) { copyDirSync(src, dst); ok(`add-on promoted to source: ${addon} (from ${src.replace(REPO + '/', '')})`); }
   else warn(`add-on declared but no source found: ${addon}`);
 }
 
@@ -175,10 +192,150 @@ for (const { from, to } of SCAFFOLD_SEED) {
   if (!existsSync(src)) { warn(`seed source missing, skipped: ${from}`); continue; }
   const dst = join(seedDir, to);
   ensureDir(dirname(dst));
-  cpSync(src, dst, { recursive: true });
+  if (isDir(src)) copyDirSync(src, dst); else copyFileSync(src, dst);
   seedCount++;
 }
 ok(`scaffold seed: ${seedCount}/${SCAFFOLD_SEED.length} entries synced`);
+
+// 2d) Patch scaffold seed for APM's split Copilot layout -----------------------
+// aldc.yaml and tools/aldc-validate are synced verbatim from canonical above,
+// every run, from scratch (seedDir is wiped first) — so this patch always
+// applies to pristine canonical content, never double-patches. APM's Copilot
+// layout is split (.github/* for agents/prompts/instructions, .agents/skills/*
+// for skills), which the single canonical `toolkitRoot` prefix cannot express
+// (handoff finding #11). Each patch below fails the build loudly if its target
+// text isn't found, instead of silently shipping an unpatched file.
+header('2d. Patch scaffold seed for APM-aware layout (aldc.yaml + validator)');
+
+function mustReplace(body, file, oldStr, newStr, expectedCount = 1) {
+  const actual = body.split(oldStr).length - 1;
+  if (actual !== expectedCount) {
+    throw new Error(
+      `APM seed patch target not found as expected in ${file}: expected ${expectedCount}x `
+      + `${JSON.stringify(oldStr.slice(0, 80))}, found ${actual}. Canonical source likely `
+      + 'changed shape — update the patch in build-apm.mjs.',
+    );
+  }
+  return body.split(oldStr).join(newStr);
+}
+
+// --- aldc.yaml: distribution.roots, template paths, entrypoint hash --------
+const seedAldcYamlPath = join(seedDir, 'aldc.yaml');
+// Normalize CRLF -> LF: the canonical repo may use either line ending, but the
+// patch targets below are written as LF strings. Output is written back as LF.
+let aldcYamlBody = readFileSync(seedAldcYamlPath, 'utf8').replace(/\r\n/g, '\n');
+
+const DISTRIBUTION_BLOCK = `distribution:
+  kind: apm
+  target: copilot
+  roots:
+    agents: .github/agents
+    subagents: .github/agents
+    workflows: .github/prompts
+    skills: .agents/skills
+    instructions: .github/instructions
+    templates: .agents/skills/skill-sdd-contracts/assets
+    tools: tools
+`;
+aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', 'toolkitRoot: "."\n', `toolkitRoot: "."\n\n${DISTRIBUTION_BLOCK}`);
+
+// required.templates: "docs/templates/<f>" -> "<f>" (resolved via the new templates root)
+aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', 'docs/templates/', '', 7);
+
+// required/optional.{agents,subagents}: "agents/<f>" -> "<f>" (rootFor('agents'|'subagents')
+// already resolves to the final deployed folder, e.g. ".github/agents" — keeping the
+// "agents/" list-item prefix would double it to ".github/agents/agents/<f>").
+aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '- "agents/', '- "', 10);
+// required/optional.workflows: "prompts/<f>" -> "<f>" (rootFor('workflows') = ".github/prompts")
+aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '- "prompts/', '- "', 11);
+// required/optional.skills: "skills/<f>" -> "<f>" (rootFor('skills') = ".agents/skills")
+aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '- "skills/', '- "', 16);
+// required/optional.instructions: "instructions/<f>" -> "<f>" (rootFor('instructions') = ".github/instructions")
+aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '- "instructions/', '- "', 9);
+// optional.tools: "tools/<f>" -> "<f>" (rootFor('tools') = "tools")
+aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '- "tools/', '- "', 2);
+
+// instructions/copilot-instructions.md is never deployed by the APM instruction
+// integrator (only *.instructions.md files deploy, handoff finding #12) — drop
+// it from required.instructions; entrypoint coherence is checked separately.
+aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '    - "instructions/copilot-instructions.md"\n', '');
+
+// required.instructions "index.md" (package-level docs index, same class as
+// copilot-instructions.md above): never deployed to a consumer's
+// .github/instructions/ folder by a real `apm install` — only the
+// *.instructions.md files land there. Confirmed via E2E fixture testing.
+aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '    - "index.md"\n\n  templates:', '\n  templates:');
+
+// Copilot entrypoint coherence: the full source (copilotSource) is never
+// deployed to APM consumers, so byte/size comparison ("trimmed" mode) can't
+// run there. Pin a SHA-256 of the just-seeded trimmed entrypoint instead — this
+// catches local drift (hand-edits after scaffold), not upstream evolution.
+const seedEntrypointPath = join(seedDir, 'copilot-instructions.md');
+const entrypointHash = createHash('sha256').update(readFileSync(seedEntrypointPath, 'utf8').trim(), 'utf8').digest('hex');
+aldcYamlBody = mustReplace(
+  aldcYamlBody, 'aldc.yaml',
+  'copilotEntrypointMode: "trimmed"',
+  `copilotEntrypointMode: "hash"\ncopilotEntrypointHash: "${entrypointHash}"`,
+);
+
+writeFileSync(seedAldcYamlPath, aldcYamlBody);
+ok('aldc.yaml: distribution.roots added, template paths rewritten, entrypoint hash pinned');
+
+// --- tools/aldc-validate/index.js: per-category root + hash coherence mode -
+const validatorPath = join(seedDir, 'tools', 'aldc-validate', 'index.js');
+let validatorBody = readFileSync(validatorPath, 'utf8').replace(/\r\n/g, '\n');
+
+validatorBody = mustReplace(
+  validatorBody, 'aldc-validate/index.js',
+  'const root = cfg.toolkitRoot === "." ? "" : cfg.toolkitRoot + "/";',
+  [
+    'const legacyRoot = cfg.toolkitRoot === "." ? "" : cfg.toolkitRoot + "/";',
+    'function rootFor(category) {',
+    '  const distRoot = cfg.distribution?.roots?.[category];',
+    '  if (distRoot === undefined) return legacyRoot;',
+    '  return distRoot === "." ? "" : distRoot + "/";',
+    '}',
+    'const root = legacyRoot; // back-compat direct uses (AL naming section, etc.)',
+  ].join('\n'),
+);
+
+validatorBody = mustReplace(validatorBody, 'aldc-validate/index.js', 'const tp = root + t;', 'const tp = rootFor("templates") + t;');
+validatorBody = mustReplace(validatorBody, 'aldc-validate/index.js', 'const ap = root + a;', 'const ap = rootFor("agents") + a;');
+validatorBody = mustReplace(validatorBody, 'aldc-validate/index.js', 'const sp = root + s;', 'const sp = rootFor("subagents") + s;');
+validatorBody = mustReplace(validatorBody, 'aldc-validate/index.js', 'const wp = root + w;', 'const wp = rootFor("workflows") + w;');
+validatorBody = mustReplace(validatorBody, 'aldc-validate/index.js', 'const skp = root + sk;', 'const skp = rootFor("skills") + sk;', 2);
+validatorBody = mustReplace(validatorBody, 'aldc-validate/index.js', 'const ip = root + i;', 'const ip = rootFor("instructions") + i;');
+
+validatorBody = mustReplace(
+  validatorBody, 'aldc-validate/index.js',
+  'const yaml = require("js-yaml"); // npm i js-yaml',
+  'const yaml = require("js-yaml"); // npm i js-yaml\nconst crypto = require("crypto");',
+);
+
+validatorBody = mustReplace(
+  validatorBody, 'aldc-validate/index.js',
+  '} else if (entrypoint && source) {',
+  [
+    '} else if (entrypoint && entrypointMode === "hash") {',
+    '  if (fileExists(entrypoint)) {',
+    '    const ep = readFile(entrypoint).trim();',
+    '    const actualHash = crypto.createHash("sha256").update(ep, "utf8").digest("hex");',
+    '    const expectedHash = cfg.copilotEntrypointHash;',
+    '    if (!expectedHash) {',
+    '      issue("copilotEntrypointCoherence", `copilotEntrypointHash not set in aldc.yaml for hash mode`);',
+    '    } else if (actualHash !== expectedHash) {',
+    '      issue("copilotEntrypointCoherence",',
+    '        `Copilot entrypoint hash mismatch (local edit, or scaffold is stale): expected ${expectedHash.slice(0, 12)}\u2026, got ${actualHash.slice(0, 12)}\u2026`);',
+    '    } else {',
+    '      info("Copilot entrypoint hash matches pinned provenance (no local drift)");',
+    '    }',
+    '  }',
+    '} else if (entrypoint && source) {',
+  ].join('\n'),
+);
+
+writeFileSync(validatorPath, validatorBody);
+ok('aldc-validate/index.js: per-category root resolution + hash coherence mode added');
 
 // 3) skill-sdd-contracts: SKILL.md + assets/<14 templates> --------------------
 header('3. Generate skill-sdd-contracts (SDD templates → assets/)');
@@ -218,6 +375,20 @@ for (const file of rewriteTargets) {
 }
 for (const [f, n] of Object.entries(rewriteReport)) ok(`${f}: ${n} rewrite(s)`);
 info(`Total runtime path rewrites: ${totalRewrites}`);
+
+// 4b) Fail-fast: no phantom docs/templates/<runtime-template> refs may remain -
+header('4b. Verify no phantom runtime-template paths remain');
+const phantomRefs = [];
+for (const file of rewriteTargets) {
+  const body = readFileSync(file, 'utf8');
+  for (const name of RUNTIME_TEMPLATES) {
+    if (body.includes(`docs/templates/${name}`)) phantomRefs.push(`${file.replace(REPO + '/', '')} -> docs/templates/${name}`);
+  }
+}
+if (phantomRefs.length > 0) {
+  throw new Error(`Phantom runtime-template references remain after rewrite:\n  ${phantomRefs.join('\n  ')}`);
+}
+ok('No phantom docs/templates/<runtime-template> references remain in agents/prompts/skills');
 
 // 5) Version bump -------------------------------------------------------------
 header('5. Align version → ' + VERSION);

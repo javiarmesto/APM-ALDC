@@ -2,10 +2,22 @@
 # Skills-based modularization with preserved orchestration + per-requirement contracts + global memory
 
 core:
-  version: "1.1.0"
-  specFile: "docs/framework/ALDC-Core-Spec-v1.1.md"
+  version: "1.2.0"
+  specFile: "docs/framework/ALDC-Core-Spec-v1.2.md"
 
 toolkitRoot: "."
+
+distribution:
+  kind: apm
+  target: copilot
+  roots:
+    agents: .github/agents
+    subagents: .github/agents
+    workflows: .github/prompts
+    skills: .agents/skills
+    instructions: .github/instructions
+    templates: .agents/skills/skill-sdd-contracts/assets
+    tools: tools
 
 # External citable knowledge base, consumed by al-review-subagent (Step 0) as an
 # audit/citation layer. Does NOT replace instructions or skills.
@@ -64,81 +76,84 @@ copilotSource: "instructions/copilot-instructions.md"
 # "trimmed": the always-on entrypoint is an intentional lean subset of the source
 # (the ~31% trim). The validator then checks it is non-empty and smaller than the
 # source instead of requiring byte-identity. Use "mirror" to require byte-identity.
-copilotEntrypointMode: "trimmed"
+copilotEntrypointMode: "hash"
+copilotEntrypointHash: "fae115210fa51f4e87777e19a3c45bf9e72eba570c0b9528ebee27b5a0ce6d70"
 
 required:
   agents:
-    - "agents/al-architect.agent.md"
-    - "agents/al-conductor.agent.md"
-    - "agents/al-developer.agent.md"
-    - "agents/al-presales.agent.md"
-    - "agents/dredd.agent.md"
+    - "al-architect.agent.md"
+    - "al-conductor.agent.md"
+    - "al-developer.agent.md"
+    - "al-presales.agent.md"
+    - "dredd.agent.md"
+    - "al-triage.agent.md"
 
   subagents:
-    - "agents/al-planning-subagent.agent.md"
-    - "agents/al-review-subagent.agent.md"
-    - "agents/al-implement-subagent.agent.md"
+    - "al-planning-subagent.agent.md"
+    - "al-review-subagent.agent.md"
+    - "al-implement-subagent.agent.md"
 
   workflows:
-    - "prompts/al-spec.create.prompt.md"
-    - "prompts/al-build.prompt.md"
-    - "prompts/al-pr-prepare.prompt.md"
-    - "prompts/al-memory.create.prompt.md"
-    - "prompts/al-context.create.prompt.md"
-    - "prompts/al-initialize.prompt.md"
+    - "al-spec.create.prompt.md"
+    - "al-build.prompt.md"
+    - "al-pr-prepare.prompt.md"
+    - "al-memory.create.prompt.md"
+    - "al-context.create.prompt.md"
+    - "al-initialize.prompt.md"
 
   skills:
     required:
-      - "skills/skill-api/SKILL.md"
-      - "skills/skill-copilot/SKILL.md"
-      - "skills/skill-debug/SKILL.md"
-      - "skills/skill-performance/SKILL.md"
-      - "skills/skill-events/SKILL.md"
-      - "skills/skill-permissions/SKILL.md"
-      - "skills/skill-testing/SKILL.md"
+      - "skill-api/SKILL.md"
+      - "skill-copilot/SKILL.md"
+      - "skill-debug/SKILL.md"
+      - "skill-performance/SKILL.md"
+      - "skill-events/SKILL.md"
+      - "skill-permissions/SKILL.md"
+      - "skill-testing/SKILL.md"
     recommended:
-      - "skills/skill-migrate/SKILL.md"
-      - "skills/skill-pages/SKILL.md"
-      - "skills/skill-translate/SKILL.md"
-      - "skills/skill-estimation/SKILL.md"
+      - "skill-migrate/SKILL.md"
+      - "skill-pages/SKILL.md"
+      - "skill-translate/SKILL.md"
+      - "skill-estimation/SKILL.md"
 
   instructions:
-    - "instructions/al-guidelines.instructions.md"
-    - "instructions/al-code-style.instructions.md"
-    - "instructions/al-naming-conventions.instructions.md"
-    - "instructions/al-performance.instructions.md"
-    - "instructions/al-error-handling.instructions.md"
-    - "instructions/al-events.instructions.md"
-    - "instructions/al-testing.instructions.md"
-    - "instructions/copilot-instructions.md"
-    - "instructions/index.md"
+    - "al-guidelines.instructions.md"
+    - "al-code-style.instructions.md"
+    - "al-naming-conventions.instructions.md"
+    - "al-performance.instructions.md"
+    - "al-error-handling.instructions.md"
+    - "al-events.instructions.md"
+    - "al-testing.instructions.md"
 
   templates:
-    - "docs/templates/spec-template.md"
-    - "docs/templates/architecture-template.md"
-    - "docs/templates/test-plan-template.md"
-    - "docs/templates/memory-template.md"
-    - "docs/templates/technical-spec-template.md"
-    - "docs/templates/delivery-template.md"
-    - "docs/templates/skill-template.md"
+    - "spec-template.md"
+    - "architecture-template.md"
+    - "test-plan-template.md"
+    - "memory-template.md"
+    - "technical-spec-template.md"
+    - "delivery-template.md"
+    - "skill-template.md"
 
 optional:
   agents:
-    - "agents/al-agent-builder.agent.md"
+    - "al-agent-builder.agent.md"
   skills:
-    - "skills/skill-agent-instructions/SKILL.md"
-    - "skills/skill-agent-task-patterns/SKILL.md"
-    - "skills/skill-agent-toolkit/SKILL.md"
+    - "skill-agent-instructions/SKILL.md"
+    - "skill-agent-task-patterns/SKILL.md"
+    - "skill-agent-toolkit/SKILL.md"
+    - "skill-manifest/SKILL.md"
+    - "skill-contribution-assistant/SKILL.md"
   workflows:
-    - "prompts/al-agent.create.prompt.md"
-    - "prompts/al-agent.task.prompt.md"
-    - "prompts/al-agent.instructions.prompt.md"
-    - "prompts/al-agent.test.prompt.md"
+    - "al-agent.create.prompt.md"
+    - "al-agent.task.prompt.md"
+    - "al-agent.instructions.prompt.md"
+    - "al-agent.test.prompt.md"
+    - "al-agent.build-instructions.prompt.md"
   instructions:
-    - "instructions/al-agent-toolkit.instructions.md"
+    - "al-agent-toolkit.instructions.md"
   tools:
-    - "tools/bc-agents/scaffold_agent.py"
-    - "tools/bc-agents/validate_agent_config.sh"
+    - "bc-agents/scaffold_agent.py"
+    - "bc-agents/validate_agent_config.sh"
 
 validation:
   rules:

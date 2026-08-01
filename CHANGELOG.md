@@ -5,11 +5,45 @@ version tracks the canonical
 [`ALDC-AL-Development-Collection`](https://github.com/javiarmesto/ALDC-AL-Development-Collection)
 release.
 
-## [Unreleased] — setup parity
+## [4.2.0] — APM-aware layout, hash-mode entrypoint coherence
 
-Close the gap between `apm install` and the legacy npm/VS Code installer.
+Reconcile the APM package with canonical ALDC `main` @ `a900263f` (post-v4.2.0
+tag; verified via diff that the extra commits only touch README/banner
+content, not any packaged primitive) and close the APM/canonical layout gap
+identified after the v4.1.0 release: canonical `aldc.yaml`/`aldc-validate`
+assume a single `toolkitRoot` prefix, which cannot express APM's split
+Copilot layout (`.github/*` for agents/prompts/instructions vs `.agents/skills/*`
+for skills and SDD templates).
 
 ### Added
+- `build-apm.mjs` step 2d: patches the scaffold-seeded `aldc.yaml` and
+  `tools/aldc-validate/index.js` (sync-then-patch, every run, from pristine
+  canonical content — never double-patches) to add:
+  - A `distribution.roots` block resolving each primitive category
+    (`agents`, `subagents`, `workflows`, `skills`, `instructions`, `templates`,
+    `tools`) to its actual APM-deployed path.
+  - `required.templates` entries rewritten from `docs/templates/<f>` to bare
+    `<f>` (resolved against the new `templates` root).
+  - Removal of `required.instructions: - "instructions/copilot-instructions.md"`
+    — that file is never deployed by the APM instruction integrator (only
+    `*.instructions.md` files deploy).
+  - A new `copilotEntrypointMode: "hash"` + `copilotEntrypointHash` pin: since
+    the full entrypoint source isn't deployed to APM consumers, byte/size
+    comparison can't run there — a SHA-256 of the seeded entrypoint is pinned
+    instead. **Caveat**: this only catches local drift (hand-edits after
+    scaffold), not upstream evolution of the canonical entrypoint.
+  - `tools/aldc-validate/index.js` gains a `rootFor(category)` helper that
+    resolves each category through `distribution.roots` when present, falling
+    back to the legacy `toolkitRoot` prefix otherwise.
+- `build-apm.mjs` step 4b: fails the build if any `docs/templates/<name>`
+  phantom reference remains in agents/prompts/skills after the runtime-path
+  rewrite (step 4).
+- `aldc.code-workspace` added to the `github-scaffold` seed and to
+  `Install-Scaffold.mjs`. Unlike every other scaffold target it is
+  **generated, not copied**: the installer detects the consumer's layout
+  (`App/app.json` + `Test/app.json` = split, root `app.json` = simple) and
+  produces the matching `folders` array plus the BCQuality root (read from
+  the project's `aldc.yaml`).
 - Cross-platform `Install-Scaffold.mjs` in the `github-scaffold` skill that
   seeds the non-primitive setup pieces APM does not deploy: the Copilot
   routing entrypoint (`.github/copilot-instructions.md`), `aldc.yaml`,
@@ -25,6 +59,58 @@ Close the gap between `apm install` and the legacy npm/VS Code installer.
   `scripts.scaffold` updated accordingly.
 - The scaffold no longer seeds `.github/docs/templates/` — templates live solely
   in `skill-sdd-contracts/assets/` (single source of truth).
+
+### Fixed
+- `fs.cpSync({recursive: true})` reproducibly crashed the Node process on
+  Windows (native access violation, exit `0xC0000409`) even for tiny
+  directories. Replaced every recursive-copy call in `build-apm.mjs` and
+  `Install-Scaffold.mjs` with a hand-rolled `copyDirSync()` walk
+  (`readdirSync` + `mkdirSync` + `copyFileSync`), which also explicitly skips
+  `node_modules`/`.git`/`.DS_Store` so local, untracked build artifacts in the
+  canonical checkout are never copied into the seed.
+- `mustReplace`-style exact-string patches in `build-apm.mjs` now normalize
+  `\r\n` → `\n` before matching, since the canonical checkout's `aldc.yaml`
+  uses CRLF line endings on Windows.
+- `apm.lock.yaml` carried 49 stale `.claude/*` entries (in both
+  `local_deployed_files` and `local_deployed_file_hashes`) left over from
+  before this repository narrowed to the Copilot-only target. This made
+  `apm audit --ci` fail with "49 deployed file(s) missing". Removed the
+  stale entries; `apm audit --ci` now passes all 9 checks.
+- **Found via E2E fixture testing (see Verified below)**: the seeded
+  `aldc.yaml`'s `required.{agents,subagents,workflows,skills,instructions}`
+  lists still carried their canonical category-prefix (e.g.
+  `"agents/al-architect.agent.md"`, `"skills/skill-api/SKILL.md"`), but
+  `distribution.roots` already resolves each category to its final deployed
+  folder (e.g. `.github/agents`) — concatenating the two doubled the segment
+  (`.github/agents/agents/al-architect.agent.md`), so the validator reported
+  every required agent/subagent/workflow/skill/instruction as missing on a
+  freshly-installed consumer project. `build-apm.mjs` step 2d now strips the
+  category prefix from all five `required.*`/`optional.*` lists (the same
+  treatment already applied to `required.templates`).
+- **Also found via E2E**: `required.instructions` still listed `"index.md"`
+  (a package-level docs index), which — like `copilot-instructions.md` before
+  it — is never deployed to a consumer's `.github/instructions/` folder by a
+  real `apm install`. Removed it from the seeded list.
+
+### Verified
+- Two clean-project E2E fixtures (handoff step 7): a root-app layout
+  (`app.json` at project root) and a split layout (`App/app.json` +
+  `Test/app.json`), each seeded with the real `apm install`-deployed
+  `.github/{agents,prompts,instructions}` + `.agents/skills` content, then
+  scaffolded via `Install-Scaffold.mjs` and checked with
+  `tools/aldc-validate`. Both layouts are correctly auto-detected
+  (`aldc.code-workspace` "simple" vs "split") and, after the two fixes above,
+  both report **`ALDC Core v1.1 COMPLIANT (0 warning(s))`** — 0 errors, 0
+  warnings.
+- `node scripts/build-apm.mjs` — exit 0. agents 11, instructions 11,
+  prompts 13, canonicalSkills 16, addonSkills 2, sddTemplates 14,
+  runtimeRewrites 12, scaffoldSeed 7/7.
+- `apm install` — deploys cleanly, no manual repair needed.
+- `apm audit --ci` — **all 9 checks pass** (lockfile-exists, ref-consistency,
+  deployed-files-present, no-orphaned-packages, skill-subset-consistency,
+  config-consistency, content-integrity, includes-consent, drift).
+- `apm pack --dry-run --verbose` — 109 files packed to `build/aldc-4.2.0`;
+  no `.claude/*`, no `node_modules`, no phantom `docs/templates/` paths.
 
 ## [4.1.0]
 

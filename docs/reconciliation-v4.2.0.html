@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Informe de reconciliación — ALDC v4.2.0</title>
+<style>
+  :root {
+    --ok: #1a7f37;
+    --warn: #9a6700;
+    --diff: #cf222e;
+    --bg: #f6f8fa;
+    --border: #d0d7de;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+    line-height: 1.55;
+    color: #1f2328;
+    background: #fff;
+  }
+  h1 { font-size: 1.9rem; border-bottom: 3px solid #1f2328; padding-bottom: 10px; }
+  h2 { font-size: 1.35rem; margin-top: 2.4rem; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  h3 { font-size: 1.1rem; margin-top: 1.6rem; }
+  .meta {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 18px 0;
+    font-size: 0.95rem;
+  }
+  .meta strong { color: #1f2328; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 22px;
+    font-size: 0.93rem;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: var(--bg); font-weight: 600; }
+  tr:nth-child(even) td { background: #fbfbfc; }
+  code {
+    background: #f0f2f4;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    font-family: "SF Mono", Consolas, monospace;
+  }
+  pre {
+    background: #f6f8fa;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-size: 0.85rem;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #fff;
+  }
+  .badge-ok { background: var(--ok); }
+  .badge-diff { background: var(--diff); }
+  .badge-warn { background: var(--warn); }
+  .card {
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--diff);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    background: #fff8f8;
+  }
+  .card.ok-card { border-left-color: var(--ok); background: #f2fbf4; }
+  .card h3 { margin-top: 0; }
+  .diff-block {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+    flex-wrap: wrap;
+  }
+  .diff-old, .diff-new {
+    flex: 1 1 300px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 0.82rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .diff-old { background: #ffebe9; border: 1px solid #ffc1bc; }
+  .diff-new { background: #e6ffec; border: 1px solid #aceebb; }
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding: 4px 0 4px 28px; position: relative; }
+  .checklist li::before { content: "✅"; position: absolute; left: 0; }
+  .checklist li.pending::before { content: "⏳"; }
+  .checklist li.no::before { content: "🚫"; }
+  .toc {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 20px;
+  }
+  .toc a { color: #0969da; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  footer {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: #59636e;
+  }
+  .icon-ok { color: var(--ok); font-weight: 700; }
+  .icon-diff { color: var(--diff); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<h1>📋 Informe de reconciliación — ALDC v4.2.0</h1>
+
+<div class="meta">
+  <strong>Fecha:</strong> 01/08/2026<br>
+  <strong>Alcance:</strong> Solo el Paso 1 (reconciliación) del handoff <code>HANDOFF-APM-ALDC-v4.2.0.md</code>.<br>
+  <strong>Importante:</strong> No se ha modificado ningún archivo de <code>.apm/</code>, ni las versiones de
+  <code>apm.yml</code>/<code>plugin.json</code>, ni <code>scripts/build-apm.lock.json</code>. Este informe es
+  solo diagnóstico — la sincronización real (ejecutar <code>build-apm.mjs</code>) es el siguiente paso, aún
+  pendiente.
+</div>
+
+<div class="meta" style="border-color: var(--warn);">
+  <strong>⚠️ Desviación documentada (no bloqueante):</strong> cuando <code>build-apm.mjs</code> se ejecutó
+  realmente (fase de implementación de los Pasos 2-7), <code>main</code> canónico había avanzado de
+  <code>2ae426d4...</code> (punta registrada en este informe) a
+  <code>a900263f51e416762cc7f85575deb9b30cd5b1e3</code>. Se verificó con <code>git diff --stat</code> entre
+  ambas puntas antes de continuar: los commits adicionales solo tocan <code>README.md</code>/banner, no
+  ningún primitivo ni archivo dentro del alcance de esta reconciliación — por lo que todos los hallazgos y
+  decisiones de este informe siguen siendo válidos. La base de sincronización realmente usada por
+  <code>build-apm.mjs</code> fue <code>a900263f51e416762cc7f85575deb9b30cd5b1e3</code>, registrada en
+  <code>scripts/build-apm.lock.json</code>.
+</div>
+
+<div class="toc">
+  <strong>Índice rápido</strong>
+  <ol>
+    <li><a href="#fuentes">Fuentes comparadas</a></li>
+    <li><a href="#resultado">Resultado por categoría</a></li>
+    <li><a href="#hallazgo1">Hallazgo 1 — al-conductor.agent.md</a></li>
+    <li><a href="#hallazgo2">Hallazgo 2 — aldc.yaml</a></li>
+    <li><a href="#resto">El resto: sin acción necesaria</a></li>
+    <li><a href="#commit">Commit recomendado para el siguiente paso</a></li>
+    <li><a href="#desviaciones">Desviaciones e incidencias durante el proceso</a></li>
+    <li><a href="#nohecho">Qué NO se ha hecho todavía</a></li>
+  </ol>
+</div>
+
+<h2 id="fuentes">1. Fuentes comparadas</h2>
+<table>
+  <tr><th>Fuente</th><th>Identificador</th><th>Cómo se accedió</th></tr>
+  <tr>
+    <td>Tag canónico</td>
+    <td><code>v4.2.0</code> = commit <code>0aea659b...</code></td>
+    <td>API de GitHub (sin terminal/git local disponible en esta sesión)</td>
+  </tr>
+  <tr>
+    <td>Rama canónica <code>main</code></td>
+    <td>commit <code>2ae426d4...</code> (punta actual a 01/08/2026)</td>
+    <td>API de GitHub</td>
+  </tr>
+  <tr>
+    <td>Snapshot desplegado en producción (referencia)</td>
+    <td><code>C:\ALDC-Forge-Tests\Hogargas</code></td>
+    <td>Lectura local de archivos</td>
+  </tr>
+  <tr>
+    <td>Paquete APM actual (línea base)</td>
+    <td><code>.apm\*</code> — sincronizado desde el commit <code>16cc1dd...</code> (10/06/2026)</td>
+    <td>Lectura local de archivos</td>
+  </tr>
+</table>
+
+<p><strong>Método usado:</strong> para carpetas/archivos completos, se comparó el hash SHA de git (blob o
+árbol) entre el tag y <code>main</code> vía API de GitHub — si el SHA de un árbol coincide, garantiza que
+<em>todo</em> su contenido interno, recursivamente, es idéntico (no hace falta bajar a comparar archivo por
+archivo). Donde hubo diferencia, se descargó el contenido completo y se comparó línea a línea, y además se
+contrastó contra el snapshot desplegado y contra el <code>.apm/</code> actual.</p>
+
+<p><span class="badge badge-warn">Limitación conocida</span> No hubo herramienta de terminal/git en esta
+sesión, así que no se pudo ejecutar la verificación de ascendencia
+(<code>git merge-base --is-ancestor 16cc1dd main</code>). Se deja como tarea pendiente para cuando haya
+acceso a terminal — no bloquea las conclusiones de este informe, que se basan en comparación directa de
+contenido, no en inferencia de ascendencia.</p>
+
+<h2 id="resultado">2. Resultado por categoría (tag v4.2.0 vs main)</h2>
+<table>
+  <tr><th>Categoría</th><th>Archivos/carpetas</th><th>Resultado</th></tr>
+  <tr>
+    <td><code>agents/</code></td>
+    <td>11 (incl. al-triage, dredd, index)</td>
+    <td><span class="icon-diff">⚠ 10/11 idénticos.</span> <code>al-conductor.agent.md</code> difiere.</td>
+  </tr>
+  <tr><td><code>instructions/</code></td><td>11</td><td><span class="icon-ok">✔ Idénticos</span></td></tr>
+  <tr><td><code>prompts/</code></td><td>13</td><td><span class="icon-ok">✔ Idénticos</span></td></tr>
+  <tr><td><code>docs/templates/</code></td><td>14</td><td><span class="icon-ok">✔ Idénticos</span></td></tr>
+  <tr>
+    <td><code>skills/</code></td>
+    <td>16 skills + index</td>
+    <td><span class="icon-ok">✔ Idénticos</span> (SHA de árbol igual ⇒ todo el contenido interno también)</td>
+  </tr>
+  <tr>
+    <td><code>tools/</code></td>
+    <td>3 carpetas (aldc-validate, bc-agents, bcquality)</td>
+    <td><span class="icon-ok">✔ Idénticos</span></td>
+  </tr>
+  <tr>
+    <td><code>.github/copilot-instructions.md</code></td>
+    <td>1</td>
+    <td><span class="icon-ok">✔ Idéntico</span></td>
+  </tr>
+  <tr>
+    <td><code>aldc.yaml</code></td>
+    <td>1</td>
+    <td><span class="icon-diff">⚠ Difiere</span></td>
+  </tr>
+</table>
+
+<p><strong>Conclusión clave:</strong> de todo lo comparado, solo <strong>2 archivos</strong> son diferentes
+entre el tag y <code>main</code>. Todo lo demás está garantizado como idéntico.</p>
+
+<h2 id="hallazgo1">3. Hallazgo 1 — <code>agents/al-conductor.agent.md</code></h2>
+<div class="card">
+  <h3>¿Qué cambió?</h3>
+  <p><code>main</code> elimina un prefijo <code>.github/</code> que estaba escrito a fuego en una
+  referencia dentro del archivo:</p>
+  <div class="diff-block">
+    <div class="diff-old">− (tag) .github/instructions/al-*.instructions.md</div>
+    <div class="diff-new">+ (main) instructions/al-*.instructions.md</div>
+  </div>
+  <p>El resto del archivo (~800 líneas) es idéntico entre tag y main.</p>
+
+  <h3>Estado actual en este repo</h3>
+  <ul class="checklist">
+    <li><code>.apm\agents\al-conductor.agent.md</code> ya contiene la redacción de <strong>main</strong>
+      (ya está correcto, no hace falta tocar el contenido).</li>
+    <li class="no">El snapshot desplegado de Hogargas <strong>no contiene esa frase en absoluto</strong> —
+      es una revisión más antigua, anterior a este cambio. No es una "personalización del proyecto", solo
+      es una foto congelada más vieja.</li>
+  </ul>
+
+  <h3>Decisión</h3>
+  <p><span class="badge badge-ok">INCLUIR</span> — es una evolución verificada posterior al tag. El
+  contenido ya está bien en <code>.apm/</code>; solo falta actualizar el <strong>registro de procedencia</strong>
+  (<code>build-apm.lock.json</code> / versión en <code>apm.yml</code>) para reflejar que este archivo
+  coincide con <code>main</code> (<code>2ae426d4...</code>), no con el commit antiguo <code>16cc1dd</code>.</p>
+</div>
+
+<h2 id="hallazgo2">4. Hallazgo 2 — <code>aldc.yaml</code> (raíz)</h2>
+<div class="card">
+  <h3>¿Qué cambió?</h3>
+  <div class="diff-block">
+    <div class="diff-old">− (tag) core.version: "1.1.0"
+− specFile: "docs/framework/ALDC-Core-Spec-v1.1.md"</div>
+    <div class="diff-new">+ (main) core.version: "1.2.0"
++ specFile: "docs/framework/ALDC-Core-Spec-v1.2.md"</div>
+  </div>
+  <p>El resto del archivo (listas <code>required</code>/<code>optional</code>, <code>external.bcquality</code>,
+  <code>contracts</code>, <code>validation</code>) es idéntico byte a byte entre tag y main — solo cambia el
+  número de versión y el puntero al archivo de especificación.</p>
+
+  <h3>Estado actual en este repo</h3>
+  <table>
+    <tr><th>Origen</th><th><code>core.version</code></th><th><code>toolkitRoot</code></th><th>Coincide con</th></tr>
+    <tr>
+      <td>Seed del scaffold de APM<br><code>.apm/skills/github-scaffold/scripts/seed/aldc.yaml</code></td>
+      <td>1.1.0</td>
+      <td><code>.</code></td>
+      <td><span class="badge badge-diff">tag (desactualizado)</span></td>
+    </tr>
+    <tr>
+      <td>Snapshot desplegado (Hogargas)</td>
+      <td>1.2.0</td>
+      <td><code>.github</code> ⚠ personalizado</td>
+      <td><span class="badge badge-ok">main</span> + 1 campo propio</td>
+    </tr>
+  </table>
+  <p>El snapshot de Hogargas confirma en datos reales lo que el handoff ya avisaba: ese proyecto personalizó
+  <code>toolkitRoot</code> a <code>".github"</code> (en canónico, tanto tag como main usan <code>"."</code>).
+  Este campo <strong>no debe copiarse</strong> tal cual.</p>
+
+  <h3>Decisión</h3>
+  <p><span class="badge badge-ok">INCLUIR</span> la subida de versión 1.1.0→1.2.0 (evolución real y
+  verificada de <code>main</code>). <span class="badge badge-diff">NO ADOPTAR</span>
+  <code>toolkitRoot: ".github"</code> — eso queda como personalización de cada proyecto; el transformador de
+  <code>aldc.yaml</code> "consciente de APM" (Paso 2 del handoff, aún no hecho) deberá calcular las rutas
+  propias de APM, no copiar el valor de un solo consumidor.</p>
+</div>
+
+<h2 id="resto">5. El resto: sin acción necesaria</h2>
+<p><span class="icon-ok">✔</span> 10 de 11 agents, todas las instructions, todos los prompts, las 14
+plantillas, los 16 skills canónicos (con todo su contenido interno), las 3 carpetas de <code>tools/</code> y
+<code>copilot-instructions.md</code> son <strong>idénticos byte a byte</strong> entre <code>v4.2.0</code> y
+<code>main</code>. No hay nada que reconciliar ahí — lo que ya existe en <code>.apm/</code> refleja
+correctamente la release canónica, sin riesgo de desviación en este frente.</p>
+
+<h2 id="commit">6. Commit recomendado para el siguiente paso</h2>
+<div class="card ok-card">
+  <ul class="checklist">
+    <li><strong>Referencia base para sincronizar:</strong> <code>main</code> @
+      <code>2ae426d46d5fb808c4ebaa747e9108b0b07c700c</code> (a 01/08/2026) — es un superconjunto estricto
+      del contenido del tag <code>v4.2.0</code> (solo añade las 2 mejoras de arriba; no se encontró ninguna
+      regresión ni eliminación respecto al tag).</li>
+    <li><code>scripts/build-apm.lock.json</code> deberá actualizar <code>canonicalRef</code> de
+      <code>16cc1dd...</code> a <code>2ae426d4...</code> cuando se ejecute realmente la sincronización (aún
+      no hecho).</li>
+    <li><code>apm.yml</code> / <code>plugin.json</code> deberán pasar de versión <code>4.1.0</code> a
+      <code>4.2.0</code> (confirmado que <code>package.json</code> en ese commit de main ya marca
+      <code>4.2.0</code>).</li>
+  </ul>
+</div>
+
+<h2 id="desviaciones">7. Desviaciones e incidencias durante el proceso</h2>
+<ol>
+  <li>No hubo herramienta de terminal, git ni descarga web disponible en esta sesión; el plan original de
+    usar <code>git worktree add</code> no se pudo ejecutar. Solución aplicada: usar la herramienta MCP de
+    GitHub (<code>get_file_contents</code>) directamente sobre <code>refs/tags/v4.2.0</code> y
+    <code>refs/heads/main</code> — recomendado como método preferente también para futuras reconciliaciones
+    (menos pasos que un worktree local y no requiere clon local).</li>
+  <li>El clon local del repositorio canónico (<code>C:\Users\...\ALDC</code>) está en una rama no relacionada
+    (<code>f2-claude-workspace</code>) — confirmado que no se usó como fuente de comparación.</li>
+  <li>Las carpetas <code>build/aldc-3.2.3</code>, <code>3.2.4</code>, <code>3.2.6</code> de este repo se
+    confirmaron fuera de alcance (artefactos heredados, otro esquema de versiones) y no se tocaron.</li>
+  <li>No se pudo verificar si <code>16cc1dd</code> es ancestro de <code>main</code>/<code>v4.2.0</code> —
+    pendiente para cuando haya acceso a terminal. No es necesario para confiar en las conclusiones de este
+    informe, que se basan en comparación directa de contenido.</li>
+  <li><code>scripts/build-apm.mjs</code> copia <code>aldc.yaml</code> <strong>literal</strong> desde la raíz
+    canónica. Cuando se diseñe el transformador "consciente de APM" (Paso 2 del handoff), deberá partir del
+    contenido 1.2.0 de <code>main</code> identificado aquí, no del 1.1.0 que hay sembrado actualmente.</li>
+</ol>
+
+<h2 id="nohecho">8. Qué NO se ha hecho todavía</h2>
+<ul class="checklist">
+  <li class="no">Ningún archivo de <code>.apm/</code> ha sido modificado.</li>
+  <li class="no"><code>apm.yml</code>, <code>plugin.json</code> ni <code>scripts/build-apm.lock.json</code>
+    han sido modificados.</li>
+  <li class="no"><code>build-apm.mjs</code> no se ha ejecutado.</li>
+  <li class="no">No se han hecho cambios de E2E, scaffold ni validador — quedan como pasos futuros de
+    planificación según los pasos 2–7 del handoff y el checklist de release.</li>
+</ul>
+
+<footer>
+  Generado a partir de <code>docs/reconciliation-v4.2.0.md</code> (versión Markdown original conservada
+  como fuente técnica). Este HTML es una versión de lectura rápida en español.
+</footer>
+
+</body>
+</html>
