@@ -5,6 +5,42 @@ version tracks the canonical
 [`ALDC-AL-Development-Collection`](https://github.com/javiarmesto/ALDC-AL-Development-Collection)
 release.
 
+## [Unreleased] — EVO-000 release integrity baseline
+
+Make the current 4.2.0 tree reproducible before accepting further evolutives.
+
+### Changed
+- Added `scripts/rebuild-distribution.mjs` as the single source + compiled
+  regeneration command.
+- Encoded Claude Sonnet 5 as the explicit APM-only
+  `copilot-model-policy-v1` transformation across 10 agents and 11 prompts.
+- Require a clean canonical Git checkout and use its immutable commit timestamp
+  in both provenance and the normalized APM lockfile.
+- Updated README inventory to the generated counts: 11 agent files, 13 prompt
+  files, 11 instruction files, 19 skills, and 14 SDD templates.
+
+### Fixed
+- Corrected the `aldc.yaml` instruction transformation for canonical
+  `a900263f`: remove the two non-deployed package sources before stripping the
+  remaining eight instruction prefixes. A clean regeneration previously failed
+  because it expected 9 prefixed paths while canonical contains 10.
+- Regenerated `apm.lock.yaml` with the APM 0.27 deployment ledger and content
+  hashes.
+
+### Verified
+- A second full rebuild produces zero diff.
+- `apm audit --ci`: all 10 checks pass, no drift.
+- `apm pack --dry-run --verbose`: 109 files.
+- Copilot APM archive: 121 verified entries across `.github/{agents,prompts,
+  instructions}` and `.agents/skills`; no `.github/commands`, `.claude`,
+  `node_modules`, or `docs/templates` paths.
+- Root-app and App/Test archive fixtures: first scaffold, idempotent second
+  scaffold, scoped `--force`, and ALDC validation all pass with 0 errors and
+  0 warnings.
+
+Full evidence and the release decision are recorded in
+[`docs/evo-000-release-integrity.md`](docs/evo-000-release-integrity.md).
+
 ## [4.2.0] — APM-aware layout, hash-mode entrypoint coherence
 
 Reconcile the APM package with canonical ALDC `main` @ `a900263f` (post-v4.2.0

@@ -26,6 +26,10 @@ exactly the way the canonical repo regenerates its npm installer and VS Code plu
 > the original findings/plan are archived in
 > [`HANDOFF-APM-ALDC-v4.2.0.md`](./HANDOFF-APM-ALDC-v4.2.0.md).
 
+> **Next evolutives:** the active post-4.2.0 baseline, priorities, and delivery
+> gates are defined in
+> [`HANDOFF-APM-ALDC-EVOLUTIVES.md`](./HANDOFF-APM-ALDC-EVOLUTIVES.md).
+
 ## What's in the package
 
 All primitives live under `.apm/` (the APM source root). `apm install` deploys them
@@ -34,10 +38,10 @@ into each harness's runtime directories; the committed `.github/` and
 
 | Primitive | Count | Notes |
 |-----------|-------|-------|
-| **Agents** (`.apm/agents/`) | 10 | 4 public (`al-architect`, `al-developer`, `al-conductor`, `al-presales`) + 3 subagents + `al-triage`, `dredd`, `al-agent-builder` |
+| **Agents** (`.apm/agents/`) | 11 files | 10 agents: 4 public + 3 subagents + `al-triage`, `dredd`, `al-agent-builder`; plus `index.md` |
 | **Skills** (`.apm/skills/`) | 19 | 16 canonical ALDC skills + `skill-sdd-contracts` + 2 APM add-ons (`github-scaffold`, `onprem-remote-deploy`) |
-| **Prompts / workflows** (`.apm/prompts/`) | 11 | `al-spec.create`, `al-build`, `al-pr-prepare`, … plus the agent-pack `al-agent.*` |
-| **Instructions** (`.apm/instructions/`) | 8 + `copilot-instructions.md` | Auto-applied AL coding standards |
+| **Prompts / workflows** (`.apm/prompts/`) | 13 files | 11 executable prompts plus `README.md` and `index.md` |
+| **Instructions** (`.apm/instructions/`) | 11 files | 8 deployable instruction files plus `README.md`, `copilot-instructions.md`, and `index.md` |
 | **SDD templates** | 14 | Shipped as `assets/` of `skill-sdd-contracts` (loaded Just-In-Time) |
 | **MCP servers** | 4 | `github`, `markitdown`, `microsoftdocs`, `al-symbols` (declared in `apm.yml`) |
 
@@ -157,9 +161,9 @@ The canonical repo is authoritative. **Content changes to primitives go there**,
 this package is regenerated:
 
 ```bash
-# Clone/checkout the canonical repo at the desired tag, then:
-ALDC_CANONICAL=/path/to/ALDC-AL-Development-Collection node scripts/build-apm.mjs
-apm install        # regenerate compiled output + lockfile
+# Clone/checkout a clean canonical repo at the desired commit, then:
+ALDC_CANONICAL=/path/to/ALDC-AL-Development-Collection \
+  node scripts/rebuild-distribution.mjs
 apm audit          # expect: No drift detected
 ```
 
@@ -170,9 +174,14 @@ apm audit          # expect: No drift detected
 3. Generates `skill-sdd-contracts` with the 14 SDD templates as `assets/`.
 4. Rewrites the 5 runtime template paths to the skill-asset location.
 5. Aligns `apm.yml` / `plugin.json` to the canonical version.
+6. Applies the explicit `copilot-model-policy-v1` transformation to every
+   executable agent and prompt.
 
-The resolved canonical commit is recorded in `scripts/build-apm.lock.json` for
-auditability.
+The resolved canonical commit, deterministic source timestamp, transformation
+evidence, and scaffold installer hash are recorded in
+`scripts/build-apm.lock.json`. The rebuild command also normalizes the APM
+lockfile timestamp to that immutable source timestamp, so identical inputs
+produce a zero-diff tree.
 
 ### APM-only add-ons (port-back candidates)
 
