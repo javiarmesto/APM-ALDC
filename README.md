@@ -19,6 +19,10 @@ exactly the way the canonical repo regenerates its npm installer and VS Code plu
 
 > **Version:** tracks the canonical release (currently **4.1.0**).
 
+> **Next release:** the findings, implementation plan, validation matrix, and
+> release criteria for v4.2.0 are captured in
+> [`HANDOFF-APM-ALDC-v4.2.0.md`](./HANDOFF-APM-ALDC-v4.2.0.md).
+
 ## What's in the package
 
 All primitives live under `.apm/` (the APM source root). `apm install` deploys them
@@ -55,10 +59,12 @@ Supported `target`: **copilot** only. For Claude Code, depend on
 
 ### Project setup after install (scaffold)
 
-`apm install` deploys the ALDC **primitives**. APM has no automatic post-install
-hook, so the non-primitive setup pieces (Copilot routing entrypoint, `aldc.yaml`,
-`plans/memory.md`, `tools/`) are seeded by a cross-platform script shipped in the
-`github-scaffold` skill. Run it once from your project root:
+`apm install` deploys the ALDC **primitives**. APM 0.27 supports lifecycle
+scripts owned and explicitly trusted by the consumer project, but lifecycle scripts
+from a dependency are not inherited. Therefore, the non-primitive setup pieces
+(Copilot routing entrypoint, `aldc.yaml`, `plans/memory.md`, `tools/`) are seeded by
+a cross-platform script shipped in the `github-scaffold` skill. Run it once from
+your project root:
 
 ```bash
 # Copilot / Cursor / Codex (skills land in .agents/skills/)
