@@ -2,10 +2,11 @@
 
 ## Mission
 
-Release `javiarmesto/APM-ALDC` v4.2.0 as the GitHub Copilot APM distribution of
-the canonical `javiarmesto/ALDC-AL-Development-Collection` v4.2.0, preserving
-ALDC's Spec-Driven Development (SDD), Test-Driven Development (TDD), and
-BCQuality multi-root behavior in a clean consumer project.
+Release `javiarmesto/APM-ALDC` v4.2.0 as the GitHub Copilot APM distribution
+aligned with canonical `javiarmesto/ALDC-AL-Development-Collection` v4.2.0
+and its verified post-tag primitive updates, preserving ALDC's Spec-Driven
+Development (SDD), Test-Driven Development (TDD), and BCQuality multi-root
+behavior in a clean consumer project.
 
 The canonical ALDC repository remains the source of truth. This repository is
 only a deterministic APM transformation. Do not implement canonical framework
@@ -32,7 +33,8 @@ behavior here unless it is strictly APM-specific packaging or bootstrap logic.
 8. Project lifecycle scripts require explicit `apm lifecycle trust`. Therefore,
    APM-ALDC may ship the bootstrap capability but must not claim that dependency
    installation can execute it automatically.
-9. The package currently reports v4.1.0 while canonical ALDC is v4.2.0.
+9. The APM package currently reports v4.1.0 while canonical ALDC and the
+   inspected real deployment report v4.2.0.
 10. The package remains Copilot-only. Claude Code continues to use the sibling
     `javiarmesto/APM-ALDC---Claude` distribution.
 11. APM's Copilot layout is split: agents, prompts, and instructions deploy
@@ -52,17 +54,46 @@ integration reference. Do not identify, modify, or copy business content from
 that repository as part of this public release.
 
 The following installed framework files were compared with canonical ALDC
-`main` and
-were byte-identical at handoff preparation time:
+`v4.2.0` and current `main`:
 
-- public agents: architect, conductor, and developer
+- public agents: architect and developer
 - planning, implementation, and review subagents
 - `skill-testing`
 - `al-spec.create`
 - `.github/copilot-instructions.md`
 
-The project therefore confirms the current canonical SDD/TDD primitive behavior.
-It must not become a second source of truth.
+Those files were byte-identical across the deployed project, tag, and current
+`main`. The deployed `al-conductor` was newer than the `v4.2.0` tag and
+byte-identical to current canonical `main`. This confirms that the real
+deployment includes at least one verified post-tag primitive update.
+
+The private project is field evidence and an integration reference, not a second
+source of truth. Never copy a primitive from it merely because it is newer.
+Reconcile it against canonical history first.
+
+## Source authority and reconciliation
+
+Use this order:
+
+1. Canonical ALDC tag `v4.2.0` is the release and version baseline.
+2. Canonical ALDC current `main` is the candidate source for post-tag
+   framework evolutions.
+3. The private deployed 4.2.0 snapshot is evidence of which evolutions have
+   already been exercised in a real App/Test project.
+4. APM-ALDC is only the transformed distribution target.
+
+Apply the following three-way rule per primitive:
+
+| Comparison | Decision |
+| --- | --- |
+| tag = main = deployed snapshot | use canonical content |
+| main = deployed snapshot, both differ from tag | include the verified post-tag canonical evolution and record the exact canonical commit |
+| deployed snapshot differs from tag and main | treat as project customization until explicitly reviewed; do not package automatically |
+| main differs from tag and deployed snapshot | evaluate as an unproven canonical evolution; include only with focused tests and explicit evidence |
+
+The release must record both the semantic baseline (`v4.2.0`) and the exact
+canonical commit used to generate the APM package. Do not describe the package
+as a byte-for-byte transform of the tag if verified post-tag content is included.
 
 Its intentional project-specific differences are:
 
@@ -130,9 +161,20 @@ The deployment profile and validator must understand the native APM layout.
 
 ## Required implementation
 
-### 1. Sync the canonical v4.2.0 source
+### 1. Reconcile and sync the canonical v4.2.0 source
 
-Check out canonical ALDC at its v4.2.0 tag or exact release commit and run:
+First perform a three-way primitive comparison between:
+
+- canonical tag `v4.2.0`
+- canonical current `main`
+- the maintainer-provided deployed 4.2.0 snapshot
+
+Produce a reconciliation report listing each primitive, hashes for all three
+sources, and the decision taken. At minimum, preserve the confirmed newer
+`al-conductor` content when it still matches canonical `main`.
+
+Then check out the exact canonical commit selected by the reconciliation and
+run:
 
 ```bash
 ALDC_CANONICAL=/path/to/ALDC-AL-Development-Collection node scripts/build-apm.mjs
@@ -140,8 +182,10 @@ ALDC_CANONICAL=/path/to/ALDC-AL-Development-Collection node scripts/build-apm.mj
 
 Verify that:
 
-- `.apm/agents`, `.apm/instructions`, `.apm/prompts`, and canonical skills match
-  canonical v4.2.0.
+- `.apm/agents`, `.apm/instructions`, `.apm/prompts`, and canonical skills
+  match the selected canonical commit.
+- No project-only customization from the private deployment has entered the
+  package.
 - APM-only skills remain preserved.
 - `scripts/build-apm.lock.json` records the exact canonical commit.
 - `apm.yml` and `plugin.json` are aligned to `4.2.0`.
@@ -306,6 +350,9 @@ Add or extend package validation to check:
 
 - package version equals canonical version
 - canonical commit provenance is present
+- primitive reconciliation report covers tag, canonical main, and the deployed
+  4.2.0 reference
+- every included post-tag primitive matches an exact canonical commit
 - all 14 SDD template assets are present
 - all five runtime template references resolve after install
 - APM-aware `aldc.yaml` resolves the split `.github` / `.agents` layout
@@ -373,6 +420,9 @@ Only include additional files when regeneration or validation requires them.
 ## Acceptance criteria
 
 - Package version is `4.2.0` and provenance identifies canonical ALDC v4.2.0.
+- Provenance also records the exact canonical commit used for any verified
+  post-tag primitive updates.
+- No project-only primitive or business customization is included.
 - `apm install` deploys every ALDC runtime primitive for GitHub Copilot.
 - The 14 SDD templates travel as skill assets and load Just-In-Time.
 - No runtime-read template reference resolves to a missing path.
