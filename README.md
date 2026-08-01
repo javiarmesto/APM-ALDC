@@ -26,6 +26,10 @@ exactly the way the canonical repo regenerates its npm installer and VS Code plu
 > the original findings/plan are archived in
 > [`HANDOFF-APM-ALDC-v4.2.0.md`](./HANDOFF-APM-ALDC-v4.2.0.md).
 
+> **Next evolutives:** the active post-4.2.0 baseline, priorities, and delivery
+> gates are defined in
+> [`HANDOFF-APM-ALDC-EVOLUTIVES.md`](./HANDOFF-APM-ALDC-EVOLUTIVES.md).
+
 ## What's in the package
 
 All primitives live under `.apm/` (the APM source root). `apm install` deploys them
