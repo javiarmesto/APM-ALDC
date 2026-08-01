@@ -77,8 +77,8 @@ This reference adds a mandatory second consumer layout to the test matrix:
 1. a simple AL project with root `app.json`
 2. an AL-Go-style project with `App/app.json` and `Test/app.json`
 
-Use a temporary fixture or read-only clone derived from the layout. Never run
-destructive, force, or migration tests against the live Hogargas repository.
+Use a temporary fixture derived from the layout. Never run destructive, force,
+or migration tests against the live private reference repository.
 
 ## Target architecture
 
