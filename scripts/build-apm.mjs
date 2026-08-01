@@ -17,8 +17,9 @@
  *      to the skill-asset path so they resolve after an APM install — instead of
  *      pointing at a phantom `docs/templates/` that APM never deploys.
  *   5. Bumps apm.yml / plugin.json version to match the canonical release.
+ *   6. Applies and records the APM-specific Copilot model policy.
  *
- * After running, regenerate the per-harness compiled output with `apm install`.
+ * For source + compiled output in one command, run rebuild-distribution.mjs.
  *
  * Usage:
  *   ALDC_CANONICAL=/path/to/ALDC-AL-Development-Collection node scripts/build-apm.mjs
@@ -49,6 +50,15 @@ const APM = join(REPO, '.apm');
 // Skills authored only on the APM side (no canonical source). build-apm never
 // deletes these. Tracked for port-back to the canonical repo (see README).
 const ADDON_SKILLS = ['github-scaffold', 'onprem-remote-deploy'];
+
+// APM-ALDC intentionally pins one Copilot model across every invocable agent
+// and prompt. This is distribution policy, not canonical ALDC content. Keep it
+// here so a canonical regeneration cannot silently discard or partially apply
+// the policy (EVO-000).
+const COPILOT_MODEL_POLICY = {
+  id: 'copilot-model-policy-v1',
+  model: 'Claude Sonnet 5 (copilot)',
+};
 
 // The skill this script generates to host the SDD templates as assets.
 const SDD_SKILL = 'skill-sdd-contracts';
@@ -134,6 +144,42 @@ function gitRef(dir) {
   } catch { return 'unknown'; }
 }
 
+function gitCommitTimestamp(dir) {
+  try {
+    return execFileSync('git', ['-C', dir, 'show', '-s', '--format=%cI', 'HEAD'], { encoding: 'utf8' }).trim();
+  } catch { return 'unknown'; }
+}
+
+function gitIsClean(dir) {
+  try {
+    return execFileSync('git', ['-C', dir, 'status', '--porcelain'], { encoding: 'utf8' }).trim() === '';
+  } catch { return false; }
+}
+
+function sha256File(file) {
+  return createHash('sha256').update(readFileSync(file)).digest('hex');
+}
+
+function applyFrontmatterModelPolicy(files) {
+  const changed = [];
+  for (const file of files) {
+    let body = readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
+    if (!body.startsWith('---\n')) throw new Error(`Frontmatter missing in ${file}`);
+
+    if (/^model:\s*.+$/m.test(body)) {
+      body = body.replace(/^model:\s*.+$/m, `model: ${COPILOT_MODEL_POLICY.model}`);
+    } else if (/^agent:\s*.+$/m.test(body)) {
+      body = body.replace(/^agent:\s*.+$/m, (line) => `${line}\nmodel: ${COPILOT_MODEL_POLICY.model}`);
+    } else {
+      throw new Error(`Cannot apply ${COPILOT_MODEL_POLICY.id}; no model or agent key in ${file}`);
+    }
+
+    writeFileSync(file, body);
+    changed.push(file.replace(REPO + '/', ''));
+  }
+  return changed;
+}
+
 // ─── Main ──────────────────────────────────────────────────────────────────
 header('build-apm — ALDC → APM source generator');
 if (!isDir(CANONICAL)) {
@@ -147,6 +193,13 @@ info(`APM package root : ${REPO}`);
 const canonicalPkg = JSON.parse(readFileSync(join(CANONICAL, 'package.json'), 'utf8'));
 const VERSION = canonicalPkg.version;
 const CANON_REF = gitRef(CANONICAL);
+const CANON_TIMESTAMP = gitCommitTimestamp(CANONICAL);
+if (CANON_REF === 'unknown' || CANON_TIMESTAMP === 'unknown' || !gitIsClean(CANONICAL)) {
+  throw new Error(
+    'Canonical source must be a clean Git checkout at an exact commit; '
+    + 'dirty or unversioned input would make build provenance false.',
+  );
+}
 info(`Canonical version: ${VERSION} (${CANON_REF.slice(0, 7)})`);
 
 // 1) Flat primitive dirs ------------------------------------------------------
@@ -154,6 +207,14 @@ header('1. Sync agents / instructions / prompts');
 const agentFiles = syncFlatDir(join(CANONICAL, 'agents'), join(APM, 'agents'), 'agents');
 const instrFiles = syncFlatDir(join(CANONICAL, 'instructions'), join(APM, 'instructions'), 'instructions');
 const promptFiles = syncFlatDir(join(CANONICAL, 'prompts'), join(APM, 'prompts'), 'prompts');
+
+// 1b) Apply the APM-specific Copilot model policy ----------------------------
+header('1b. Apply APM Copilot model policy');
+const modelPolicyFiles = applyFrontmatterModelPolicy([
+  ...agentFiles.filter((f) => f.endsWith('.agent.md')).map((f) => join(APM, 'agents', f)),
+  ...promptFiles.filter((f) => f.endsWith('.prompt.md')).map((f) => join(APM, 'prompts', f)),
+]);
+ok(`${COPILOT_MODEL_POLICY.id}: ${modelPolicyFiles.length} files set to ${COPILOT_MODEL_POLICY.model}`);
 
 // 2) Skills -------------------------------------------------------------------
 header('2. Sync skills (recursive)');
@@ -250,21 +311,23 @@ aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '- "agents/', '- "', 10);
 aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '- "prompts/', '- "', 11);
 // required/optional.skills: "skills/<f>" -> "<f>" (rootFor('skills') = ".agents/skills")
 aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '- "skills/', '- "', 16);
+// copilot-instructions.md and index.md are package-level sources, not files
+// deployed by the APM instruction integrator. Remove them before stripping the
+// category prefix from the eight deployable required/optional entries.
+aldcYamlBody = mustReplace(
+  aldcYamlBody, 'aldc.yaml',
+  '    - "instructions/copilot-instructions.md"\n',
+  '',
+);
+aldcYamlBody = mustReplace(
+  aldcYamlBody, 'aldc.yaml',
+  '    - "instructions/index.md"\n\n  templates:',
+  '\n  templates:',
+);
 // required/optional.instructions: "instructions/<f>" -> "<f>" (rootFor('instructions') = ".github/instructions")
-aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '- "instructions/', '- "', 9);
+aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '- "instructions/', '- "', 8);
 // optional.tools: "tools/<f>" -> "<f>" (rootFor('tools') = "tools")
 aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '- "tools/', '- "', 2);
-
-// instructions/copilot-instructions.md is never deployed by the APM instruction
-// integrator (only *.instructions.md files deploy, handoff finding #12) — drop
-// it from required.instructions; entrypoint coherence is checked separately.
-aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '    - "instructions/copilot-instructions.md"\n', '');
-
-// required.instructions "index.md" (package-level docs index, same class as
-// copilot-instructions.md above): never deployed to a consumer's
-// .github/instructions/ folder by a real `apm install` — only the
-// *.instructions.md files land there. Confirmed via E2E fixture testing.
-aldcYamlBody = mustReplace(aldcYamlBody, 'aldc.yaml', '    - "index.md"\n\n  templates:', '\n  templates:');
 
 // Copilot entrypoint coherence: the full source (copilotSource) is never
 // deployed to APM consumers, so byte/size comparison ("trimmed" mode) can't
@@ -398,7 +461,11 @@ ok(`apm.yml & plugin.json set to ${VERSION}`);
 
 // 6) Provenance lock ----------------------------------------------------------
 const lock = {
-  generatedAt: new Date().toISOString(),
+  // Deliberately deterministic: wall-clock generation timestamps make two
+  // builds from identical inputs differ. This records the immutable source
+  // commit time instead.
+  generatedAt: CANON_TIMESTAMP,
+  timestampBasis: 'canonical-commit',
   canonicalRepo: 'javiarmesto/ALDC-AL-Development-Collection',
   canonicalRef: CANON_REF,
   version: VERSION,
@@ -411,15 +478,38 @@ const lock = {
     sddTemplates: templates.length,
     runtimeRewrites: totalRewrites,
     scaffoldSeed: seedCount,
+    modelPolicyFiles: modelPolicyFiles.length,
   },
   runtimeTemplatesRewritten: RUNTIME_TEMPLATES,
   addonSkills: ADDON_SKILLS,
+  transformations: {
+    copilotModelPolicy: {
+      id: COPILOT_MODEL_POLICY.id,
+      model: COPILOT_MODEL_POLICY.model,
+      policySha256: createHash('sha256').update(JSON.stringify(COPILOT_MODEL_POLICY)).digest('hex'),
+      files: modelPolicyFiles,
+    },
+    runtimeTemplatePaths: {
+      id: 'runtime-template-assets-v1',
+      rewrites: totalRewrites,
+      templates: RUNTIME_TEMPLATES,
+    },
+    apmAwareSeed: {
+      id: 'apm-aware-copilot-seed-v1',
+      entries: seedCount,
+      copilotEntrypointSha256: entrypointHash,
+    },
+    scaffoldInstaller: {
+      source: '.apm/skills/github-scaffold/scripts/Install-Scaffold.mjs',
+      sha256: sha256File(join(APM, 'skills', 'github-scaffold', 'scripts', 'Install-Scaffold.mjs')),
+    },
+  },
 };
 writeFileSync(join(__dirname, 'build-apm.lock.json'), JSON.stringify(lock, null, 2) + '\n');
 
 header('Done');
 console.log(JSON.stringify(lock.counts, null, 2));
-console.log(`\nNext: run ${C.bold}apm install${C.reset} to regenerate compiled output (.github/.claude/.agents), then ${C.bold}apm audit${C.reset}.`);
+console.log(`\nNext: run ${C.bold}node scripts/rebuild-distribution.mjs${C.reset} for source + compiled output, or ${C.bold}apm install${C.reset} if source is already current.`);
 
 // ─── Pure helpers ────────────────────────────────────────────────────────────
 function allSkillMarkdown(skillsRoot) {

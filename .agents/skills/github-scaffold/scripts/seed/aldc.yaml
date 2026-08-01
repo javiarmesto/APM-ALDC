@@ -77,7 +77,7 @@ copilotSource: "instructions/copilot-instructions.md"
 # (the ~31% trim). The validator then checks it is non-empty and smaller than the
 # source instead of requiring byte-identity. Use "mirror" to require byte-identity.
 copilotEntrypointMode: "hash"
-copilotEntrypointHash: "fae115210fa51f4e87777e19a3c45bf9e72eba570c0b9528ebee27b5a0ce6d70"
+copilotEntrypointHash: "d86386d0e84e07b54791bace6f659b99174baff0467bb453374700748877aa81"
 
 required:
   agents:

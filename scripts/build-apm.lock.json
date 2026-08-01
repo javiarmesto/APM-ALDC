@@ -1,5 +1,6 @@
 {
-  "generatedAt": "2026-08-01T11:58:51.870Z",
+  "generatedAt": "2026-06-22T12:04:46+02:00",
+  "timestampBasis": "canonical-commit",
   "canonicalRepo": "javiarmesto/ALDC-AL-Development-Collection",
   "canonicalRef": "a900263f51e416762cc7f85575deb9b30cd5b1e3",
   "version": "4.2.0",
@@ -11,7 +12,8 @@
     "addonSkills": 2,
     "sddTemplates": 14,
     "runtimeRewrites": 12,
-    "scaffoldSeed": 7
+    "scaffoldSeed": 7,
+    "modelPolicyFiles": 21
   },
   "runtimeTemplatesRewritten": [
     "architecture-template.md",
@@ -23,5 +25,55 @@
   "addonSkills": [
     "github-scaffold",
     "onprem-remote-deploy"
-  ]
+  ],
+  "transformations": {
+    "copilotModelPolicy": {
+      "id": "copilot-model-policy-v1",
+      "model": "Claude Sonnet 5 (copilot)",
+      "policySha256": "8e5af382bbce3103f81fe12f961ff9a99bef1c48e3824e4646c7f51c3cf6de25",
+      "files": [
+        ".apm/agents/al-agent-builder.agent.md",
+        ".apm/agents/al-architect.agent.md",
+        ".apm/agents/al-conductor.agent.md",
+        ".apm/agents/al-developer.agent.md",
+        ".apm/agents/al-implement-subagent.agent.md",
+        ".apm/agents/al-planning-subagent.agent.md",
+        ".apm/agents/al-presales.agent.md",
+        ".apm/agents/al-review-subagent.agent.md",
+        ".apm/agents/al-triage.agent.md",
+        ".apm/agents/dredd.agent.md",
+        ".apm/prompts/al-agent.build-instructions.prompt.md",
+        ".apm/prompts/al-agent.create.prompt.md",
+        ".apm/prompts/al-agent.instructions.prompt.md",
+        ".apm/prompts/al-agent.task.prompt.md",
+        ".apm/prompts/al-agent.test.prompt.md",
+        ".apm/prompts/al-build.prompt.md",
+        ".apm/prompts/al-context.create.prompt.md",
+        ".apm/prompts/al-initialize.prompt.md",
+        ".apm/prompts/al-memory.create.prompt.md",
+        ".apm/prompts/al-pr-prepare.prompt.md",
+        ".apm/prompts/al-spec.create.prompt.md"
+      ]
+    },
+    "runtimeTemplatePaths": {
+      "id": "runtime-template-assets-v1",
+      "rewrites": 12,
+      "templates": [
+        "architecture-template.md",
+        "planning-findings-template.md",
+        "code-review-template.md",
+        "bcquality-task-context.md",
+        "test-plan-template.md"
+      ]
+    },
+    "apmAwareSeed": {
+      "id": "apm-aware-copilot-seed-v1",
+      "entries": 7,
+      "copilotEntrypointSha256": "d86386d0e84e07b54791bace6f659b99174baff0467bb453374700748877aa81"
+    },
+    "scaffoldInstaller": {
+      "source": ".apm/skills/github-scaffold/scripts/Install-Scaffold.mjs",
+      "sha256": "cdba22d85662ab2f163e9cb78d08dc166b81150a4b054094e7876812fb76fb3c"
+    }
+  }
 }

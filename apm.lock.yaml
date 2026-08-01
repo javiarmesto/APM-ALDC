@@ -1,6 +1,1132 @@
 lockfile_version: '1'
-generated_at: '2026-05-15T17:49:46.531586+00:00'
+generated_at: '2026-06-22T12:04:46+02:00'
 dependencies: []
+deployments:
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:b745d395c46538f602a120e6d61878c905820c43494bc5fc5c09a26d9da9e16d
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/Install-Scaffold.mjs
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:cdba22d85662ab2f163e9cb78d08dc166b81150a4b054094e7876812fb76fb3c
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/Install-Scaffold.ps1
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d79d784978ea024e13bac0fe92925bbcf0348e78d95af981eb0aa5f8dc5fcd4c
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/docs/schema/aldc.schema.json
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a1a0ffbfc060e29500aef015277a35fff98c2b4ec7852f726f0117cba524915b
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/docs/skills-creation-guide.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:588a67c015053f2562607090aa6c7ae780c009911f243f57ec6e073e077c5699
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/seed/aldc.code-workspace
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:0e94487961b4854ea1561ed50036c7e2837cb50f7e294c09c0a00f4af48a3c28
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/seed/aldc.yaml
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:2bec41bd3a04efc9c1e0620774f8a0d3ec4df1f0c2db05594306845905042166
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/seed/copilot-instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:3631b9c980d770292cabffb47b1c420b668cb6100eed4da07573b00f8ad0dc00
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/seed/memory.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:c7ec8174270266de484438baf162149acdc05d2a25afb0965d9afde67e58f92b
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/seed/tools/aldc-validate/index.js
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a0d30cc5c5cb46db7ce1e3825be38f3e7984a0fc222b98e3ebb3e068ebbb08ca
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/seed/tools/aldc-validate/package-lock.json
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:cb0217da0e4ba59078d5d98efd5125a1fbcdfe6e211819c9c4c24fe1708406d9
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/seed/tools/aldc-validate/package.json
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a5446551001b8d5738441e4781a960e85770e9f708a3ac9fd97e1e5da61e806e
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/seed/tools/bc-agents/scaffold_agent.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:3b00b1cda1725f5509d55f0df28f9f1600a895d155748d852a86df37890e51ce
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/seed/tools/bc-agents/validate_agent_config.sh
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:5054f15b7722686370b30f5bbe939647466507fd137bf59c7939048d629c57a9
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/seed/tools/bcquality/README.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:b8e621a470f8775dedc5da68cdb913b4fa99adff22c3589b8becccbea1b3cdeb
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/seed/tools/bcquality/install.ps1
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:c2cae01033bc2102d05e310c635408397ca5255ac8a700c6fcd74dcf1351871b
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/seed/tools/bcquality/install.sh
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:74193b0616b7ae3f8c62ebe8312ddbfd9aea5f1b9423fd77ccd4178acf35d3cf
+- kind: project-relative
+  target: agents
+  value: .agents/skills/github-scaffold/scripts/seed/tools/bcquality/validate_evidence.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:583e71dcfd5a714b64481d8b96a6e14260acb28d9823c0b892a294f267648000
+- kind: project-relative
+  target: agents
+  value: .agents/skills/onprem-remote-deploy
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/onprem-remote-deploy/AUTHORS.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:df0dd5d460c0f569f619141a0c8f39ef95f4665bd1b6dd787bc1dc50dcc227c1
+- kind: project-relative
+  target: agents
+  value: .agents/skills/onprem-remote-deploy/CHANGELOG.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:c5f8aa6960b6550d4e673a1f13d11ccdd85336c24917688a37097689f914f24f
+- kind: project-relative
+  target: agents
+  value: .agents/skills/onprem-remote-deploy/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:602cbe6a07f1624840a0584d87e151797c3746f08ae6f918739c4cab0ffc7c2f
+- kind: project-relative
+  target: agents
+  value: .agents/skills/onprem-remote-deploy/references/onprem-remote-deploy-reference.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e73109b5b12437b6b88b7173fd5ba1f2277e4f1d74c40376fdd2fd8c0b564704
+- kind: project-relative
+  target: agents
+  value: .agents/skills/onprem-remote-deploy/scripts/Setup-DeployAgent.Template.ps1
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d78775c8aed0b590ac7e534a9cb8aa0aeaf0187188097a2bedf1df0b7c114808
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-agent-instructions
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-agent-instructions/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:be10c3546e6d1a05964aadd78c20d6853098a416a978d944a77f5b07a8fbcd80
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-agent-instructions/examples/agent-advanced-instructions.txt
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:f9938f734399e9ec2ad01186dbc761030dd815a1595b813e028c9914a10d9eba
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-agent-instructions/examples/agent-simple-instructions.txt
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:4ad7eb9e8e961f179664118c37ab58c1734be60295bb69e78929cc765b6c98c1
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-agent-instructions/references/agent-keywords-reference.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:9b15534aca3c701b57cb6859a4152d291edcba0fd7bdf499e9b062849b4b1c33
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-agent-task-patterns
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-agent-task-patterns/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:ccf6c4342b3720b434ffc5eebe0b172f3d3e8a07bfa6c2feeee48d2628aaafac
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-agent-task-patterns/examples/lead-handoff-with-attachment.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d74bccb4d9ef7e58a95ed62bb3c08a9ca877cde9e73e708490aa28d575850e3a
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-agent-task-patterns/examples/session-events-binding.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:39cc0ddf8d4269b9d2aee8931d5cca491c3bc2792b0600d3243c879bf9c69815
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-agent-toolkit
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-agent-toolkit/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:16abfa053d7d467a7128507132beafbb936221e0cf443070e94c3488df5c26af
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-api
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-api/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:8776c4afe5fbc3fa4f0ac37c55e7b1d42a02dfb70e23666b5a8fc23053be95ed
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-api/references/api-advanced-patterns.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:16ba8b8f7672ce1e06805a1044e8e9cb9388798a951a883cb495eee608109f40
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-contribution-assistant
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-contribution-assistant/AUTHORS.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:df0dd5d460c0f569f619141a0c8f39ef95f4665bd1b6dd787bc1dc50dcc227c1
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-contribution-assistant/CHANGELOG.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:c196955212d1fb4320b68214c9aeae1cdaed2b4cb5d1e6df7d97bddcff4acfc5
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-contribution-assistant/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:5673233fc6213309017e20b3e037818b8b49600021f59d371c1bc411c865bd36
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-contribution-assistant/references/onboarding-questionnaire.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:9be6e317d94580cba924b5621d8bd1812905ec87ca759afae1e63b9486e7cbb6
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-contribution-assistant/references/opportunity-detection.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1e03b5826d240e37b715a3388ccf640ee29899eae03e79facda8565f72bc721f
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-contribution-assistant/references/pr-readiness-checklist.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:2ea1dfe85757ca8e38f4af90d575928f2cab821f7af08dfb7277c7ad435a9b27
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-contribution-assistant/references/quality-gate.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:5e9c3cbab0f60a617db7b7f56376f97f5e7e54bc16f15a6c246c093f0df6bc28
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-copilot
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-copilot/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:8b96b2d8306d2c077bc00ef1dabe3ae776c0dd6330d88da153155d0afca7b1cd
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-copilot/references/copilot-ai-generation.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:07000ff739b4830d9a1b0e998b1e79c58d602c45965c08b8efcdc06c6cd54317
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-copilot/references/copilot-testing.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:3b81800e86fcdc40eade7ab661edc8e5c7d6723c3c2ab3135fcd5e6e42e95edb
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-debug
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-debug/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e52066bfcc0156348b8c9855ffbb7def7501c542390b5abed9d3aeb06c52d706
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-estimation
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-estimation/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e1d81e5d8c616bc269ef64974e0065ccb84bdb87b8deb38558f29b3f0b53b955
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-events
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-events/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:6684768b78b2a9194ad8047abd24cfc5f2daaa28500d6b6ee21c9737d8db0fd6
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-manifest
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-manifest/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:12a5c402584958edb49073243661d6c60555e5dffdfdb09aac66995ca80f9624
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-manifest/examples/extension-manifest/sample-manifest-both.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1a554868dcc1ba43b0bbc5706afcbd7473b98e2f3f5a02985aefb69405d87767
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-manifest/examples/extension-manifest/sample-manifest-circe-only.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:263025248cdac9068a948742bbe09a2083792b86a919a087402ff83898ab122a
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-manifest/examples/extension-manifest/sample-manifest-delfos-only.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a5ccf897ecd553e6f9f71c9213d0b00ff700974b9b22cf233ace169fd239756f
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-manifest/extension-manifest.skill.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:37fc4e4f3793012fe4ec4261ea90dda6008c573b85aa1f2924b20428697665bb
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-migrate
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-migrate/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e08799501f74001a72baa61b9226ae11a4ff6eaca6656bf58c54235694984b3d
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-pages
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-pages/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:0abf48098df37b4ef64e7292688f821611cf691d40cf6e89dac8ccb7d2031b32
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-performance
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-performance/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:db261fcd4099a46fe701825781c2c7c901c582817c3f3b926f444c2ee42239b0
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-permissions
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-permissions/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:fa02bddb1514102d28a0b09b31a381c3716b1385902f5a1667af1253fbf1ec1d
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d054b708324df48090a6a669a325a2f218aa04b693fb2dc81b3529ab23c933d6
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/architecture-template.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e9ee0e3a9d6571752bf406711379e3132a24c1c078cf213465595e31f2d52917
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/bcquality-task-context.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:91e6e1bb675ebb2ff45002c96d4db6a8038faec3fef6a01b28061f2298e2b3d2
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/code-review-template.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:12b817389da5e0689e5f021315c8f18de36e2abd559244f43999beb49b77ed04
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/delivery-template.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a39f0733963af1be070176af5cdf6a85d854c8572182ad43e8eb632df8afb990
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/memory-template.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:c7ec8174270266de484438baf162149acdc05d2a25afb0965d9afde67e58f92b
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/mkdocs-site-prompt.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:5e4c9263c218e2486e31b7c318f025c450e3f6d61b6ce67ec9c0e9ab28ffbf05
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/phase-complete-template.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:0b7cdd8756e81ebdeb2b95cdb61ff721a0918c3dda8ed590d80674937587da13
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/plan-complete-template.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e0029f6e3863c2120f956a27b44f3f3718ce35b5474e37b47776edf9863bbfd3
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/plan-template.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1c2a079abe659ff8e585207d3bbdfeebdc4a800dbb5be33b5838a68dbae85a56
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/planning-findings-template.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:8415ed2de625eb9c9e64cb9e512f90542d5aa77d143087e9a683938cd4fe15d7
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/skill-template.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d71051d887ff1c64cc250534ae84872a531b8ad6763409184ac59877725ddd6f
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/spec-template.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:634da157c9e87ef6a1a22fa419e49dff31ef413a0fd246021878eb33bddb0ae8
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/technical-spec-template.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:5b9dbd9ea80e9a060965638d8be9e2594869d0fec4f2ab280307166f9e271916
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-sdd-contracts/assets/test-plan-template.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:724882202ad91657012eb2568fe69d059634429213f92805d3a9bdfd9ce42447
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-testing
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-testing/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:be9c074876d2105aad143382c5d49287fcde5feababcb7332fba673a1f848c95
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-translate
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: agents
+  value: .agents/skills/skill-translate/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:aed26d22485fd88a9518de55f1cf64e906dc516c336de7fde360ce0462e6eda6
+- kind: project-relative
+  target: copilot
+  value: .github/agents/al-agent-builder.agent.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a7a26dc6b4623a4cfee2b0b6636ca6574885a8bb8b8a0a97bebbb929e343c954
+- kind: project-relative
+  target: copilot
+  value: .github/agents/al-architect.agent.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:c45db0f53619cc311285c703e7a8d6715993f51e78d32b7997c2900a6b1db9a3
+- kind: project-relative
+  target: copilot
+  value: .github/agents/al-conductor.agent.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1a4eddf1901d17f30f90e417909fcdd6a1c802358c28216dbd1ef9d4daae6497
+- kind: project-relative
+  target: copilot
+  value: .github/agents/al-developer.agent.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:46f9db5469e3d355b62358de4bd9774f64b49ebfe97fbc209edd4b30c8990e73
+- kind: project-relative
+  target: copilot
+  value: .github/agents/al-implement-subagent.agent.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:9b02997aab4d9506d118dff7d2d0e0d9df73a67e0d790fdbb51cce7e1904c962
+- kind: project-relative
+  target: copilot
+  value: .github/agents/al-planning-subagent.agent.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:35d83a585b11bb0103329ceda7c8016cd101f94b2f267b40d9c22540d4e364e3
+- kind: project-relative
+  target: copilot
+  value: .github/agents/al-presales.agent.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:2c965d69b552255f001583d4f31f179f98f41813fc902550865779cf6de28920
+- kind: project-relative
+  target: copilot
+  value: .github/agents/al-review-subagent.agent.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:180e615dd3fc2b4d6a49239c3023771abfaf07ffdb94e1169afa4c2b0f4ab442
+- kind: project-relative
+  target: copilot
+  value: .github/agents/al-triage.agent.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:5e3f845599933ffa1c4e3d0b2f8a8e478e0dd38c8260f1af1e956c2e0aa3e0a4
+- kind: project-relative
+  target: copilot
+  value: .github/agents/dredd.agent.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:c1d38c6c0cba91c15dd7a1a373cb2d4bc776492747b92d83ba6dc4f10aa090d0
+- kind: project-relative
+  target: copilot
+  value: .github/agents/index.agent.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:ce8f2cf914edcb77302ef858e7093ea6586a8e26d2bdf166ad2da8694953e118
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/al-agent-toolkit.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:3939b641eccd9d21218e173366fcb71ba4834f257f4f51aa9507ee43dc45f876
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/al-code-style.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d5b168107cb37502d29b847308c97c15b8bf309dcc59aad02befe103d3c99dab
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/al-error-handling.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:b7a17000c9725c508745b866d3a19eddf32bde14f2d167e1d350f91304fee548
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/al-events.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:0b429761029a3b68404b82eb2048f8e253ff182298e4c9c160e5c638e30e1d3e
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/al-guidelines.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1b41a3d1e5a0ffe32bd95c3b9fd08bda89567e2f9064bb63c04d1255dfbf2db2
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/al-naming-conventions.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:4b3158860dc68c414ea69304e4f30fe1f950981c63726a37c611aea1039212ba
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/al-performance.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1db9c2e08bfec26a63990e1c05229f7ed15fb2fa92e6b65ab2b8eb40c1fdf1df
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/al-testing.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:ab88c39c39d2bd0bbdd00e4224b050004e8d587d7e381a1e5b0d075b985be0c3
+- kind: project-relative
+  target: copilot
+  value: .github/prompts/al-agent.build-instructions.prompt.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:cb600fb38a8ed91a79755b31166ddb3ea85fd1cb706fe07f61eb3cd533bc487d
+- kind: project-relative
+  target: copilot
+  value: .github/prompts/al-agent.create.prompt.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:7544168a2dc818e3bf6c9de59c169fcfb2611cc94ccabf82f10061553cb85f71
+- kind: project-relative
+  target: copilot
+  value: .github/prompts/al-agent.instructions.prompt.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:cb600fb38a8ed91a79755b31166ddb3ea85fd1cb706fe07f61eb3cd533bc487d
+- kind: project-relative
+  target: copilot
+  value: .github/prompts/al-agent.task.prompt.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:ff1a20e39b5a112b2b7b9e003d8da08b1a417f6aa2ef5a3bf9f33c608da5d9b9
+- kind: project-relative
+  target: copilot
+  value: .github/prompts/al-agent.test.prompt.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:fdc0952ce60132e7d0529a986ff07a47e2a9f24fb2a9be0063b4bd679b38c3aa
+- kind: project-relative
+  target: copilot
+  value: .github/prompts/al-build.prompt.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:56257bb237baaab416fb9f408f73f5a7b1fd08e44798b565b53cfcf1f7e69694
+- kind: project-relative
+  target: copilot
+  value: .github/prompts/al-context.create.prompt.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a0b248b1e372d104f6de927448f900dfbfea172cfc1670e784e4be16b7214808
+- kind: project-relative
+  target: copilot
+  value: .github/prompts/al-initialize.prompt.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:fce2b23e9d0d89299662c9dfbeea897591671dcf44265a8160b33850dbbbb8bf
+- kind: project-relative
+  target: copilot
+  value: .github/prompts/al-memory.create.prompt.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:40c0f3055149bac70e8ab4a8fcc6d417f6f4efea375ea7029ae463f76a223791
+- kind: project-relative
+  target: copilot
+  value: .github/prompts/al-pr-prepare.prompt.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:0c805cd957b790b51e449fbfedd9ffc86c1db84e35057bff10be68267b7f4206
+- kind: project-relative
+  target: copilot
+  value: .github/prompts/al-spec.create.prompt.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:b5b9f6ed4337896b3a7045b1c58587fafb1d751d46042b39e3efa08fce44078c
+- kind: uri
+  target: mcp
+  value: al-symbols-mcp
+  runtime: vscode
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: github-mcp-server
+  runtime: vscode
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: markitdown-mcp
+  runtime: vscode
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: microsoftdocs-mcp
+  runtime: vscode
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
 mcp_servers:
 - al-symbols-mcp
 - github-mcp-server
@@ -31,6 +1157,12 @@ mcp_configs:
     transport: http
     registry: false
     url: https://learn.microsoft.com/api/mcp
+mcp_target_servers:
+  vscode:
+  - al-symbols-mcp
+  - github-mcp-server
+  - markitdown-mcp
+  - microsoftdocs-mcp
 local_deployed_files:
 - .agents/skills/github-scaffold
 - .agents/skills/github-scaffold/SKILL.md
@@ -160,7 +1292,7 @@ local_deployed_file_hashes:
   .agents/skills/github-scaffold/scripts/docs/schema/aldc.schema.json: sha256:a1a0ffbfc060e29500aef015277a35fff98c2b4ec7852f726f0117cba524915b
   .agents/skills/github-scaffold/scripts/docs/skills-creation-guide.md: sha256:588a67c015053f2562607090aa6c7ae780c009911f243f57ec6e073e077c5699
   .agents/skills/github-scaffold/scripts/seed/aldc.code-workspace: sha256:0e94487961b4854ea1561ed50036c7e2837cb50f7e294c09c0a00f4af48a3c28
-  .agents/skills/github-scaffold/scripts/seed/aldc.yaml: sha256:1ca499931bb5e843412cbd054925997372784f76827a3a8bb0f3ae9c3f4cb4b2
+  .agents/skills/github-scaffold/scripts/seed/aldc.yaml: sha256:2bec41bd3a04efc9c1e0620774f8a0d3ec4df1f0c2db05594306845905042166
   .agents/skills/github-scaffold/scripts/seed/copilot-instructions.md: sha256:3631b9c980d770292cabffb47b1c420b668cb6100eed4da07573b00f8ad0dc00
   .agents/skills/github-scaffold/scripts/seed/memory.md: sha256:c7ec8174270266de484438baf162149acdc05d2a25afb0965d9afde67e58f92b
   .agents/skills/github-scaffold/scripts/seed/tools/aldc-validate/index.js: sha256:a0d30cc5c5cb46db7ce1e3825be38f3e7984a0fc222b98e3ebb3e068ebbb08ca
