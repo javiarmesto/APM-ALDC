@@ -5,6 +5,8 @@ from GitHub** deploys this package correctly into a clean consumer project, for
 the two supported AL layouts (root `app.json`, and AL-Go style `App/` + `Test/`).
 
 The runner is [`tests/e2e/apm-consumer-install.mjs`](../tests/e2e/apm-consumer-install.mjs).
+A step-by-step **manual walkthrough of the same scenario (in Spanish)** is
+available in [`guia-usuario-pruebas-instalacion.md`](./guia-usuario-pruebas-instalacion.md).
 It creates its fixtures in an OS temp directory, never writes inside this
 repository, never patches the APM CLI, and removes the fixtures when it
 finishes (unless you ask it to keep them).

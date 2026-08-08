@@ -94,7 +94,9 @@ A repeatable E2E gate proves a real GitHub install works for both AL layouts
 `node tests/e2e/apm-consumer-install.mjs` — see
 [`docs/testing-apm-consumer-installation.md`](./docs/testing-apm-consumer-installation.md)
 for prerequisites, variables (`ALDC_APM_REF`, `APM_BIN`), the scenario matrix,
-and the MCP trust decision it implies.
+and the MCP trust decision it implies. A manual step-by-step user guide (in
+Spanish) covering the same scenario is
+[`docs/guia-usuario-pruebas-instalacion.md`](./docs/guia-usuario-pruebas-instalacion.md).
 
 ## SDD templates — how they resolve
 
