@@ -56,7 +56,7 @@ after diff SHA-256 were both the empty-diff hash
 | App/Test fixture | `ALDC Core v1.1 COMPLIANT`, 0 errors, 0 warnings |
 | First scaffold | Seeded 7, skipped 0 in both fixtures |
 | Second scaffold | Seeded 0, skipped 7 in both fixtures |
-| `--force` scope | Restored scaffold-owned entrypoint hash `3631b9c980d770292cabffb47b1c420b668cb6100eed4da07573b00f8ad0dc00`; preserved fixture `app.json` and a consumer-owned sentinel |
+| `--force` scope | Restored scaffold-owned entrypoint to seed content — raw file-bytes SHA-256 `3631b9c980d770292cabffb47b1c420b668cb6100eed4da07573b00f8ad0dc00` (the `content_hash` APM's `apm.lock.yaml` ledger records for the seed); its trimmed-text SHA-256 is `d86386d0e84e07b54791bace6f659b99174baff0467bb453374700748877aa81`, the `copilotEntrypointHash` pinned in `aldc.yaml` (see `docs/testing-apm-consumer-installation.md`). Preserved fixture `app.json` and a consumer-owned sentinel |
 | Forbidden archive paths | No `.github/commands`, `.claude`, `node_modules`, or `docs/templates`; 11 `.github/prompts/*.prompt.md` files present |
 
 ### Archive method
