@@ -122,7 +122,10 @@ function listDirs(dir) {
     : [];
 }
 
-// Recursive { relPath: sha256 } snapshot. `skip` prunes directory names.
+// Recursive { relPath: sha256 } snapshot with deterministically sorted keys
+// (readdirSync order is not guaranteed across platforms/filesystems, and the
+// idempotency scenario compares JSON.stringify of two snapshots).
+// `skip` prunes directory names.
 function snapshotTree(root, skip = new Set()) {
   const acc = {};
   (function walk(dir) {
@@ -133,7 +136,7 @@ function snapshotTree(root, skip = new Set()) {
       else if (entry.isFile()) acc[relative(root, p).split(sep).join('/')] = sha256File(p);
     }
   })(root);
-  return acc;
+  return Object.fromEntries(Object.entries(acc).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
 }
 
 function findDirsNamed(root, wanted, skip = new Set()) {
@@ -196,7 +199,8 @@ function scnInstall(fx, label) {
   check('apm install exits 0', r.code === 0, `exit ${r.code}`);
   const commit = r.out.match(/#\S+\s+@([0-9a-f]{7,40})/);
   if (commit) evidence.resolvedCommit = commit[1];
-  check('dependency resolved from GitHub', /Resolving .*APM-ALDC/i.test(r.out) && commit, commit ? `@${commit[1]}` : 'no commit in output');
+  const repoName = APM_REPO.split('/').pop().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  check('dependency resolved from GitHub', new RegExp(`Resolving .*${repoName}`, 'i').test(r.out) && commit, commit ? `@${commit[1]}` : 'no commit in output');
 
   const prompts = listFiles(join(fx, '.github', 'prompts'));
   const agents = listFiles(join(fx, '.github', 'agents'));
@@ -270,7 +274,9 @@ function scnForceScope(fx) {
   writeFileSync(consumerFile, 'This file belongs to the consumer project.\n');
   const appJsonPath = existsSync(join(fx, 'app.json')) ? join(fx, 'app.json') : join(fx, 'App', 'app.json');
   const appJsonHashBefore = sha256File(appJsonPath);
-  const skip = new Set(['node_modules', 'apm_modules', '.vscode']);
+  // .vscode stays IN the snapshot on purpose: apm install writes mcp.json
+  // there, and this scenario must prove the scaffold never touches it.
+  const skip = new Set(['node_modules', 'apm_modules']);
   const treeBefore = snapshotTree(fx, skip);
 
   const r = run('node', [join('.agents', 'skills', 'github-scaffold', 'scripts', 'Install-Scaffold.mjs'), '--force'], fx);
@@ -354,6 +360,7 @@ console.log(` APM        : ${evidence.apmVersion}`);
 console.log(` Dependency : ${APM_REPO}#${APM_REF}`);
 console.log(` Node       : ${process.version}`);
 
+mkdirSync(WORKDIR, { recursive: true }); // ALDC_E2E_WORKDIR may not exist yet
 const base = mkdtempSync(join(WORKDIR, 'aldc-apm-e2e-'));
 console.log(` Fixtures   : ${base}${KEEP ? ' (kept — ALDC_E2E_KEEP=1)' : ''}`);
 
