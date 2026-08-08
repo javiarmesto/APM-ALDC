@@ -87,6 +87,15 @@ install. The 14 SDD templates are **not** seeded here — they live in
 > Compile is **optional for Copilot** — it reads `.github/instructions/*.instructions.md`
 > directly.
 
+### Verify a consumer installation (E2E)
+
+A repeatable E2E gate proves a real GitHub install works for both AL layouts
+(root `app.json`, and `App/` + `Test/`): run
+`node tests/e2e/apm-consumer-install.mjs` — see
+[`docs/testing-apm-consumer-installation.md`](./docs/testing-apm-consumer-installation.md)
+for prerequisites, variables (`ALDC_APM_REF`, `APM_BIN`), the scenario matrix,
+and the MCP trust decision it implies.
+
 ## SDD templates — how they resolve
 
 ALDC is spec-driven: agents produce documents from **immutable templates**. In the
